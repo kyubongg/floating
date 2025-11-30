@@ -5,6 +5,7 @@ public class SignupRequestDto {
 	
 	private String id;
 	private String email;
+	private String pw;
 	
 	
 }
