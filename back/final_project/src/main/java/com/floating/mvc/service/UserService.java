@@ -1,5 +1,9 @@
 package com.floating.mvc.service;
 
-public class UserService {
+import org.springframework.http.ResponseEntity;
 
+import com.floating.mvc.dto.response.ResponseDto;
+
+public interface UserService {
+	ResponseEntity<ResponseDto> insertUser(User user);
 }

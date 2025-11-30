@@ -1,5 +1,7 @@
 package com.floating.mvc.dao;
 
-public class UserDao {
+import org.springframework.boot.autoconfigure.security.SecurityProperties.User;
 
+public interface UserDao {
+	int insertUser(User user);
 }
