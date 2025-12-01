@@ -31,9 +31,9 @@
 	</properties>
 	<dependencies>
 	    <dependency>
-	        <groupId>org.springframework.boot</groupId>
-	        <artifactId>spring-boot-starter-webmvc</artifactId>
-	    </dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-web</artifactId>
+		</dependency>
 	
 	    <dependency>
 	        <groupId>org.springframework.boot</groupId>
@@ -66,6 +66,15 @@
 	        <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
 	        <version>2.6.0</version>
 	    </dependency>
+	    
+	    <!-- spring ai 관련 의존성 -->
+	    <dependency>
+	        <groupId>org.springframework.ai</groupId>
+	        <artifactId>spring-ai-google-gemini-spring-boot-starter</artifactId>
+	        <version>0.8.1</version>
+	    </dependency>
+	
+	    
 	
 	    <dependency>
 	        <groupId>org.projectlombok</groupId>
@@ -87,6 +96,17 @@
 		    <scope>provided</scope>
 		</dependency>
 	</dependencies>
+	
+	<repositories>
+	    <repository>
+	        <id>spring-milestones</id>
+	        <name>Spring Milestones</name>
+	        <url>https://repo.spring.io/milestone</url>
+	        <snapshots>
+	            <enabled>false</enabled>
+	        </snapshots>
+	    </repository>
+	</repositories>
 
 	<build>
 		<plugins>
@@ -96,5 +116,7 @@
 			</plugin>
 		</plugins>
 	</build>
+	
+	
 
 </project>
