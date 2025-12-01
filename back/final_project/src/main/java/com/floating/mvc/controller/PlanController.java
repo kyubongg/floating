@@ -13,9 +13,6 @@ import lombok.RequiredArgsConstructor;
 public class PlanController {
 	
 	private final PlanService planService;
-	
-	public PlanController(PlanService planService) {
-		this.planService = planService;
-	}
+
 	
 }
