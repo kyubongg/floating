@@ -13,6 +13,7 @@ import lombok.Setter;
 @AllArgsConstructor
 public class PlanRequestDto {
 	
+	private int userPk;
 	private Date date;
 	private String category;
 	private String detail;

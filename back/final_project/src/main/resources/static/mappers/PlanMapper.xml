@@ -4,9 +4,17 @@
 <mapper namespace="com.floating.mvc.dao.PlanDao">
 
 	<!-- Plan을 추가한다. -->
-	<insert id="insertPlan" parameterType="PlanRequestDto">
-		INSERT INTO plan(date, category, detail, time, complete_date, shifted, user_pk)
-		VALUES (#{date}, #{category}, #{detail}, #{time}, #{complete_date}, #{shifted}, #{user_pk})
+	<insert id="insertPlan">
+		INSERT INTO plan(date, category, detail, time, complete_date, shifted, id)
+		VALUES (
+			#{plan.date}, 
+			#{plan.category}, 
+			#{plan.detail}, 
+			#{plan.time}, 
+			#{plan.completeDate}, 
+			#{plan.shifted}, 
+			#{userId}
+		)
 	</insert>
 
 	<!-- Plan 정보 전체를 조회한다. -->
@@ -17,8 +25,9 @@
 	
 	<!-- Plan 정보 일부를 조회한다. -->
 	<select id="selectPlan" resultType="PlanRequestDto">
-		SELECT * FROM plan
-		WHERE user_pk = #{userId} AND date = #{date}
+		SELECT p.* FROM plan p
+		JOIN user u ON p.user_pk = u.user_pk
+		WHERE u.id = #{userId} AND p.date = #{date}
 	</select>
 	
 	<!-- Plan 정보를 수정한다. -->
@@ -29,8 +38,8 @@
 			category = #{category},
 			detail = #{detail},
 			time = #{time},
-			complete_date = #{complete_date},
+			complete_date = #{completeDate},
 			shifted = #{shifted}
-		WHERE userId = #{userId}
+		WHERE user_pk = #{userPk}
 	</update>
 </mapper>

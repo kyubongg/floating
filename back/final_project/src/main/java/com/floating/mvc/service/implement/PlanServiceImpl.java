@@ -37,7 +37,12 @@ public class PlanServiceImpl implements PlanService {
 			// userId를 이용해 계획을 조회
 			PlanRequestDto plan = planDao.selectPlan(userId, dto.getDate());
 			
-			int result = planDao.updatePlan(plan, userId);
+			System.out.println(plan.getUserPk());
+			System.out.println(plan.getDate());
+			System.out.println(plan.getTime());
+			
+			System.out.println(dto.getDate());
+			int result = planDao.updatePlan(dto);
 			
 			if(result == 0) return ResponseDto.databaseError();
 			
