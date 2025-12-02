@@ -9,6 +9,8 @@ public interface ResponseCode {
     // HTTP/1.1 400 Bad Request
 	String NO_EXIST_USER = "NU";
 	
+	String NO_EXIST_PLAN = "NP";
+	
 	// ============================================== //
 	// HTTP/1.1 500 Internal Server Error
     String DATABASE_ERROR = "DBE";

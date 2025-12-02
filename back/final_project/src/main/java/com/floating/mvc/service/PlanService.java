@@ -7,5 +7,7 @@ import com.floating.mvc.dto.response.ResponseDto;
 
 public interface PlanService {
 	
-	ResponseEntity<ResponseDto> insertPlan(PlanRequestDto dto);
+	ResponseEntity<ResponseDto> insertPlan(PlanRequestDto dto, String userId);
+	ResponseEntity<ResponseDto> updatePlan(PlanRequestDto dto, String userId);
+	
 }
