@@ -23,13 +23,28 @@ public class ResponseDto {
 		return ResponseEntity.status(status).body(body);
 	}
 	
+	
+	// ============================================== //
+    // HTTP/1.1 400 Bad Request
+	
 	public static ResponseEntity<ResponseDto> noExistUser() {
         ResponseDto body = new ResponseDto(ResponseCode.NO_EXIST_USER, ResponseMessage.NO_EXIST_USER);
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(body);
     }
 	
+	public static ResponseEntity<ResponseDto> noExistPlan() {
+        ResponseDto body = new ResponseDto(ResponseCode.NO_EXIST_PLAN, ResponseMessage.NO_EXIST_PLAN);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(body);
+    }
+	
+	
+	// ============================================== //
+    // HTTP/1.1 500 Internal Server Error
+	
 	public static ResponseEntity<ResponseDto> databaseError() {
         ResponseDto body = new ResponseDto(ResponseCode.DATABASE_ERROR, ResponseMessage.DATABASE_ERROR);
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(body);
     }
+	
+	
 }
