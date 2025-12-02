@@ -6,8 +6,27 @@
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
 		<version>3.5.7</version>
-		<relativePath/> <!-- lookup parent from repository -->
-	</parent>
+		<relativePath/> </parent>
+	<repositories>
+	    <repository>
+	        <id>spring-milestones</id>
+	        <name>Spring Milestones</name>
+	        <url>https://repo.spring.io/milestone</url>
+	        <snapshots>
+	            <enabled>false</enabled>
+	        </snapshots>
+	    </repository>
+	</repositories>
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.springframework.ai</groupId>
+                <artifactId>spring-ai-bom</artifactId>
+                <version>1.1.0</version> <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
 	<groupId>com.floating</groupId>
 	<artifactId>final_project</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
@@ -34,11 +53,18 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
 		</dependency>
-		<dependency>
+        
+        <dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-webflux</artifactId>
+		</dependency>
+	
+        <dependency>
 			<groupId>org.mybatis.spring.boot</groupId>
 			<artifactId>mybatis-spring-boot-starter</artifactId>
 			<version>3.0.5</version>
 		</dependency>
+	
 
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -62,7 +88,6 @@
 			<version>3.0.5</version>
 			<scope>test</scope>
 		</dependency>
-		<!-- https://mvnrepository.com/artifact/org.springdoc/springdoc-openapi-starter-webmvc-ui -->
 		<dependency>
 		    <groupId>org.springdoc</groupId>
 		    <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
@@ -74,11 +99,20 @@
 	        <version>1.18.30</version>
 	        <scope>provided</scope>
 	    </dependency>
-	    <dependency>
-        <groupId>org.springframework.ai</groupId>
-        <artifactId>spring-ai-google-gemini-spring-boot-starter</artifactId>
-        <version>1.0.0</version> </dependency>
-	</dependencies>
+	    <!-- https://mvnrepository.com/artifact/org.springframework.ai/spring-ai-vertex-ai-gemini -->
+		<dependency>
+		    <groupId>org.springframework.ai</groupId>
+		    <artifactId>spring-ai-vertex-ai-gemini</artifactId>
+		    <version>1.1.0</version>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/org.springframework.ai/spring-ai-client-chat -->
+		<dependency>
+		    <groupId>org.springframework.ai</groupId>
+		    <artifactId>spring-ai-client-chat</artifactId>
+		    <version>1.1.0</version>
+		</dependency>
+		
+		</dependencies>
 
 	<build>
 		<plugins>
