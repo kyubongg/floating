@@ -1,6 +1,5 @@
 package com.floating.mvc.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -19,8 +18,6 @@ import lombok.RequiredArgsConstructor;
 public class UserController {
 	
 	private final UserService userService;
-	
-
 	
 	@PostMapping("/signup")
 	public ResponseEntity<ResponseDto> insertUser(

@@ -3,5 +3,34 @@
 	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.floating.mvc.dao.UserDao">
 
-	<!-- User 정보를 조회한다. -->
+	<!-- User 등록 (회원가입)을 진행한다. -->
+	<insert id="insertUser">
+		INSERT INTO user(id, email, pw, name, birth, gender, height, weight, mbti_pk)
+		VALUES (
+			#{id},
+			#{email},
+			#{pw},
+			#{name},
+			#{birth},
+			#{gender},
+			#{height},
+			#{weight},
+			0
+		)
+	</insert>
+	
+	<!-- 아이디 중복 체크를 진행한다. -->
+    <select id="existById" parameterType="string" resultType="boolean">
+        SELECT COUNT(*) > 0
+        FROM user
+        WHERE id = #{id}
+    </select>
+
+    <!-- 이메일 중복 체크를 진행한다. -->
+    <select id="existByEmail" parameterType="string" resultType="boolean">
+        SELECT COUNT(*) > 0
+        FROM user
+        WHERE email = #{email}
+    </select>
+
 </mapper>
