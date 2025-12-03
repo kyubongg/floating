@@ -11,13 +11,14 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class PlanRequestDto {
+public class PlanRegistRequestDto {
 	
-	private int planPk;
+	private int userPk;
 	private Date date;
 	private String category;
 	private String detail;
 	private int time;
 	private Date completeDate;
 	private int shifted;
+	
 }
