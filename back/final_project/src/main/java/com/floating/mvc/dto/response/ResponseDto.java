@@ -32,6 +32,16 @@ public class ResponseDto {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(body);
     }
 	
+	public static ResponseEntity<ResponseDto> existUserId() {
+		ResponseDto body = new ResponseDto(ResponseCode.EXIST_USER_ID, ResponseMessage.EXIST_USER_ID);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(body);
+	}
+	
+	public static ResponseEntity<ResponseDto> existUserEmail() {
+		ResponseDto body = new ResponseDto(ResponseCode.EXIST_USER_EMAIL, ResponseMessage.EXIST_USER_EMAIL);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(body);
+	}
+	
 	public static ResponseEntity<ResponseDto> noExistPlan() {
         ResponseDto body = new ResponseDto(ResponseCode.NO_EXIST_PLAN, ResponseMessage.NO_EXIST_PLAN);
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(body);
@@ -45,6 +55,5 @@ public class ResponseDto {
         ResponseDto body = new ResponseDto(ResponseCode.DATABASE_ERROR, ResponseMessage.DATABASE_ERROR);
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(body);
     }
-	
 	
 }

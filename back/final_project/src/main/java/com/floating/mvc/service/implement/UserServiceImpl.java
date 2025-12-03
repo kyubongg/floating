@@ -9,22 +9,33 @@ import com.floating.mvc.dto.request.user.SignupRequestDto;
 import com.floating.mvc.dto.response.ResponseDto;
 import com.floating.mvc.service.UserService;
 
+import lombok.RequiredArgsConstructor;
+
 @Service
+@RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
 
 	private final UserDao userDao;
-	
-	public UserServiceImpl(UserDao userDao) {
-		this.userDao = userDao;
-	}
 	
 	@Override
 	public ResponseEntity<ResponseDto> insertUser(SignupRequestDto user) {
 		
 		try {
+			// 아이디 중복 검사
+			String userId = user.getId();
+			boolean existUserId = userDao.existById(userId);
+			if (existUserId)
+				return ResponseDto.existUserId();
+			
+			// 이메일 중복 검사
+			String userEmail = user.getEmail();
+			boolean existUserEmail = userDao.existByEmail(userEmail);
+			if (existUserEmail)
+				return ResponseDto.existUserEmail();
+			
 			int result = userDao.insertUser(user);
 			
-			if(result == 1) {
+			if (result == 1) {
 				return ResponseDto.success(HttpStatus.CREATED);
 			}
 		}catch(Exception e) {
