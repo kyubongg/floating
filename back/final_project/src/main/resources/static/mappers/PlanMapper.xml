@@ -20,14 +20,14 @@
 	<!-- Plan 정보 전체를 조회한다. -->
 	<select id="selectAll">
 		SELECT * FROM plan
-		WHERE user_pk = #{userId}
+		WHERE user_id = #{userId}
 	</select>
 	
 	<!-- Plan 정보 일부를 조회한다. -->
 	<select id="selectPlan" resultType="PlanRequestDto">
-		SELECT p.* FROM plan p
-		JOIN user u ON p.user_pk = u.user_pk
-		WHERE u.id = #{userId} AND p.date = #{date}
+		SELECT * FROM plan 
+		WHERE plan_pk = #{planPk} AND user_id = #{userId}
+		
 	</select>
 	
 	<!-- Plan 정보를 수정한다. -->
@@ -40,6 +40,13 @@
 			time = #{time},
 			complete_date = #{completeDate},
 			shifted = #{shifted}
-		WHERE user_pk = #{userPk}
+		WHERE plan_pk = #{planPk}
+	</update>
+	
+	<update id="postPlanCompl">
+		UPDATE plan
+		SET
+			complete_date = #{completeDate}
+		WHERE plan_pk = #{planPk}
 	</update>
 </mapper>

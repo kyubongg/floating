@@ -12,7 +12,7 @@ public interface ResponseCode {
     String EXIST_USER_EMAIL = "EEM";
 	
 	String NO_EXIST_PLAN = "NP";
-	
+	String NO_EXIST_PLANLIST = "NPL";
 	// ============================================== //
 	// HTTP/1.1 500 Internal Server Error
     String DATABASE_ERROR = "DBE";

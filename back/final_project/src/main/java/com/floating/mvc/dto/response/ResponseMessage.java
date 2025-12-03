@@ -12,7 +12,7 @@ public interface ResponseMessage {
     String EXIST_USER_EMAIL = "이미 존재하는 이메일입니다.";
 	
 	String NO_EXIST_PLAN = "존재하지 않는 계획입니다.";
-	
+	String NO_EXIST_PLANLIST = "계획이 하나도 없습니다.";
 	// ============================================== //
     // HTTP/1.1 500 Internal Server Error
     String DATABASE_ERROR = "DataBase Error";
