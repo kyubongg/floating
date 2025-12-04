@@ -4,7 +4,7 @@
 <mapper namespace="com.floating.mvc.dao.PlanDao">
 
 	<!-- Plan을 추가한다. -->
-	<insert id="insertPlan">
+	<insert id="insertPlan" useGeneratedKeys="true" keyProperty="planPk">
 		INSERT INTO plan(date, category, detail, time, complete_date, shifted, id)
 		VALUES (
 			#{plan.date}, 

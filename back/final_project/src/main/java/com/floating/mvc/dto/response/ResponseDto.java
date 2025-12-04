@@ -47,6 +47,10 @@ public class ResponseDto {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(body);
     }
 	
+	public static ResponseEntity<ResponseDto> noExistReview() {
+        ResponseDto body = new ResponseDto(ResponseCode.NO_EXIST_REVIEW, ResponseMessage.NO_EXIST_REVIEW);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(body);
+    }
 	
 	// ============================================== //
     // HTTP/1.1 500 Internal Server Error

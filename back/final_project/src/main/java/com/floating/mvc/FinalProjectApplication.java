@@ -5,7 +5,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-@MapperScan("com.floating.mvc.dao")
+//@MapperScan("com.floating.mvc.dao")
 public class FinalProjectApplication {
 
 	public static void main(String[] args) {
