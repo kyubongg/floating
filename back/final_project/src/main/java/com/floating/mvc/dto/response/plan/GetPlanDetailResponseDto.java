@@ -23,14 +23,14 @@ public class GetPlanDetailResponseDto extends ResponseDto {
 	private Date completeDate;
 	private int shifted;
 	
-	private GetPlanDetailResponseDto(PlanRequestDto plan) {
+	private GetPlanDetailResponseDto(PlanRequestDto dto) {
 		
-		this.date = plan.getCompleteDate();
-		this.category = plan.getCategory();
-		this.detail = plan.getDetail();
-		this.time = plan.getTime();
-		this.completeDate = plan.getCompleteDate();
-		this.shifted = plan.getShifted();
+		this.date = dto.getCompleteDate();
+		this.category = dto.getCategory();
+		this.detail = dto.getDetail();
+		this.time = dto.getTime();
+		this.completeDate = dto.getCompleteDate();
+		this.shifted = dto.getShifted();
 	}
 	
 	public static ResponseEntity<GetPlanDetailResponseDto> success(PlanRequestDto dto){

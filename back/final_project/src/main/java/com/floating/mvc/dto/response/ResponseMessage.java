@@ -13,6 +13,8 @@ public interface ResponseMessage {
 	
 	String NO_EXIST_PLAN = "존재하지 않는 계획입니다.";
 	String NO_EXIST_PLANLIST = "계획이 하나도 없습니다.";
+	
+	String NO_EXIST_REVIEW = "존재하지 않는 리뷰입니다.";
 	// ============================================== //
     // HTTP/1.1 500 Internal Server Error
     String DATABASE_ERROR = "DataBase Error";

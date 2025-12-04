@@ -10,10 +10,10 @@ import com.floating.mvc.dto.request.plan.PlanRequestDto;
 public interface PlanDao {
 	// 계획 작성
 	int insertPlan(
-			@Param("plan") PlanRegistRequestDto plan,   // DTO를 'plan'이라는 이름으로 바인딩
+			@Param("plan") PlanRegistRequestDto dto,  
 	        @Param("userId") String userId);
 	// 계획 수정
-	int updatePlan(PlanRequestDto plan);      
+	int updatePlan(PlanRequestDto dto);      
 	// 계획 전체 조회
 	List<PlanRequestDto> selectAll(String userId);
 	// 계획 상세 조회

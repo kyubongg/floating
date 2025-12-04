@@ -13,6 +13,9 @@ public interface ResponseCode {
 	
 	String NO_EXIST_PLAN = "NP";
 	String NO_EXIST_PLANLIST = "NPL";
+	
+	String NO_EXIST_REVIEW = "NR";
+	
 	// ============================================== //
 	// HTTP/1.1 500 Internal Server Error
     String DATABASE_ERROR = "DBE";

@@ -16,13 +16,13 @@ public class GetPlanListResponseDto extends ResponseDto  {
 
 	private List<PlanRequestDto> planList;
 		
-	private GetPlanListResponseDto(List<PlanRequestDto> planList) {
-		this.planList = planList;
+	private GetPlanListResponseDto(List<PlanRequestDto> dto) {
+		this.planList = dto;
 	}
 	
-	public static ResponseEntity<GetPlanListResponseDto> success(List<PlanRequestDto> planList){
+	public static ResponseEntity<GetPlanListResponseDto> success(List<PlanRequestDto> dto){
 		
-		GetPlanListResponseDto body = new GetPlanListResponseDto(planList);
+		GetPlanListResponseDto body = new GetPlanListResponseDto(dto);
 		
 		return ResponseEntity.status(HttpStatus.OK).body(body);
 	}
