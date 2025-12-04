@@ -5,6 +5,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import com.floating.mvc.dao.UserDao;
+import com.floating.mvc.dto.request.plan.PlanRequestDto;
+import com.floating.mvc.dto.request.user.PutUserMbtiRequestDto;
+import com.floating.mvc.dto.request.user.PutUserRequestDto;
 import com.floating.mvc.dto.request.user.SignupRequestDto;
 import com.floating.mvc.dto.request.user.UserRequestDto;
 import com.floating.mvc.dto.response.ResponseDto;
@@ -37,9 +40,9 @@ public class UserServiceImpl implements UserService {
 			
 			int result = userDao.insertUser(dto);
 			
-			if (result == 1) {
+			if (result == 1) 
 				return ResponseDto.success(HttpStatus.CREATED);
-			}
+
 		}catch(Exception e) {
 			e.printStackTrace();
 			return ResponseDto.databaseError();
@@ -57,7 +60,8 @@ public class UserServiceImpl implements UserService {
 			
 			dto = userDao.selectUser(userId);
 			
-			if(dto == null) return ResponseDto.noExistUser();
+			if(dto == null) 
+				return ResponseDto.noExistUser();
 			
 		}
 		catch(Exception e) {
@@ -66,6 +70,42 @@ public class UserServiceImpl implements UserService {
 		}
 		
 		return GetUserDetailResponseDto.success(dto);
+	}
+
+	@Override
+	public ResponseEntity<ResponseDto> updateUser(PutUserRequestDto dto, 
+			String userId) {
+		try {
+			
+			int result = userDao.updateUser(dto);
+			
+			if(result == 0) 
+				return ResponseDto.databaseError();
+			
+		}catch(Exception e) {
+			e.printStackTrace();
+			return ResponseDto.databaseError();
+		}
+		
+		return ResponseDto.success(HttpStatus.OK);
+	}
+
+	@Override
+	public ResponseEntity<ResponseDto> updateUserMbti(PutUserMbtiRequestDto dto, 
+			String userId) {
+		try {
+			
+			int result = userDao.updateUserMbti(dto);
+			
+			if(result == 0) 
+				return ResponseDto.databaseError();
+			
+		}catch(Exception e) {
+			e.printStackTrace();
+			return ResponseDto.databaseError();
+		}
+		
+		return ResponseDto.success(HttpStatus.OK);
 	}
 	
 }
