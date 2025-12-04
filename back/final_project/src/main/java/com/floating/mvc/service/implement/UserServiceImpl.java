@@ -6,7 +6,9 @@ import org.springframework.stereotype.Service;
 
 import com.floating.mvc.dao.UserDao;
 import com.floating.mvc.dto.request.user.SignupRequestDto;
+import com.floating.mvc.dto.request.user.UserRequestDto;
 import com.floating.mvc.dto.response.ResponseDto;
+import com.floating.mvc.dto.response.user.GetUserDetailResponseDto;
 import com.floating.mvc.service.UserService;
 
 import lombok.RequiredArgsConstructor;
@@ -18,22 +20,22 @@ public class UserServiceImpl implements UserService {
 	private final UserDao userDao;
 	
 	@Override
-	public ResponseEntity<ResponseDto> insertUser(SignupRequestDto user) {
+	public ResponseEntity<ResponseDto> signUpUser(SignupRequestDto dto) {
 		
 		try {
 			// 아이디 중복 검사
-			String userId = user.getId();
+			String userId = dto.getId();
 			boolean existUserId = userDao.existById(userId);
 			if (existUserId)
 				return ResponseDto.existUserId();
 			
 			// 이메일 중복 검사
-			String userEmail = user.getEmail();
+			String userEmail = dto.getEmail();
 			boolean existUserEmail = userDao.existByEmail(userEmail);
 			if (existUserEmail)
 				return ResponseDto.existUserEmail();
 			
-			int result = userDao.insertUser(user);
+			int result = userDao.insertUser(dto);
 			
 			if (result == 1) {
 				return ResponseDto.success(HttpStatus.CREATED);
@@ -44,6 +46,26 @@ public class UserServiceImpl implements UserService {
 		}
 		
 		return null;
+	}
+
+	@Override
+	public ResponseEntity<? super GetUserDetailResponseDto> getUserDetail (String userId) {
+
+		UserRequestDto dto = null;
+		
+		try {
+			
+			dto = userDao.selectUser(userId);
+			
+			if(dto == null) return ResponseDto.noExistUser();
+			
+		}
+		catch(Exception e) {
+			e.printStackTrace();
+			return ResponseDto.databaseError();
+		}
+		
+		return GetUserDetailResponseDto.success(dto);
 	}
 	
 }

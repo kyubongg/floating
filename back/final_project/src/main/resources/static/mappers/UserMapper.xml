@@ -32,5 +32,22 @@
         FROM user
         WHERE email = #{email}
     </select>
+    
+    <!-- 유저 정보를 조회한다. -->
+	<select id="selectUser" parameterType="String" resultType="UserRequestDto">
+	    SELECT 
+	        u.id,
+	        u.email,
+	        u.pw,
+	        u.name,
+	        u.birth,
+	        u.gender,
+	        u.height,
+	        u.weight,
+	        m.name AS mbtiName
+	    FROM user u
+	    LEFT JOIN mbti m ON u.mbti_pk = m.mbti_pk
+	    WHERE u.id = #{userId}
+	</select>
 
 </mapper>
