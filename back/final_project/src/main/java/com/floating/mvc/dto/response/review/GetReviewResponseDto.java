@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
+import com.floating.mvc.dto.request.review.ImageInfoRequestDto;
 import com.floating.mvc.dto.response.ResponseDto;
 
 import lombok.AllArgsConstructor;
@@ -20,7 +21,7 @@ public class GetReviewResponseDto extends ResponseDto {
 	
 	private int reviewPk;
 	private String content;
-	private List<ImageInfoDto> imageUrls;
+	private List<ImageInfoRequestDto> imageUrls;
 	
 	
 	public static ResponseEntity<GetReviewResponseDto> success(GetReviewResponseDto dto){
