@@ -97,7 +97,11 @@ public class PlanServiceImpl implements PlanService {
 	@Override
 	public ResponseEntity<? super GetPlanDetailResponseDto> getPlanDetail(int planPk, String userId) {
 		
+		// PlanEntity <= 테이블에 있는 모든 컬럼을 가지고 있는 클래스
 		PlanRequestDto plan = null;
+		
+		// 그리고 유지보수 쉽게 하기 위해서
+		//  
 		
 		try {
 			

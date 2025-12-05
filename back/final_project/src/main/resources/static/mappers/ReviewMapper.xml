@@ -29,4 +29,43 @@
 		ON r.review_pk = i.review_pk
 		WHERE r.review_pk = #{reviewPk}
 	</select>
+	
+	<!-- 리뷰 수정 -->
+	<update id="updateReview">
+		UPDATE review
+		SET
+			content = #{content}
+		WHERE review_pk = #{reviewPk}
+	</update>
+	
+	<!-- review_pk에 해당하는 이미지 찾기 -->
+	<select id="selectImgPksByReviewPk">
+		SELECT img_pk FROM img
+		WHERE review_pk = #{reviewPk}
+	</select>
+	
+	<!-- review_pk에 해당하는 이미지 중에 수정 요청 dto에 없는 이미지 삭제 -->
+	<delete id="deleteImgsByPks" parameterType="java.util.List">
+		DELETE FROM img
+		WHERE img_pk IN
+		<foreach collection="list" item="imgPk" open="(" separator="," close=")">
+			#{imgPk}
+		</foreach>
+	</delete>
+	
+	<!-- 수정한 리뷰 dto에 있는 이미지들 생성 -->
+	<insert id="insertNewImages">
+		INSERT INTO img(img_path, review_pk)
+		VALUES 
+		<foreach collection="newImgs" item="img" separator=",">
+			(#{img.imgPath}, #{reviewPk})
+		</foreach>
+	</insert>
+	
+	
+	
+	
+	
+	
+	
 </mapper>

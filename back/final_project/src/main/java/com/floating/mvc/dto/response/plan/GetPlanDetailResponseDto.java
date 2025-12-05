@@ -24,7 +24,6 @@ public class GetPlanDetailResponseDto extends ResponseDto {
 	private int shifted;
 	
 	private GetPlanDetailResponseDto(PlanRequestDto dto) {
-		
 		this.date = dto.getCompleteDate();
 		this.category = dto.getCategory();
 		this.detail = dto.getDetail();
