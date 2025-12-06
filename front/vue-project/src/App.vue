@@ -2,16 +2,16 @@
 
   <div>
     
-    <h2>App.vue</h2>
-    <hr>
-    <MyComponent/>
+    <StartView/>
     
   </div>
 </template>
 
 
 <script setup>
-  import MyComponent from './components/MyComponent.vue';
+import StartView from './view/StartView.vue';
+
+  
 </script>
 
 
