@@ -10,6 +10,7 @@ public interface ResponseCode {
 	String NO_EXIST_USER = "NU";
     String EXIST_USER_ID = "EID";
     String EXIST_USER_EMAIL = "EEM";
+    String VALIDATION_FAIL = "VF";
 	
 	String NO_EXIST_PLAN = "NP";
 	String NO_EXIST_PLANLIST = "NPL";

@@ -1,12 +1,14 @@
 package com.floating.mvc.controller;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.floating.mvc.dto.request.user.DeleteUserRequestDto;
 import com.floating.mvc.dto.request.user.PutUserMbtiRequestDto;
 import com.floating.mvc.dto.request.user.PutUserRequestDto;
 import com.floating.mvc.dto.request.user.SignupRequestDto;
@@ -53,6 +55,15 @@ public class UserController {
 			String userId){
 		
 		ResponseEntity<ResponseDto> response = userService.updateUserMbti(dto, userId);
+		return response;
+	}
+	
+	@DeleteMapping("/")
+	public ResponseEntity<ResponseDto> deleteUser(
+			@RequestBody DeleteUserRequestDto dto,
+			String userId){
+		
+		ResponseEntity<ResponseDto> response = userService.deleteUser(dto, userId);
 		return response;
 	}
 	

@@ -2,10 +2,11 @@ package com.floating.mvc.service.implement;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.floating.mvc.dao.UserDao;
-import com.floating.mvc.dto.request.plan.PlanRequestDto;
+import com.floating.mvc.dto.request.user.DeleteUserRequestDto;
 import com.floating.mvc.dto.request.user.PutUserMbtiRequestDto;
 import com.floating.mvc.dto.request.user.PutUserRequestDto;
 import com.floating.mvc.dto.request.user.SignupRequestDto;
@@ -21,6 +22,7 @@ import lombok.RequiredArgsConstructor;
 public class UserServiceImpl implements UserService {
 
 	private final UserDao userDao;
+	private final BCryptPasswordEncoder passwordEncoder;
 	
 	@Override
 	public ResponseEntity<ResponseDto> signUpUser(SignupRequestDto dto) {
@@ -38,8 +40,11 @@ public class UserServiceImpl implements UserService {
 			if (existUserEmail)
 				return ResponseDto.existUserEmail();
 			
-			int result = userDao.insertUser(dto);
+			// 비밀번호 암호화
+			String encodedPassword = passwordEncoder.encode(dto.getPw());
+			dto.setPw(encodedPassword);
 			
+			int result = userDao.insertUser(dto);
 			if (result == 1) 
 				return ResponseDto.success(HttpStatus.CREATED);
 
@@ -59,7 +64,6 @@ public class UserServiceImpl implements UserService {
 		try {
 			
 			dto = userDao.selectUser(userId);
-			
 			if(dto == null) 
 				return ResponseDto.noExistUser();
 			
@@ -76,9 +80,16 @@ public class UserServiceImpl implements UserService {
 	public ResponseEntity<ResponseDto> updateUser(PutUserRequestDto dto, 
 			String userId) {
 		try {
-			
+			// 비밀번호 확인
+		    boolean isPasswordVaild = verifyPassword(userId, dto.getPw());
+		    if (!isPasswordVaild)
+		    	return ResponseDto.validationFail();
+		    
+		    // 비밀번호 암호화
+		    String encodedPassword = passwordEncoder.encode(dto.getPw());
+		    dto.setPw(encodedPassword);
+		    
 			int result = userDao.updateUser(dto);
-			
 			if(result == 0) 
 				return ResponseDto.databaseError();
 			
@@ -96,7 +107,6 @@ public class UserServiceImpl implements UserService {
 		try {
 			
 			int result = userDao.updateUserMbti(dto);
-			
 			if(result == 0) 
 				return ResponseDto.databaseError();
 			
@@ -107,5 +117,32 @@ public class UserServiceImpl implements UserService {
 		
 		return ResponseDto.success(HttpStatus.OK);
 	}
+
+	@Override
+	public ResponseEntity<ResponseDto> deleteUser(DeleteUserRequestDto dto, String userId) {
+
+		try {
+			// 비밀번호 확인
+		    boolean isPasswordVaild = verifyPassword(userId, dto.getPw());
+		    if (!isPasswordVaild)
+		    	return ResponseDto.validationFail();
+
+			int result = userDao.deleteUser(userId);
+			if (result == 0) 
+				return ResponseDto.databaseError();
+			
+		}catch(Exception e) {
+			e.printStackTrace();
+			return ResponseDto.databaseError();
+		}
+		
+		return ResponseDto.success(HttpStatus.OK);
+	}
+	
+    public boolean verifyPassword(String userId, String rawPassword) {
+        String encodedPassword = userDao.selectPasswordById(userId);
+        
+        return passwordEncoder.matches(rawPassword, encodedPassword);
+    }
 	
 }

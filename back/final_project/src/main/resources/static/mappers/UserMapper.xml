@@ -70,5 +70,18 @@
 			mbti_pk = #{mbtiPk}
 		WHERE id = #{id}
 	</update>
+	
+	<!-- User 삭제 (회원탈퇴)를 진행한다. -->
+	<delete id="deleteUser">
+		DELETE FROM user
+		WHERE id = #{id}
+	</delete>
+	
+	<!-- 비밀번호를 확인한다. -->
+	<select id="selectPasswordById" parameterType="String" resultType="String">
+		SELECT pw
+	    FROM user 
+	    WHERE id = #{userId}
+	</select>
 
 </mapper>

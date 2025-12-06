@@ -9,6 +9,8 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class GetUserDetailRequestDto {
-	private String userId;
+public class DeleteUserRequestDto {
+	
+	private String id;
+	private String pw;
 }
