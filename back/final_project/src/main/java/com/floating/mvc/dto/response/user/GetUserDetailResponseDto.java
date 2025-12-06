@@ -17,7 +17,6 @@ public class GetUserDetailResponseDto extends ResponseDto {
 	
 	private String id;
 	private String email;
-	private String pw;
 	private String name;
     private Date birth;
     private char gender;
@@ -28,7 +27,6 @@ public class GetUserDetailResponseDto extends ResponseDto {
     private GetUserDetailResponseDto(UserRequestDto dto) {
     	this.id = dto.getId();
     	this.email = dto.getEmail();
-    	this.pw = dto.getPw();
     	this.name = dto.getName();
     	this.birth = dto.getBirth();
     	this.gender = dto.getGender();

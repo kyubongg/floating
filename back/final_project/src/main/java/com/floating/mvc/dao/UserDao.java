@@ -8,7 +8,7 @@ import com.floating.mvc.dto.request.user.UserRequestDto;
 public interface UserDao {
 	
 	//회원가입 
-	int insertUser(SignupRequestDto user);
+	int insertUser(SignupRequestDto dto);
 	
 	//중복 체크
     boolean existById(String id);
@@ -22,5 +22,11 @@ public interface UserDao {
     
     //회원 Mbti 정보 수정
     int updateUserMbti(PutUserMbtiRequestDto dto);
+    
+    //회원 탈퇴
+    int deleteUser(String userId);
+    
+    //비밀번호 확인
+    String selectPasswordById(String id);
     
 }
