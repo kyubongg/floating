@@ -1,26 +1,37 @@
 package com.floating.mvc.service.implement;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import com.floating.mvc.dao.WbtiDao;
 import com.floating.mvc.dto.request.wbti.PostWbtiRequestDto;
 import com.floating.mvc.dto.response.ResponseDto;
 import com.floating.mvc.service.WbtiService;
 
+import lombok.RequiredArgsConstructor;
+
 @Service
+@RequiredArgsConstructor
 public class WbtiServiceImpl implements WbtiService {
 
+	private final WbtiDao wbtiDao;
+	
 	@Override
-	public ResponseEntity insertWbti(PostWbtiRequestDto dto, String userId) {
+	public ResponseEntity<ResponseDto> insertWbti(PostWbtiRequestDto dto, String userId) {
 		
 		try {
+			
+			int result = wbtiDao.insertWbti(dto);
+			if(result == 0) 
+				return ResponseDto.databaseError();
 			
 		}catch(Exception e) {
 			e.printStackTrace();
 			return ResponseDto.databaseError();
 		}
 		
-		return null;
+		return ResponseDto.success(HttpStatus.OK);
 	}
 
 }

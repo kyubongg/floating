@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.floating.mvc.dao.WbtiDao">
+
+	<!-- Plan을 추가한다. -->
+	<insert id="insertWbti">
+		INSERT INTO wbti(social_type, motivation_type, execution_type, activity_type, user_id)
+		VALUES (
+			#{socialType}, 
+			#{motivationType}, 
+			#{executionType}, 
+			#{activityType},
+			#{userId}
+		)
+	</insert>
+
+</mapper>
