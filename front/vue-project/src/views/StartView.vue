@@ -2,7 +2,7 @@
   <div class="main-page"> 
 
     <div class="logo-area">
-      <img src="../assets/imgs/haedal-main.jpeg" alt="FLOATING 로고 수달 이미지" class="logo-area__image"> 
+      <img src="../assets/imgs/haedal-main.png" alt="FLOATING 로고 수달 이미지" class="logo-area__image"> 
       <div class="logo-area__title">FLOATING</div>
     </div>
 
@@ -58,8 +58,8 @@ const goToLogin = () => {
 }
 
 .logo-area__image {
-  width: 99px; /* 원본 크기 유지 */
-  height: 111px; /* 원본 크기 유지 */
+  width: 4.7625rem; /* 원본 크기 유지 762px */
+  height: 5.73125rem; /* 원본 크기 유지 917px */
   margin-bottom: 10px;
   /* (주의: 실제 이미지 URL은 Vue 템플릿의 src 속성에 넣어야 합니다.) */
 }
