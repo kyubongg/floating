@@ -22,4 +22,6 @@ const api = axios.create({
   withCredentials: true, // 🔥 세션 인증을 위한 쿠키 포함 처리
 });
 
+
+
 export default api;

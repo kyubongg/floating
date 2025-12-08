@@ -1,22 +1,30 @@
 <template>
     <div class="main-page">
         <div class="logo-area">
-            <img class="logo-area__image"> 
-            <div class="logo-area__title"></div>
-            <span></span>
+            <img class="logo-area__image"src="../assets/imgs/haedal-main.jpeg" alt="FLOATING 로고 수달 이미지" > 
+            <div class="logo-area__title">EBTI 검사 시작하기</div>
+            <span>EBTI는 운동 성향을 측정하는 검사입니다.</span>
         </div>
         <div>
-            <button class="-item__button">회원가입</button> 
+            <button class="start-button" @click="goToWbtiTest">검사 시작</button> 
         </div>
     </div>
 </template>
 
 <script setup>
+import { useRouter } from 'vue-router';
 
+
+    const router = useRouter();
+
+    const goToWbtiTest = () => {
+        router.push({ name: 'wbtiTest' });
+    }
 </script>
 
 <style scoped>
 /* 전체 페이지 스타일 설정 */
+
 .main-page {
     /* 이미지와 같이 전체 배경색을 어두운 회색으로 설정 */
     background-color: #6C6C6C; /* 이미지 배경색과 유사하게 설정 */
@@ -26,7 +34,6 @@
     align-items: center;
     justify-content: center;
     text-align: center;
-    padding: 20px;
 }
 
 /* 로고 영역 (수달 이미지, 제목, 설명 텍스트 포함) */
@@ -34,8 +41,6 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    /* 중앙 정렬을 위해 padding-bottom 추가 */
-    margin-bottom: 40px; 
 }
 
 /* 수달 이미지 스타일 */
@@ -74,23 +79,7 @@
     margin-bottom: 50px; /* 버튼과의 간격 조정 */
 }
 
-
-/* 버튼 컨테이너 (회원가입 버튼이 들어있는 <div>) */
-/* 회원가입 버튼 대신 이미지와 동일하게 '검사 시작' 버튼을 중앙에 배치하도록 가정하고 수정 */
-/* 템플릿의 버튼 구조를 간소화하여 이미지처럼 단일 버튼만 남깁니다. */
-
-/* 기존 HTML 템플릿:
-   <div>
-       <button>
-           <button class="-item__button">회원가입</button> 
-       </button>
-   </div>
-   
-   => 버튼을 하나로 간소화하고 클래스명을 `start-button`으로 변경하여 사용하겠습니다.
-   <button class="start-button">검사 시작</button>
-*/
-
-/* 버튼 스타일 (이미지에서는 '검사 시작' 버튼) */
+/* 버튼 스타일 */
 .start-button {
     box-sizing: border-box;
     display: flex;
