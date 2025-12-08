@@ -2,6 +2,7 @@
 import { createRouter, createWebHistory } from "vue-router";
 
 // 페이지 컴포넌트
+import StartView from "../views/StartView.vue";
 import HomeView from "../views/HomeView.vue";
 import LoginView from "../views/LoginView.vue";
 import SignupView from "../views/SignupView.vue";
@@ -23,6 +24,11 @@ const router = createRouter({
   routes: [
     {
       path: "/",
+      name: "start",
+      component: StartView,
+    },
+    {
+      path: "/home",
       name: "home",
       component: HomeView,
       meta: { requiresAuth: true }, // 🔐 로그인 필요

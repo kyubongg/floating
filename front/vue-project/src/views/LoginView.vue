@@ -7,31 +7,38 @@
     - 로그인 실패 → auth.error에 에러 메시지 표시
   -->
   <div>
-    <h2>로그인</h2>
+    <div class="login-container">
+      <div class="login-card">
+        <h2 class="login-title">로그인</h2>
 
-    <form @submit.prevent="onSubmit">
-      <!-- 아이디 입력 -->
-      <div>
-        <label for="username">아이디</label><br />
-        <input id="username" v-model="username" type="text" />
+        <!-- 에러 메시지 -->
+        <p v-if="auth.error" class="error-message">
+          {{ auth.error }}
+        </p>
+
+        <form @submit.prevent="onSubmit">
+          <div class="input-group">
+            <div class="input-wrapper">
+              <label class="input-label">아이디</label>
+              <input type="id" class="input-field" v-model="id" required />
+            </div>
+
+            <div class="input-wrapper">
+              <label class="input-label">비밀번호</label>
+              <input type="password" class="input-field" v-model="password" required />
+            </div>
+          </div>
+
+          <button class="login-button">로그인</button>
+        </form>
+
+        <div class="find-links">
+          <a href="#" class="find-link">아이디 찾기</a>
+          <a href="#" class="find-link">비밀번호 찾기</a>
+        </div>
+
       </div>
-
-      <!-- 비밀번호 입력 -->
-      <div style="margin-top: 8px;">
-        <label for="password">비밀번호</label><br />
-        <input id="password" v-model="password" type="password" />
-      </div>
-
-      <!-- 로그인 버튼 -->
-      <div style="margin-top: 12px;">
-        <button type="submit" :disabled="auth.loading">로그인</button>
-      </div>
-
-      <!-- 로그인 실패 메시지 -->
-      <p v-if="auth.error" style="color: red; margin-top: 8px;">
-        {{ auth.error }}
-      </p>
-    </form>
+    </div>
   </div>
 </template>
 
@@ -50,7 +57,7 @@ const router = useRouter();
 const route = useRoute();
 
 // 폼 입력 데이터
-const username = ref("");
+const id = ref("");
 const password = ref("");
 
 // 로그인 폼 submit 이벤트 핸들러
@@ -58,16 +65,136 @@ const onSubmit = () => {
   // login()은 axios 요청을 포함하므로 Promise 반환됨
   auth
     .login({
-      username: username.value,
+      id: id.value,
       password: password.value,
     })
     .then(() => {
-      // redirect 파라미터가 있으면 해당 경로로 이동
-      const redirect = route.query.redirect || "/";
-      router.push(redirect);
+      router.push('/main');
     })
     .catch(() => {
       // 오류 메시지는 auth.error에 저장되므로 추가 처리 필요 없음
     });
 };
 </script>
+
+<style scoped>
+.login-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+}
+
+.login-card {
+  position: relative;
+  width: 20.0625rem;  /* 321px */
+  height: 19.125rem;  /* 306px */
+  background: #FFFFFF;
+  border: 1px solid #ECECEC;
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+  border-radius: 3.4375rem;  /* 55px */
+  padding: 2.625rem 2.5625rem;  /* 42px 41px */
+  box-sizing: border-box;
+}
+
+.login-title {
+  font-family: 'Noto Sans KR', sans-serif;
+  font-weight: 700;
+  font-size: 1rem;  /* 16px */
+  line-height: 1.1875rem;  /* 19px */
+  color: #000000;
+  margin: 0 0 2rem 0;  /* 32px */
+}
+
+.input-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;  /* 12px */
+}
+
+.input-label {
+  font-family: 'Noto Sans KR', sans-serif;
+  font-weight: 400;
+  font-size: 0.9375rem;  /* 15px */
+  color: #000000;
+  min-width: 4.375rem;  /* 70px */
+}
+
+.input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;  /* 16px */
+  margin-bottom: 1.125rem;  /* 18px */
+}
+
+.input-field {
+  width: 100%;
+  height: 1.4775rem;  /* 23.64px */
+  background: #D9D9D9;
+  border: none;
+  border-radius: 0.5rem;  /* 8px */
+  padding: 0 0.5rem;  /* 8px */
+  font-family: 'Noto Sans KR', sans-serif;
+  font-size: 0.625rem;  /* 10px */
+  box-sizing: border-box;
+}
+
+.input-field:focus {
+  outline: none;
+  background: #CACACA;
+}
+
+.login-button {
+  width: 3rem;  /* 48px */
+  height: 1.8675rem;  /* 29.88px */
+  background: #769BEF;
+  border: none;
+  border-radius: 0.625rem;  /* 10px */
+  font-family: 'Noto Sans KR', sans-serif;
+  font-weight: 700;
+  font-size: 0.8125rem;  /* 13px */
+  color: #FFFFFF;
+  cursor: pointer;
+  margin: 0 auto;
+  display: block;
+}
+
+.login-button:hover {
+  background: #5A85E0;
+}
+
+.find-links {
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;  /* 8px */
+  padding-top: 1.875rem;  /* 30px */
+}
+
+.find-link {
+  font-family: 'Noto Sans KR', sans-serif;
+  font-weight: 400;
+  font-size: 0.625rem;  /* 10px */
+  line-height: 0.75rem;  /* 12px */
+  text-align: center;
+  color: #000000;
+  text-decoration: none;
+  padding-bottom: 0.375rem;  /* 6px */
+  border-bottom: 1px solid #000000;
+}
+
+.find-link:hover {
+  color: #769BEF;
+  border-bottom-color: #769BEF;
+}
+
+.error-message {
+  position: absolute;
+  top: 4.375rem;  /* 70px (제목 아래로 조정) */
+  left: 50%;
+  transform: translateX(-50%);
+  color: #ff4444;
+  font-size: 0.75rem;  /* 12px */
+  margin: 0;
+  white-space: nowrap; 
+}
+</style>
