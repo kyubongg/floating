@@ -80,7 +80,7 @@
 
 <script setup>
 // Vue Composition API
-import { ref } from "vue";
+import { ref, onMounted } from "vue";
 
 // Pinia 인증 스토어
 import { useAuthStore } from "../stores/auth";
@@ -106,6 +106,12 @@ const formData = ref({
 
 // 화면에 출력할 성공 메시지
 const message = ref("");
+
+// 에러메세지 초기화
+onMounted(() => {
+  auth.error = null;
+  message.value = "";
+});
 
 // 회원가입 submit 핸들러
 const onSubmit = () => {

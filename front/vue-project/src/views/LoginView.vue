@@ -44,7 +44,7 @@
 
 <script setup>
 // Vue Composition API
-import { ref } from "vue";
+import { ref, onMounted } from "vue";
 
 // Pinia 인증 스토어
 import { useAuthStore } from "../stores/auth";
@@ -59,6 +59,11 @@ const route = useRoute();
 // 폼 입력 데이터
 const id = ref("");
 const password = ref("");
+
+// 에러메세지 초기화
+onMounted(() => {
+  auth.error = null;
+});
 
 // 로그인 폼 submit 이벤트 핸들러
 const onSubmit = () => {
