@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 
 import com.floating.mvc.dao.WbtiDao;
 import com.floating.mvc.dto.request.wbti.PostWbtiRequestDto;
+import com.floating.mvc.dto.request.wbti.PutWbtiRequestDto;
 import com.floating.mvc.dto.request.wbti.WbtiRequestDto;
 import com.floating.mvc.dto.response.ResponseDto;
 import com.floating.mvc.dto.response.wbti.GetWbtiResponseDto;
@@ -53,6 +54,25 @@ public class WbtiServiceImpl implements WbtiService {
 		
 		
 		return GetWbtiResponseDto.success(body);
+	}
+
+	@Override
+	public ResponseEntity<ResponseDto> updateWbti(PutWbtiRequestDto dto, String userId) {
+		
+		try {
+			
+			dto.setUserId(userId);
+			
+			int result = wbtiDao.updateByUserId(dto);
+			if(result == 0)
+				return ResponseDto.databaseError();
+			
+		}catch(Exception e) {
+			e.printStackTrace();
+			return ResponseDto.databaseError();
+		}
+		
+		return ResponseDto.success(HttpStatus.OK);
 	}
 
 }

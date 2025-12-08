@@ -3,11 +3,13 @@ package com.floating.mvc.controller;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.floating.mvc.dto.request.wbti.PostWbtiRequestDto;
+import com.floating.mvc.dto.request.wbti.PutWbtiRequestDto;
 import com.floating.mvc.dto.response.ResponseDto;
 import com.floating.mvc.dto.response.wbti.GetWbtiResponseDto;
 import com.floating.mvc.service.WbtiService;
@@ -38,4 +40,12 @@ public class WbtiController {
 		return response;
 	}
 	
+	@PutMapping("/")
+	public ResponseEntity<ResponseDto> updateWbti(
+			@RequestBody PutWbtiRequestDto dto,
+			String userId
+	){
+		ResponseEntity<ResponseDto> response = wbtiService.updateWbti(dto, userId);
+		return response;
+	}
 }
