@@ -9,6 +9,9 @@ import SignupView from "../views/SignupView.vue";
 
 // 인증 상태 관리 (Pinia)
 import { useAuthStore } from "../stores/auth";
+import WbtiMainView from "@/views/WbtiMainView.vue";
+import WbtiTestView from "@/views/WbtiTestView.vue";
+import WbtiResultView from "@/views/WbtiResultView.vue";
 
 // 라우터 인스턴스 생성
 const router = createRouter({
@@ -39,6 +42,21 @@ const router = createRouter({
       path: "/signup",
       name: "signup",
       component: SignupView,
+    },
+    {
+      path: "/wbti-main",
+      name: "wbtiMain",
+      component: WbtiMainView,
+    },
+    {
+      path: "/wbti-test",
+      name: "wbtiTest",
+      component: WbtiTestView,
+    },
+    {
+      path: "/wbti-result",
+      name: "wbtiResult",
+      component: WbtiResultView,
     }
   ],
 });
