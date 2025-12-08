@@ -57,6 +57,11 @@ public class ResponseDto {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(body);
     }
 	
+	public static ResponseEntity<ResponseDto> noExistWbti() {
+        ResponseDto body = new ResponseDto(ResponseCode.NO_EXIST_WBTI, ResponseMessage.NO_EXIST_WBTI);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(body);
+    }
+	
 	// ============================================== //
     // HTTP/1.1 500 Internal Server Error
 	

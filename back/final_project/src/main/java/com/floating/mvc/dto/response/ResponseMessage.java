@@ -16,6 +16,8 @@ public interface ResponseMessage {
 	String NO_EXIST_PLANLIST = "계획이 하나도 없습니다.";
 	
 	String NO_EXIST_REVIEW = "존재하지 않는 리뷰입니다.";
+	
+	String NO_EXIST_WBTI = "해당 사용자의 WBTI가 존재하지 않습니다.";
 	// ============================================== //
     // HTTP/1.1 500 Internal Server Error
     String DATABASE_ERROR = "DataBase Error";
