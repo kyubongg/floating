@@ -17,6 +17,8 @@ public interface ResponseCode {
 	
 	String NO_EXIST_REVIEW = "NR";
 	
+	String NO_EXIST_WBTI = "NW";
+	
 	// ============================================== //
 	// HTTP/1.1 500 Internal Server Error
     String DATABASE_ERROR = "DBE";

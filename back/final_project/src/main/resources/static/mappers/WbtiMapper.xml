@@ -14,5 +14,10 @@
 			#{userId}
 		)
 	</insert>
+	
+	<select id="selectByUserId">
+		SELECT * FROM wbti
+		WHERE user_id = #{userId}
+	</select>
 
 </mapper>
