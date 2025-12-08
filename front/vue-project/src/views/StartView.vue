@@ -10,12 +10,12 @@
 
       <div class="auth-item">
         <div class="auth-item__text">이곳이 처음이신가요?</div>
-        <button class="auth-item__button auth-item__button--signup">회원가입</button> 
+        <button @click="goToSignup" class="auth-item__button auth-item__button--signup">회원가입</button> 
       </div>
 
       <div class="auth-item">
         <div class="auth-item__text">이미 회원이신가요?</div>
-        <button class="auth-item__button auth-item__button--login">로그인</button>
+        <button @click="goToLogin" class="auth-item__button auth-item__button--login">로그인</button>
       </div>
       
     </div>
@@ -23,7 +23,17 @@
 </template>
 
 <script setup>
-// 스크립트 내용은 변경 없습니다.
+import { useRouter } from 'vue-router'
+
+const router = useRouter()
+
+const goToSignup = () => {
+  router.push('/signup')
+}
+
+const goToLogin = () => {
+  router.push('/login')
+}
 </script>
 
 <style scoped>
