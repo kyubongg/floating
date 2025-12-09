@@ -96,9 +96,12 @@ public class UserServiceImpl implements UserService {
 		
 		try {
 			
+			System.out.println(userId);
+			
 			dto = userDao.selectUser(userId);
 			if(dto == null) 
 				return ResponseDto.noExistUser();
+			
 			
 		}
 		catch(Exception e) {
