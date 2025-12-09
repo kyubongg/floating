@@ -44,22 +44,22 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter{
                 filterChain.doFilter(request, response);
                 return;
             }
-
+            
             String userId = jwtProvider.validate(token);
             if(userId == null){
-                filterChain.doFilter(request, response);
+                response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "유효하지 않은 JWT token입니다.");
                 return;
             }
             
             setContext(userId, request);
             
-        }catch (ExpiredJwtException e) {
+        } catch (ExpiredJwtException e) {
 //            log.error("JWT expired at {}. Current time: {}. Error: {}",
 //                        e.getClaims().getExpiration(),
 //                        System.currentTimeMillis(),
 //                        e.getMessage());
             response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "JWT token expired");
-            return; 
+            return;
         } catch (JwtException e) {
 //            log.error("JWT validation failed. Error: {}", e.getMessage());
             response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "JWT validation failed");
@@ -107,6 +107,5 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter{
         // description: 생성한 Security Context 등록 //
         SecurityContextHolder.setContext(securityContext);
 
-    
     }
 }

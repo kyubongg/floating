@@ -1,3 +1,4 @@
+import api from '@/api/axios';
 import { defineStore } from 'pinia';
 import { ref } from 'vue';
 
@@ -5,10 +6,10 @@ export const useWbtiStore = defineStore('wbti', () => {
 
     // state
     const resultScores = ref({
-        social_type: 0,
-        intmotivation_type: 0,
-        intexecution_type: 0,
-        intactivity_type: 0,
+        socialType: 0,
+        motivationType: 0,
+        executionType: 0,
+        activityType: 0,
     });
 
     // getters
@@ -33,7 +34,7 @@ export const useWbtiStore = defineStore('wbti', () => {
         const payload = resultScores.value;
 
         try {
-            const response = await api.post('/api/v1/wbti', payload)
+            const response = await api.post('/wbti/', payload)
             
             console.log('WBTI 결과 전송 성공:', response.data);
             return response.data;
@@ -45,10 +46,10 @@ export const useWbtiStore = defineStore('wbti', () => {
 
     const resetScores = () => {
         resultScores.value = {
-            social_type: 0,
-            motivation_type: 0,
-            execution_type: 0,
-            activity_type: 0,
+            socialType: 0,
+            motivationType: 0,
+            executionType: 0,
+            activityType: 0,
         };
     };
 

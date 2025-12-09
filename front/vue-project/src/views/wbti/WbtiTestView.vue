@@ -45,11 +45,11 @@ import { computed, ref } from 'vue';
     import { useRouter } from 'vue-router';
 
     const questions = [
-        { text: '당신은 야외에서 운동하는걸 좋아하나요?', type: 'social_type'},
-        { text: '운동할 때 음악을 듣는 것을 선호하나요?', type: 'motivation_type'},
-        { text: '운동 후 스트레칭을 꼭 하나요?', type: 'execution_type'},
-        { text: '운동 계획을 세우는 것을 즐기나요?', type: 'activity_type'},
-        { text: '운동 중간에 휴식을 자주 취하나요?', type: 'social_type'}
+        { text: '당신은 야외에서 운동하는걸 좋아하나요?', type: 'socialType'},
+        { text: '운동할 때 음악을 듣는 것을 선호하나요?', type: 'motivationType'},
+        { text: '운동 후 스트레칭을 꼭 하나요?', type: 'executionType'},
+        { text: '운동 계획을 세우는 것을 즐기나요?', type: 'activityType'},
+        { text: '운동 중간에 휴식을 자주 취하나요?', type: 'socialType'}
     ];
 
     const router = useRouter();
@@ -57,13 +57,6 @@ import { computed, ref } from 'vue';
 
     const currentIndex = ref(0);
     const userAnswers = ref(Array(questions.length).fill(null));
-
-    const resultScores = ref({
-        social_type: 0,
-        motivation_type: 0,
-        execution_type: 0,
-        activity_type: 0
-    });
 
     const testText = computed(() => {
         return questions[currentIndex.value].text;
@@ -94,6 +87,7 @@ import { computed, ref } from 'vue';
         const questionType = currentQuestion.type;
 
         // 임시 저장소에 점수 누적
+        console.log(8 - selectedChoice.value)
         wbtiStore.accumulateScore(questionType, 8 - selectedChoice.value);
 
         if(currentIndex.value < questions.length - 1){
@@ -103,7 +97,7 @@ import { computed, ref } from 'vue';
             try{
                 alert('검사가 완료되었습니다. 결과 페이지로 이동합니다.');
 
-                const result = await wbtiStore.submitAnswers();
+                const result = await wbtiStore.submitResults();
                 console.log('서버 응답:', result);
 
                 // 결과 페이지로 이동

@@ -10,6 +10,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class PostWbtiRequestDto {
+	private String userId;
 	private int socialType;
 	private int motivationType;
 	private int executionType;

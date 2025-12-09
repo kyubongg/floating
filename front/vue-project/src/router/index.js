@@ -59,16 +59,19 @@ const router = createRouter({
       path: "/wbti-main",
       name: "wbtiMain",
       component: WbtiMainView,
+      meta: { requiresAuth: true }, // 🔐 로그인 필요
     },
     {
       path: "/wbti-test",
       name: "wbtiTest",
       component: WbtiTestView,
+      meta: { requiresAuth: true }, // 🔐 로그인 필요
     },
     {
       path: "/wbti-result",
       name: "wbtiResult",
       component: WbtiResultView,
+      meta: { requiresAuth: true }, // 🔐 로그인 필요
     }
   ],
 });

@@ -1,6 +1,7 @@
 package com.floating.mvc.controller;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -26,7 +27,7 @@ public class WbtiController {
 	@PostMapping("/")
 	public ResponseEntity<ResponseDto> insertWbti(
 			@RequestBody PostWbtiRequestDto dto,
-			String userId
+			@AuthenticationPrincipal String userId
 	){
 		ResponseEntity<ResponseDto> response = wbtiService.insertWbti(dto, userId);
 		return response;
@@ -34,7 +35,7 @@ public class WbtiController {
 	
 	@GetMapping("/")
 	public ResponseEntity<? super GetWbtiResponseDto> selectByUserId(
-			String userId
+			@AuthenticationPrincipal String userId
 	){
 		ResponseEntity<? super GetWbtiResponseDto> response = wbtiService.selectByUserId(userId);
 		return response;
@@ -43,7 +44,7 @@ public class WbtiController {
 	@PutMapping("/")
 	public ResponseEntity<ResponseDto> updateWbti(
 			@RequestBody PutWbtiRequestDto dto,
-			String userId
+			@AuthenticationPrincipal String userId
 	){
 		ResponseEntity<ResponseDto> response = wbtiService.updateWbti(dto, userId);
 		return response;
