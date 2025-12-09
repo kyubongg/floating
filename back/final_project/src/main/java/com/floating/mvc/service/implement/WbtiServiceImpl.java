@@ -25,7 +25,9 @@ public class WbtiServiceImpl implements WbtiService {
 		
 		try {
 			
+			dto.setUserId(userId);
 			int result = wbtiDao.insertWbti(dto);
+			
 			if(result == 0) 
 				return ResponseDto.databaseError();
 			
