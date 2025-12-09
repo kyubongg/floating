@@ -18,10 +18,23 @@ import axios from "axios";
  *          - 응답(Response) Set-Cookie로 온 JSESSIONID도 저장됨
  */
 const api = axios.create({
-  baseURL: "http://localhost:8080",
-  withCredentials: true, // 🔥 세션 인증을 위한 쿠키 포함 처리
+  baseURL: "http://localhost:8080/api/v1"
 });
 
+api.interceptors.request.use(
+  (config) => {
+    const accessToken = localStorage.getItem("accessToken");
+
+    if(accessToken){
+      config.headers.Authorization = `Bearer ${accessToken}`;
+    }
+
+    return config;
+  },
+  (error) => {
+    return Promise.reject(error);
+  }
+)
 
 
 export default api;

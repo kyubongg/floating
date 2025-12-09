@@ -1,7 +1,7 @@
 <template>
     <div class="main-page">
         <div class="logo-area">
-            <img class="logo-area__image"src="../assets/imgs/haedal-workout3.png" alt="FLOATING 로고 수달 이미지" > 
+            <img class="logo-area__image"src="../../assets/imgs/haedal-workout3.png" alt="FLOATING 로고 수달 이미지" > 
             <div class="logo-area__title">EBTI 검사 시작하기</div>
             <span>EBTI는 운동 성향을 측정하는 검사입니다.</span>
         </div>
