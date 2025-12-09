@@ -25,7 +25,7 @@
 
             <div class="input-wrapper">
               <label class="input-label">비밀번호</label>
-              <input type="password" class="input-field" v-model="password" required />
+              <input type="password" class="input-field" v-model="pw" required />
             </div>
           </div>
 
@@ -58,7 +58,7 @@ const route = useRoute();
 
 // 폼 입력 데이터
 const id = ref("");
-const password = ref("");
+const pw = ref("");
 
 // 에러메세지 초기화
 onMounted(() => {
@@ -71,10 +71,16 @@ const onSubmit = () => {
   auth
     .login({
       id: id.value,
-      password: password.value,
+      pw: pw.value,
     })
     .then(() => {
-      router.push('/main');
+      
+      if(auth.user.mbtiName === '미선택'){
+        router.push('/wbti-main');
+      }else{
+        router.push('/home');
+      }
+      
     })
     .catch(() => {
       // 오류 메시지는 auth.error에 저장되므로 추가 처리 필요 없음

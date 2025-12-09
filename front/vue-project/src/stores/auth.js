@@ -52,22 +52,27 @@ export const useAuthStore = defineStore("auth", () => {
    * - username/password로 /login 호출
    * - 성공 시 user 상태를 응답 값으로 세팅
    */
-  const login = ({ username, password }) => {
+  const login = ({ id, pw }) => {
     loading.value = true;
     error.value = null;
 
-    const params = new URLSearchParams();
-    params.append("username", username);
-    params.append("password", password);
+    const requestBody = {
+      id: id,
+      pw: pw,
+    }
 
     return api
-      .post("/login", params, {
+      .post("/user/signin", requestBody, {
         headers: {
-          "Content-Type": "application/x-www-form-urlencoded",
+          "Content-Type": "application/json",
         },
       })
       .then((res) => {
         // 백엔드에서 내려준 JSON: { username: "..." }
+        const accessToken = res.data.accessToken;
+        localStorage.setItem("accessToken", accessToken);
+
+        // 사용자 정보 업데이트
         user.value = res.data;
         initialized.value = true;
       })
@@ -104,30 +109,38 @@ export const useAuthStore = defineStore("auth", () => {
 
   /**
    * 세션 기반 로그인 상태 동기화
-   * - 새로고침(F5) 이후에도 /api/me 를 통해 서버 세션에 로그인 상태가 남아 있는지 확인
+   * - 새로고침(F5) 이후에도 로컬 저장소를 통해 Access Token 존재 여부 확인
    * - 로그인 상태라면 user를 세팅, 아니라면 null로 초기화
    */
   const fetchMe = () => {
     loading.value = true;
     error.value = null;
 
+    const accessToken = localStorage.getItem("accessToken");
+    if(!accessToken){
+      user.value = null;
+      initialized.value = true;
+      loading.value = false;
+      return Promise.resolve();
+    }
+
     return api
-      .get("/api/me")
+      .get("/user/detail")
       .then((res) => {
-        if (res.data && res.data.username) {
+        if(res.data && res.data.id){
           user.value = res.data;
-        } else {
+        }else{
           user.value = null;
         }
       })
-      .catch(() => {
-        // 401 혹은 기타 에러 시 로그인 안 된 것으로 처리
+      .catch((e) => {
+        localStorage.removeItem("accessToken");
         user.value = null;
       })
       .finally(() => {
         loading.value = false;
-        initialized.value = true; // 최소 한 번은 상태 확인 완료
-      });
+        initialized.value = true;
+      })
   };
 
   // 스토어에서 외부로 노출할 상태/메서드

@@ -45,7 +45,9 @@ public class SecurityConfig {
             .httpBasic(basic -> basic.disable())
             // description: 인가 설정 //
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/api/v1/user/signIn", "/api/v1/user/signUp").permitAll()  // 로그인/회원가입 허용
+                .requestMatchers("/api/v1/user/**").permitAll()  // 로그인/회원가입 허용
+                .requestMatchers("/v3/api-docs/**", "/swagger-ui/**").permitAll()
+                .requestMatchers("/swagger-resources/**").permitAll()
                 .anyRequest().authenticated()  // 나머지는 인증 필요
             )
             // description: Jwt Authentication Filter 등록 //

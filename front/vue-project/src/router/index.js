@@ -11,9 +11,9 @@ import EditProfileView from "../views/EditProfileView.vue";
 
 // 인증 상태 관리 (Pinia)
 import { useAuthStore } from "../stores/auth";
-import WbtiMainView from "@/views/WbtiMainView.vue";
-import WbtiTestView from "@/views/WbtiTestView.vue";
-import WbtiResultView from "@/views/WbtiResultView.vue";
+import WbtiMainView from "@/views/wbti/WbtiMainView.vue";
+import WbtiTestView from "@/views/wbti/WbtiTestView.vue";
+import WbtiResultView from "@/views/wbti/WbtiResultView.vue";
 
 // 라우터 인스턴스 생성
 const router = createRouter({
