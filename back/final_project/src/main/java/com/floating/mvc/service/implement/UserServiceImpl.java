@@ -9,10 +9,13 @@ import com.floating.mvc.dao.UserDao;
 import com.floating.mvc.dto.request.user.DeleteUserRequestDto;
 import com.floating.mvc.dto.request.user.PutUserMbtiRequestDto;
 import com.floating.mvc.dto.request.user.PutUserRequestDto;
+import com.floating.mvc.dto.request.user.SignInRequestDto;
 import com.floating.mvc.dto.request.user.SignupRequestDto;
 import com.floating.mvc.dto.request.user.UserRequestDto;
 import com.floating.mvc.dto.response.ResponseDto;
 import com.floating.mvc.dto.response.user.GetUserDetailResponseDto;
+import com.floating.mvc.dto.response.user.SignInResponseDto;
+import com.floating.mvc.provider.JwtProvider;
 import com.floating.mvc.service.UserService;
 
 import lombok.RequiredArgsConstructor;
@@ -23,6 +26,7 @@ public class UserServiceImpl implements UserService {
 
 	private final UserDao userDao;
 	private final BCryptPasswordEncoder passwordEncoder;
+	private final JwtProvider jwtProvider;
 	
 	@Override
 	public ResponseEntity<ResponseDto> signUpUser(SignupRequestDto dto) {
@@ -54,6 +58,35 @@ public class UserServiceImpl implements UserService {
 		}
 		
 		return null;
+	}
+	
+	@Override
+	public ResponseEntity<? super SignInResponseDto> signInUser(SignInRequestDto dto) {
+		
+		
+		UserRequestDto userDto = null;
+		String accessToken = null;
+		
+		try {
+			
+			String userId = dto.getId();
+			String userPw = dto.getPw();
+			
+			userDto = userDao.selectUser(userId);
+			if(userDto == null)
+				return ResponseDto.noExistUser();
+			
+			if(!passwordEncoder.matches(userPw, userDto.getPw()))
+				return ResponseDto.validationFail();
+			
+			accessToken = jwtProvider.create(userId);
+			
+		}catch(Exception e) {
+			e.printStackTrace();
+			return ResponseDto.databaseError();
+		}
+		
+		return SignInResponseDto.success(userDto, accessToken);
 	}
 
 	@Override
@@ -144,5 +177,4 @@ public class UserServiceImpl implements UserService {
         
         return passwordEncoder.matches(rawPassword, encodedPassword);
     }
-	
 }

@@ -5,14 +5,19 @@ import org.springframework.http.ResponseEntity;
 import com.floating.mvc.dto.request.user.DeleteUserRequestDto;
 import com.floating.mvc.dto.request.user.PutUserMbtiRequestDto;
 import com.floating.mvc.dto.request.user.PutUserRequestDto;
+import com.floating.mvc.dto.request.user.SignInRequestDto;
 import com.floating.mvc.dto.request.user.SignupRequestDto;
 import com.floating.mvc.dto.response.ResponseDto;
 import com.floating.mvc.dto.response.user.GetUserDetailResponseDto;
+import com.floating.mvc.dto.response.user.SignInResponseDto;
+
 
 public interface UserService {
 	
 	// 회원가입
 	ResponseEntity<ResponseDto> signUpUser(SignupRequestDto dto);
+	// 로그인
+	ResponseEntity<? super SignInResponseDto> signInUser(SignInRequestDto dto);
 	// 회원 상세 조회
 	ResponseEntity<? super GetUserDetailResponseDto> getUserDetail (String userId);
 	// 회원 정보 수정
