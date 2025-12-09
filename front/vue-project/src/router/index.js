@@ -6,6 +6,8 @@ import StartView from "../views/StartView.vue";
 import HomeView from "../views/HomeView.vue";
 import LoginView from "../views/LoginView.vue";
 import SignupView from "../views/SignupView.vue";
+import MyPageView from "../views/MyPageView.vue";
+import EditProfileView from "../views/EditProfileView.vue";
 
 // 인증 상태 관리 (Pinia)
 import { useAuthStore } from "../stores/auth";
@@ -42,6 +44,16 @@ const router = createRouter({
       path: "/signup",
       name: "signup",
       component: SignupView,
+    },
+    {
+      path: "/mypage",
+      name: "mypage",
+      component: MyPageView,
+    },
+    {
+      path: "/edit-Profile",
+      name: "editProfile",
+      component: EditProfileView,
     },
     {
       path: "/wbti-main",
