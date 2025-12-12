@@ -1,6 +1,7 @@
 package com.floating.mvc.controller;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -9,7 +10,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.floating.mvc.dto.request.plan.GetPlanDetailRequestDto;
 import com.floating.mvc.dto.request.plan.PlanRequestDto;
 import com.floating.mvc.dto.response.ResponseDto;
 import com.floating.mvc.dto.response.plan.GetPlanDetailResponseDto;
@@ -27,7 +27,7 @@ public class PlanController {
 
 	@GetMapping("/")
 	public ResponseEntity<? super GetPlanListResponseDto> getPlanList(
-			String userId
+			@AuthenticationPrincipal String userId
 	){
 		ResponseEntity<? super GetPlanListResponseDto> response = planService.getPlans(userId);
 		return response;
@@ -36,7 +36,7 @@ public class PlanController {
 	@GetMapping("/detail/{planPk}")
 	public ResponseEntity<? super GetPlanDetailResponseDto> getPlanDetail(
 			@PathVariable int planPk,
-			String userId
+			@AuthenticationPrincipal String userId
 	){
 		ResponseEntity<? super GetPlanDetailResponseDto> response = planService.getPlanDetail(planPk, userId);
 		return response;
@@ -45,7 +45,7 @@ public class PlanController {
 	@PostMapping("/{planPk}")
 	public ResponseEntity<ResponseDto> postPlanCompl(
 			@PathVariable int planPk,
-			String userId
+			@AuthenticationPrincipal String userId
 	){
 		ResponseEntity<ResponseDto> response = planService.postPlanCompl(planPk);
 		return response;
@@ -55,7 +55,7 @@ public class PlanController {
 	@PutMapping("/")
 	public ResponseEntity<ResponseDto> updatePlan(
 		@RequestBody PlanRequestDto dto,
-		String userId
+		@AuthenticationPrincipal String userId
 	){
 		ResponseEntity<ResponseDto> response = planService.updatePlan(dto, userId);
 		return response;

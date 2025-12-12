@@ -3,18 +3,15 @@
         <h2 class="plan-title">이번주 계획</h2>
 
         <div class="plan-content">
-            <p v-if="!hasWeeklyPlan">
+            <p v-if="!planStore.hasWeeklyPlan">
                 <button class="plan-button" @click="createWeeklyPlan">
                     주간 계획 세우기
                 </button>
             </p>
             <div v-else class="plan-list">
                 <div v-if="planStore.loading">로딩 중...</div>
-                <div v-else-if="planStore.weeklyPlans">
-                    <!-- 계획 목록 표시 -->
-                </div>
                 <div v-else>
-                    <p>아직 세워진 계획이 없어요!</p>
+                    <!-- 계획 목록 표시 -->
                 </div>
             </div>
         </div>

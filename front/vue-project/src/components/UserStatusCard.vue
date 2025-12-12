@@ -11,7 +11,7 @@
 
             <div class="exp-bar-wrapper">
                 <div class="exp-bar">
-                    <div class="exp-filled" :style="{ width: expPercentage + '%' }"></div>
+                    <div class="exp-filled" :style="{ width: auth.scorePercentage + '%' }"></div>
                 </div>
                 <span class="exp-text">{{ auth.scorePercentage }}/100</span>
             </div>
@@ -21,17 +21,17 @@
         <div class="character-images">
             <div class="character-item">
                 <img src="../assets/imgs/haedal-workout1.png" alt="연속운동" class="character-img" />
-                <p class="character-label">연속운동<br />{{ consecutiveDays }}일</p>
+                <p class="character-label">연속운동<br />{{ planStore.streakCount }}일</p>
             </div>
 
             <div class="character-item">
-                <img src="../assets/imgs/haedal-workout2.png" alt="총운동" class="character-img main" />
-                <p class="character-label">총 운동<br />{{ totalDays }}일</p>
+                <img src="../assets/imgs/haedal-workout2.png" alt="총운동" class="character-img" />
+                <p class="character-label">총 운동<br />{{ planStore.totalCompletedCount }}일</p>
             </div>
 
             <div class="character-item">
                 <img src="../assets/imgs/haedal-workout3.png" alt="주간운동" class="character-img" />
-                <p class="character-label">이번주 운동<br />{{ weeklyCount }} / 7회</p>
+                <p class="character-label">이번주 운동<br />{{ planStore.weeklyWorkouts }} / 7회</p>
             </div>
         </div>
     </div>

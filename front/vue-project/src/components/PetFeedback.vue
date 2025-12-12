@@ -21,15 +21,29 @@ import haedalHappyImg1 from '../assets/imgs/haedal-happy1.png'
 import haedalHappyImg2 from '../assets/imgs/haedal-happy2.png'
 import haedalHappyImg3 from '../assets/imgs/haedal-happy3.png'
 
-const currentPetSrc = ref('');
+const auth = useAuthStore();
+
+const currentPetSrc = computed(() => {
+    switch (auth.level) {
+        case 1:
+            return haedalSadImg3;
+        case 2:
+            return haedalSadImg2;
+        case 3:
+            return haedalSadImg1;
+        case 4: 
+            return haedalMainImg;
+        case 5:
+            return haedalHappyImg1;
+        case 6:
+            return haedalHappyImg2;
+        case 7:
+            return haedalHappyImg3;
+    }
+})
 
 // 더미 데이터
 const feedbackMessage = ref('조금만 더 열심히 해줘!');
-
-const auth = useAuthStore();
-
-
-
 onMounted(async () => {
     // AI로 메세지 가져오기
 });
