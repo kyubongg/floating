@@ -23,6 +23,7 @@ public class GetUserDetailResponseDto extends ResponseDto {
     private int height;
     private int weight;
     private String mbtiName;
+    private int petScore;
     
     private GetUserDetailResponseDto(UserRequestDto dto) {
     	this.id = dto.getId();
@@ -33,6 +34,7 @@ public class GetUserDetailResponseDto extends ResponseDto {
     	this.height = dto.getHeight();
     	this.weight = dto.getWeight();
     	this.mbtiName = dto.getMbtiName();
+    	this.petScore = dto.getPetScore();
     }
     
 	public static ResponseEntity<GetUserDetailResponseDto> success(UserRequestDto dto){

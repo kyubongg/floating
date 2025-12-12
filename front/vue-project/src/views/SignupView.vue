@@ -85,7 +85,6 @@ import { ref, onMounted } from "vue";
 // Pinia 인증 스토어
 import { useAuthStore } from "../stores/auth";
 
-// 라우터(사용할 수도 있고 안 사용할 수도 있음)
 import { useRouter } from "vue-router";
 
 const auth = useAuthStore();

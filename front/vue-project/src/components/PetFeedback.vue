@@ -12,7 +12,7 @@
 
 <script setup>
 import { ref, computed, onMounted } from 'vue';
-import { useAuthStore } from '../stores/auth';
+import { useAuthStore } from '@/stores/auth';
 import haedalMainImg from '../assets/imgs/haedal-main.png'
 import haedalSadImg1 from '../assets/imgs/haedal-sad1.png'
 import haedalSadImg2 from '../assets/imgs/haedal-sad2.png'
@@ -21,23 +21,17 @@ import haedalHappyImg1 from '../assets/imgs/haedal-happy1.png'
 import haedalHappyImg2 from '../assets/imgs/haedal-happy2.png'
 import haedalHappyImg3 from '../assets/imgs/haedal-happy3.png'
 
-const currentPetSrc = ref(haedalSadImg2);
+const currentPetSrc = ref('');
 
 // 더미 데이터
 const feedbackMessage = ref('조금만 더 열심히 해줘!');
 
 const auth = useAuthStore();
+
+
+
 onMounted(async () => {
-    auth.fetchMe();
-    // 1. 레벨 정보 가져오기
-    // const level = await fetchUserLevel();
-
-    // 2. 레벨에 따라 펫 이미지 결정
-    // petImage.value = getPetImageByLevel(level);
-
-    // 3. AI API 호출해서 피드백 메시지 생성
-    // const aiResponse = await fetchAIFeedback(level, workoutData);
-    // message.value = aiResponse.message;
+    // AI로 메세지 가져오기
 });
 </script>
 

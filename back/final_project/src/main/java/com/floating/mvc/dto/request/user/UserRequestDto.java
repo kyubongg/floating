@@ -21,5 +21,6 @@ public class UserRequestDto {
     private int weight;
     private int mbtiPk;
     private String mbtiName;
+    private int petScore;
 	
 }

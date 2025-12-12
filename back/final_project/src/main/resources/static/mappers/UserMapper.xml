@@ -38,15 +38,16 @@
 	    SELECT 
 	        u.id,
 	        u.email,
-	        u.pw,
 	        u.name,
 	        u.birth,
 	        u.gender,
 	        u.height,
 	        u.weight,
-	        m.name AS mbtiName
+	        m.name AS mbtiName,
+	        p.score AS petScore
 	    FROM user u
 	    LEFT JOIN mbti m ON u.mbti_pk = m.mbti_pk
+	    LEFT JOIN pet p ON u.id = p.user_id
 	    WHERE u.id = #{userId}
 	</select>
 	

@@ -20,6 +20,18 @@ export const useAuthStore = defineStore("auth", () => {
   // ---------- getters ----------
   const isAuthenticated = computed(() => !!user.value);
 
+  const userName = computed(() => user.value?.name || '게스트');
+  const userMbtiName = computed(() => user.value?.mbtiName || '미정');
+
+  const currentScore = computed(() => user.value?.petScore || '0');
+  const maxScoreByLevel = 100;
+  const scorePercentage = computed(() => {
+    return (currentScore.value % maxScoreByLevel);
+  });
+  const level = computed(() => {
+    return Math.floor(currentScore.value / 100) + 1;
+  });
+
   // ---------- actions ----------
 
   /**
@@ -27,13 +39,22 @@ export const useAuthStore = defineStore("auth", () => {
    * - username, password를 받아 /signup API 호출
    * - 성공 시 단순히 완료만 알려주고, user 상태는 변경하지 않음
    */
-  const signup = ({ username, password }) => {
+  const signup = ( userData ) => {
     loading.value = true;
     error.value = null;
 
     // axios는 Promise를 반환하므로 then/catch/finally 체인 사용
     return api
-      .post("/signup", { username, password })
+      .post("/user/signup", {
+        id: userData.id,
+        pw: userData.password,     
+        email: userData.email,
+        name: userData.name,
+        birth: userData.birth,
+        gender: userData.gender,
+        height: userData.height,
+        weight: userData.weight
+      })
       .then(() => {
         // 성공 시 별도 작업은 없음
       })
@@ -94,7 +115,7 @@ export const useAuthStore = defineStore("auth", () => {
     error.value = null;
 
     return api
-      .post("/logout")
+      .post("/user/logout")
       .then(() => {
         user.value = null;
       })
@@ -117,7 +138,7 @@ export const useAuthStore = defineStore("auth", () => {
     error.value = null;
 
     const accessToken = localStorage.getItem("accessToken");
-    if(!accessToken){
+    if (!accessToken) {
       user.value = null;
       initialized.value = true;
       loading.value = false;
@@ -127,9 +148,9 @@ export const useAuthStore = defineStore("auth", () => {
     return api
       .get("/user/detail")
       .then((res) => {
-        if(res.data && res.data.id){
+        if (res.data && res.data.id) {
           user.value = res.data;
-        }else{
+        } else {
           user.value = null;
         }
       })
@@ -150,6 +171,12 @@ export const useAuthStore = defineStore("auth", () => {
     loading,
     error,
     isAuthenticated,
+    userName,
+    userMbtiName,
+    currentScore,
+    maxScoreByLevel,
+    scorePercentage,
+    level,
     signup,
     login,
     logout,

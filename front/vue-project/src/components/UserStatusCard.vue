@@ -1,19 +1,19 @@
 <template>
     <div class="status-card">
-        <h2 class="user-info">{{ auth.user.name }}님 | {{ auth.user.mbtiName }} 운동러</h2>
+        <h2 class="user-info">{{ auth.userName }}님 | {{ auth.userMbtiName }} 운동러</h2>
 
         <!-- 레벨 & 경험치 바 -->
         <div class="level-exp-container">
             <div class="level-badge">
                 <img src="../assets/imgs/trophy-icon.png" alt="trophy" class="trophy-icon" />
-                <span class="level-text">Lv.{{ level }}</span>
+                <span class="level-text">Lv.{{ auth.level }}</span>
             </div>
 
             <div class="exp-bar-wrapper">
                 <div class="exp-bar">
                     <div class="exp-filled" :style="{ width: expPercentage + '%' }"></div>
                 </div>
-                <span class="exp-text">{{ currentExp }}/100</span>
+                <span class="exp-text">{{ auth.scorePercentage }}/100</span>
             </div>
         </div>
 
@@ -39,30 +39,12 @@
 
 
 <script setup>
-import { ref, computed, onMounted } from 'vue';
-import { useAuthStore } from '../stores/auth';
+import { useAuthStore } from '@/stores/auth';
+import { usePlanStore } from '@/stores/plan';
 
 const auth = useAuthStore();
+const planStore = usePlanStore();
 
-// 더미 데이터
-const currentExp = ref(0);
-const consecutiveDays = ref(0);
-const totalDays = ref(0);
-const weeklyCount = ref(0);
-
-const maxExp = 100;
-
-const expPercentage = computed(() => {
-    return (currentExp.value / maxExp) * 100;
-});
-
-const level = computed(() => {
-    return Math.floor(currentExp.value / 100) + 1;
-});
-
-onMounted(async () => {
-    // 운동 기록 가져오기
-});
 </script>
 
 

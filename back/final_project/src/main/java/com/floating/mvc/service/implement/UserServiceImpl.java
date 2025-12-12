@@ -65,21 +65,23 @@ public class UserServiceImpl implements UserService {
 		
 		
 		UserRequestDto userDto = null;
+		String userPw = null;
 		String accessToken = null;
 		
 		try {
 			
-			String userId = dto.getId();
-			String userPw = dto.getPw();
+			String requestId = dto.getId();
+			String requestPw = dto.getPw();
 			
-			userDto = userDao.selectUser(userId);
+			userDto = userDao.selectUser(requestId);
+			userPw = userDao.selectPasswordById(requestId);
 			if(userDto == null)
 				return ResponseDto.noExistUser();
 			
-			if(!passwordEncoder.matches(userPw, userDto.getPw()))
+			if(!passwordEncoder.matches(requestPw, userPw))
 				return ResponseDto.validationFail();
 			
-			accessToken = jwtProvider.create(userId);
+			accessToken = jwtProvider.create(requestId);
 			
 		}catch(Exception e) {
 			e.printStackTrace();
@@ -101,7 +103,6 @@ public class UserServiceImpl implements UserService {
 			dto = userDao.selectUser(userId);
 			if(dto == null) 
 				return ResponseDto.noExistUser();
-			
 			
 		}
 		catch(Exception e) {
