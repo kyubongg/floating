@@ -7,21 +7,46 @@
     - 사용자 정보는 백엔드 세션을 통해 유지되며,
       Vue 앱이 시작될 때 fetchMe()로 동기화된다.
   -->
-  <div>
-    <h2>메인 화면</h2>
-    <p>이 페이지는 로그인한 사용자만 볼 수 있습니다.</p>
-
-    <!-- 로그인된 사용자 정보 표시 -->
-    <div v-if="auth.user">
-      <p>현재 사용자: {{ auth.user.username }}</p>
+  <div class="home-container">
+    <div class="top-section">
+      <UserStatusCard />
+      <PetFeedback />
     </div>
+
+    <WeeklyPlanCard />
   </div>
 </template>
 
 <script setup>
-// Pinia 인증 스토어
-import { useAuthStore } from "../stores/auth";
+import { onMounted } from 'vue';
+import { usePlanStore } from '@/stores/plan';
+import UserStatusCard from '../components/UserStatusCard.vue';
+import PetFeedback from '../components/PetFeedback.vue';
+import WeeklyPlanCard from '../components/WeeklyPlanCard.vue';
 
-// 현재 로그인한 사용자 상태 접근
-const auth = useAuthStore();
+const planStore = usePlanStore();
+
+onMounted(() => {
+  planStore.fetchPlan();
+});
+
 </script>
+
+<style scoped>
+.home-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 2rem;
+  gap: 2rem;
+  min-height: 100vh;
+}
+
+.top-section {
+  display: flex;
+  gap: 1.5rem;
+  width: 100%;
+  max-width: 51.125rem;
+}
+</style>
