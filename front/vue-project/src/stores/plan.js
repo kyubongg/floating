@@ -18,6 +18,9 @@ export const usePlanStore = defineStore('plan', () => {
   const error = ref(null);
   const loading = ref(false);
 
+  const today = dayjs().startOf('day');
+  const startOfWeek = dayjs().startOf('isoWeek'); // 월요일 기준, 일요일은 week
+
   /**
    * getters: 계산된 상태
    * state를 기반으로 파생된 데이터를 계산
@@ -27,27 +30,23 @@ export const usePlanStore = defineStore('plan', () => {
 
   // 연속 운동 횟수
   const streakCount = computed(() => {
-    const completedDates = [...new Set( // 완료된 날짜들만 중복 제거해서 내림차순 정렬
+    const completedDates = [...new Set(
       plans.value
         .filter(p => p.completeDate !== null)
         .map(p => p.completeDate)
     )].sort((a, b) => dayjs(b).diff(dayjs(a)));
 
-    if (completedDates.length === 0) {
-      streakCount.value = 0;
-      return;
-    }
+    if (completedDates.length === 0) return 0;
 
     let count = 0;
-    let checkDate = dayjs(completedDates[0]); // 가장 최근에 운동한 날
+    let checkDate = dayjs(completedDates[0]);
+    const diffToday = today.diff(checkDate, 'day');
 
-    const diffToday = dayjs(today).diff(checkDate, 'day');
-
-    if (diffToday <= 1) { // 마지막 운동일이 오늘 혹은 어제여야 스트릭이 유지됨
+    if (diffToday <= 1) {
       count = 1;
       for (let i = 1; i < completedDates.length; i++) {
         const prevDate = dayjs(completedDates[i]);
-        if (checkDate.diff(prevDate, 'day') === 1) { // 날짜 차이가 딱 1일이면 연속인 것으로 간주
+        if (checkDate.diff(prevDate, 'day') === 1) {
           count++;
           checkDate = prevDate;
         } else {
@@ -59,35 +58,94 @@ export const usePlanStore = defineStore('plan', () => {
   });
 
   // 총 운동 완료 횟수
-  const today = dayjs().startOf('day').format('YYYY-MM-DD');
   const totalCompletedCount = computed(() => {
     return plans.value.filter((p) => p.completeDate !== null).length;
-  })
+  });
 
-  // 이번 주 운동 횟수 / 7 (일요일 기준)
-  const startOfWeek = dayjs().startOf('week').startOf('day').format('YYYY-MM-DD'); // 월요일은 dayjs().startOf('isoWeek')
+  // 이번 주 운동 횟수
   const weeklyWorkouts = computed(() => {
     return plans.value.filter(p => {
-      if (p.completeDate === null) {
-        return false;
-      }
+      if (p.completeDate === null) return false;
       const completeDay = dayjs(p.completeDate).startOf('day');
       return completeDay.isBetween(startOfWeek, today, 'day', '[]');
     }).length;
-  })
+  });
 
-  // 이번주 계획 유무 (일요일 기준)
+  // 이번주 계획 유무
   const hasWeeklyPlan = computed(() => {
-    const today = dayjs();
-    const startOfWeek = today.startOf('week'); // 월요일은 dayjs().startOf('isoWeek')
-    const endOfWeek = today.endOf('week'); // 월요일은 dayjs().endOf('isoWeek')
-
-    const found = plans.value.some(p => {
+    const endOfWeek = dayjs().endOf('isoWeek');
+    return plans.value.some(p => {
       return dayjs(p.date).isBetween(startOfWeek, endOfWeek, 'day', '[]');
     });
+  });
 
-    return found;
-  })
+  // 이번주 계획
+  const weekDaysWithPlans = computed(() => {
+    const dayNames = ['일', '월', '화', '수', '목', '금', '토'];
+    const result = [];
+
+    for (let i = 0; i < 7; i++) {
+      const currentDay = startOfWeek.add(i, 'day');
+      const dayName = dayNames[currentDay.day()];
+      const isToday = currentDay.isSame(today, 'day');
+
+      // 해당 날짜의 계획들 찾기
+      const dayPlans = plans.value.filter(p => {
+        return dayjs(p.date).isSame(currentDay, 'day');
+      });
+
+      // 완료 여부 확인
+      const completed = dayPlans.some(p => p.completeDate !== null);
+
+      // 운동 정보 (detail + time)
+      const exerciseText = dayPlans.length > 0
+        ? dayPlans.map(p => `${p.detail}\n${p.time}분`).join('\n\n')
+        : null;
+
+      // 운동 detail 정보
+      const exerciseCategory = dayPlans.length > 0
+        ? dayPlans.map(p => `${p.category}`).join('\n\n')
+        : null;
+
+      // 운동 detail 정보
+      const exerciseDetail = dayPlans.length > 0
+        ? dayPlans.map(p => `${p.detail}`).join('\n\n')
+        : null;
+      
+      // 운동 time 정보
+      const exerciseTime = dayPlans.length > 0
+        ? dayPlans.map(p => `${p.time}분`).join('\n\n')
+        : null;
+
+      // 미룬 횟수
+      const postponed = dayPlans.length > 0
+        ? Math.max(...dayPlans.map(p => p.shifted))
+        : 0;
+
+      result.push({
+        name: dayName,
+        date: currentDay.format('YYYY-MM-DD'),
+        exercise: exerciseText,
+        exerciseCategory,
+        exerciseDetail,
+        exerciseTime,
+        completed,
+        hasExercise: dayPlans.length > 0,
+        isToday,
+        postponed,
+        plans: dayPlans // 원본 데이터도 저장
+      });
+    }
+
+    return result;
+  });
+
+  // 오늘의 계획
+  const todayPlans = computed(() => {
+    return plans.value.filter(p => {
+      return dayjs(p.date).isSame(today, 'day');
+    });
+  });
 
   /**
    * actions: 상태 변경 로직
@@ -111,18 +169,91 @@ export const usePlanStore = defineStore('plan', () => {
     }
   };
 
+  // 주간 계획 생성
+  const createWeeklyPlan = async (type) => {
+    // type: 'postpone' (지난주 미루기) or 'ai' (AI 추천)
+    loading.value = true;
+    error.value = null;
+
+    try {
+      const res = await api.post('/plan/weekly', { type });
+      plans.value = res.data.planList;
+    } catch (error) {
+      console.error('주간 계획 생성 실패:', error);
+      error.value = error.message;
+    } finally {
+      loading.value = false;
+    }
+  };
+
+  // 오늘 계획 변경
+  const updateTodayPlan = async (action) => {
+    // action: 'postpone' (다음날로 미루기) or 'alternative' (AI 대체 운동)
+    loading.value = true;
+    error.value = null;
+
+    try {
+      const res = await api.put('/plan/today', { action });
+      await fetchPlan(true); // 강제 새로고침
+    } catch (error) {
+      console.error('오늘 계획 수정 실패:', error);
+      error.value = error.message;
+    } finally {
+      loading.value = false;
+    }
+  };
+
+  // 계획 완료 토글
+  const togglePlanComplete = async (date) => {
+  loading.value = true;
+  error.value = null;
+
+  try {
+    // 해당 날짜의 계획들 찾기
+    const dayPlans = plans.value.filter(p => {
+      return dayjs(p.date).isSame(dayjs(date), 'day');
+    });
+
+    if (dayPlans.length === 0) return;
+
+    // 이미 완료된 경우 -> 완료 취소
+    const isCompleted = dayPlans.some(p => p.completeDate !== null);
+    
+    if (isCompleted) {
+      // 완료 취소 API
+      await api.put(`/plan/uncomplete`, { date });
+    } else {
+      // 완료 처리 API
+      await api.put(`/plan/complete`, { date });
+    }
+
+    // 데이터 새로고침
+    await fetchPlan(true);
+  } catch (error) {
+    console.error('계획 완료 토글 실패:', error);
+    error.value = error.message;
+  } finally {
+    loading.value = false;
+  }
+};
+
   return {
     plans,
     weeklyPlans,
     error,
     loading,
     streakCount,
-    today,
+    today: today.format('YYYY-MM-DD'),
     totalCompletedCount,
-    startOfWeek,
+    startOfWeek: startOfWeek.format('YYYY-MM-DD'),
     weeklyWorkouts,
     hasWeeklyPlan,
+    weekDaysWithPlans, 
+    todayPlans, 
     fetchPlan,
+    createWeeklyPlan, 
+    updateTodayPlan, 
+    togglePlanComplete,
   }
 
 })
