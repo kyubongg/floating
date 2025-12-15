@@ -161,11 +161,13 @@ export const usePlanStore = defineStore('plan', () => {
 
     try {
       const res = await api.get('/plan/');
+      
       plans.value = res.data.planList;
     } catch (error) {
       console.error('계획 로드 실패:', error);
     } finally {
       loading.value = false;
+
     }
   };
 

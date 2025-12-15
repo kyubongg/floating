@@ -1,6 +1,8 @@
 package com.floating.mvc.dto.request.plan;
 
-import java.util.Date;
+
+
+import java.sql.Date;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

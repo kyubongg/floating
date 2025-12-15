@@ -14,6 +14,7 @@ import { useAuthStore } from "../stores/auth";
 import WbtiMainView from "@/views/wbti/WbtiMainView.vue";
 import WbtiTestView from "@/views/wbti/WbtiTestView.vue";
 import WbtiResultView from "@/views/wbti/WbtiResultView.vue";
+import CalendarView from "@/views/calendar/CalendarView.vue";
 
 // 라우터 인스턴스 생성
 const router = createRouter({
@@ -72,7 +73,13 @@ const router = createRouter({
       name: "wbtiResult",
       component: WbtiResultView,
       meta: { requiresAuth: true }, // 🔐 로그인 필요
-    }
+    },
+    {
+      path: "/calendar",
+      name: "calendar",
+      component: CalendarView,
+      meta: { requiresAuth: true }, // 🔐 로그인 필요
+    },
   ],
 });
 

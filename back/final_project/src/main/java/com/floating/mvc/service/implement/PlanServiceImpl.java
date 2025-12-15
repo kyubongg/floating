@@ -83,7 +83,7 @@ public class PlanServiceImpl implements PlanService {
 			
 			planList = planDao.selectAll(userId);
 			
-			System.out.println(planList);
+			
 			if(planList.size() == 0) return ResponseDto.noExistPlanList();
 			
 		}catch(Exception e) {
