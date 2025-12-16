@@ -46,13 +46,28 @@
     </div>
 
     <!-- 주간 계획 생성 모달 -->
-    <PlanModal :isOpen="showCreateModal" title="어떤 방식으로 이번주 운동 계획을 작성할까요?" primaryText="지난 주 못한 운동으로 미루기"
-      secondaryText="AI기반 새로운 운동 추천받기" @close="showCreateModal = false" @primary-click="handlePostponePreviousWeek"
+    <PlanModal :isOpen="showCreateModal" 
+      title="어떤 방식으로 이번주 운동 계획을 작성할까요?" 
+      primaryText="지난 주 
+      못한 운동으로 
+      미루기"
+      secondaryText="AI기반 
+      새로운 운동 
+      추천받기" 
+      @close="showCreateModal = false" 
+      @primary-click="handlePostponePreviousWeek"
       @secondary-click="handleAIRecommendation" />
 
     <!-- 오늘 계획 변경 모달 -->
-    <PlanModal :isOpen="showChangeModal" title="어떤 방식으로 오늘 운동 계획을 수정할까요?" primaryText="다음 날로 미루기"
-      secondaryText="AI기반 대체 운동 추천받기" @close="showChangeModal = false" @primary-click="handlePostponeToday"
+    <PlanModal :isOpen="showChangeModal" 
+      title="어떤 방식으로 오늘 운동 계획을 수정할까요?" 
+      primaryText="다음 날로 
+      미루기"
+      secondaryText="AI기반 
+      대체 운동 
+      추천받기" 
+      @close="showChangeModal = false" 
+      @primary-click="handlePostponeToday"
       @secondary-click="handleAIAlternative" />
   </div>
 </template>

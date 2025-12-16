@@ -81,6 +81,7 @@ const handleSecondaryClick = () => {
   flex-direction: column;
   align-items: center;
   gap: 2rem;
+  white-space: pre-line;
 }
 
 .modal-title {
@@ -91,7 +92,8 @@ const handleSecondaryClick = () => {
   text-align: center;
   color: #FFFFFF;
   margin: 0;
-  max-width: 35.875rem;  /* 574px */
+  max-width: 40rem;
+  white-space: pre-line;
 }
 
 .modal-options {
@@ -115,6 +117,7 @@ const handleSecondaryClick = () => {
   display: flex;
   align-items: center;
   justify-content: center;
+  white-space: pre-line;
 }
 
 .option-button:hover {
