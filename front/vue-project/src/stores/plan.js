@@ -176,13 +176,21 @@ export const usePlanStore = defineStore('plan', () => {
     // type: 'postpone' (지난주 미루기) or 'ai' (AI 추천)
     loading.value = true;
     error.value = null;
+    let res = null;
 
     try {
-      const res = await api.post('/plan/weekly', { type });
-      plans.value = res.data.planList;
+      if (type === 'postpone') {
+        res = await api.post('/plan/weekly');
+      }
+      // else 
+        // AI 
+      
+      await fetchPlan(true);
+
     } catch (error) {
       console.error('주간 계획 생성 실패:', error);
       error.value = error.message;
+      plans.value = [];
     } finally {
       loading.value = false;
     }

@@ -22,4 +22,6 @@ public interface PlanService {
 	ResponseEntity<? super GetPlanDetailResponseDto> getPlanDetail(int planPk, String userId);
 	// 계획 완료
 	ResponseEntity<ResponseDto> postPlanCompl(int planPk);
+	// 이번주 계획 생성 (지난주 계획 복사)
+	ResponseEntity<ResponseDto> insertWeeklyPlan(String userId);
 }

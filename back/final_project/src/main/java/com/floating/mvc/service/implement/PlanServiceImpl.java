@@ -141,6 +141,24 @@ public class PlanServiceImpl implements PlanService {
 		return ResponseDto.success(HttpStatus.OK);
 	}
 
+	@Override
+	public ResponseEntity<ResponseDto> insertWeeklyPlan(String userId) {
+
+		try {
+			
+			int result = planDao.insertWeeklyPlan(userId);
+			
+			if(result == 0) return ResponseDto.databaseError();
+			
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+			return ResponseDto.databaseError();
+		}
+		
+		return ResponseDto.success(HttpStatus.CREATED);
+	}
+
 }
 
 

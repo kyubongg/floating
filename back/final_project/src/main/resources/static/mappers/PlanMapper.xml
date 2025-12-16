@@ -43,10 +43,32 @@
 		WHERE plan_pk = #{planPk}
 	</update>
 	
+	<!-- Plan 완료를 진행한다. -->
 	<update id="postPlanCompl">
 		UPDATE plan
 		SET
 			complete_date = #{completeDate}
 		WHERE plan_pk = #{planPk}
 	</update>
+	
+	<!-- 지난 주 계획을 복사하여 이번주 계획으로 추가한다. -->
+	<insert id="insertWeeklyPlan">
+		INSERT INTO plan (user_id, date, category, detail, time, complete_date, shifted)
+		    SELECT 
+		        user_id,
+		        DATE_ADD(date, INTERVAL 7 DAY),
+		        category,
+		        detail,
+		        time,
+		        NULL,
+		        CASE 
+		            WHEN complete_date IS NULL THEN shifted + 1
+		            ELSE 0
+		        END
+		    FROM plan
+		    WHERE user_id = #{userId}
+		      AND date &gt;= DATE_SUB(CURDATE(), INTERVAL (DAYOFWEEK(CURDATE()) - 2) DAY) - INTERVAL 7 DAY
+		      AND date &lt; DATE_SUB(CURDATE(), INTERVAL (DAYOFWEEK(CURDATE()) - 2) DAY)
+	</insert>
+	
 </mapper>

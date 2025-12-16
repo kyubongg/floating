@@ -48,11 +48,11 @@
     <!-- 주간 계획 생성 모달 -->
     <PlanModal :isOpen="showCreateModal" 
       title="어떤 방식으로 이번주 운동 계획을 작성할까요?" 
-      primaryText="지난 주 
-      못한 운동으로 
-      미루기"
-      secondaryText="AI기반 
-      새로운 운동 
+      primaryText="지난 주 계획 
+      다시 
+      사용하기"
+      secondaryText="AI 기반 
+      새로운 계획 
       추천받기" 
       @close="showCreateModal = false" 
       @primary-click="handlePostponePreviousWeek"
@@ -309,8 +309,6 @@ const handleAIAlternative = async () => {
   /* 14px */
   color: #7D7D7D;
   margin: 0;
-  position: absolute;
-  bottom: 0.5rem;
   white-space: nowrap;
 }
 
