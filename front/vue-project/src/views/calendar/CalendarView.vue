@@ -74,12 +74,14 @@
                 <div class="review-photo-container">
                   <textarea 
                     class="review-input" 
-                    placeholder="리뷰를 남겨보세요"
-                    v-model="reviewContent"        
-                    @input="handleReviewInput"
+                    :placeholder="isReviewEditable ? '리뷰를 남겨보세요' : '계획을 완료해야 리뷰 작성이 가능합니다.'"
+                    :disabled="!isReviewEditable"      
+                    v-model="reviewContent"
                   ></textarea>
-                  
-                  <div class="photo-placeholder">
+                  <!--  @input="handleReviewInput"
+                    :disabled="!isReviewEditable"
+                    :class="{'disabled-input': !isAnyPlanCompleted}" -->
+                  <div class="photo-placeholder" :style="!isReviewEditable ? 'opacity: 0.5; cursor: not-allowed;': ''">
                     <span class="plus-icon">+</span>
                     <span>이미지 추가</span>
                   </div>
@@ -224,6 +226,11 @@ const allPlansByDate = computed(() => {
   });
   return plansMap;
 })
+
+// --- Computed: 선택된 날짜의 계획들 중 하나라도 completeDate가 있는지 확인 ---
+const isReviewEditable = computed(() => {
+  return selectedDayPlans.value.some(plan => plan.completeDate);
+});
 
 // --- Computed: 선택된 날짜의 모든 계획 리스트 (완료 여부 무관) ---
 const selectedDayPlans = computed(() => {
