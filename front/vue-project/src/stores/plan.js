@@ -205,14 +205,21 @@ export const usePlanStore = defineStore('plan', () => {
   };
 
   // 오늘 계획 변경
-  const updateTodayPlan = async (action) => {
+  const updateTodayPlan = async (type) => {
     // action: 'postpone' (다음날로 미루기) or 'alternative' (AI 대체 운동)
     loading.value = true;
     error.value = null;
+    let res = null;
 
     try {
-      const res = await api.put('/plan/today', { action });
-      await fetchPlan(true); // 강제 새로고침
+      if (type === 'postpone') {
+        res = await api.post('/plan/today');
+      }
+      // else 
+      // AI 
+
+      await fetchPlan(true);
+
     } catch (error) {
       console.error('오늘 계획 수정 실패:', error);
       error.value = error.message;
