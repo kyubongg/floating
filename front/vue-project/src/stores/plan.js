@@ -111,7 +111,7 @@ export const usePlanStore = defineStore('plan', () => {
       const exerciseDetail = dayPlans.length > 0
         ? dayPlans.map(p => `${p.detail}`).join('\n\n')
         : null;
-      
+
       // 운동 time 정보
       const exerciseTime = dayPlans.length > 0
         ? dayPlans.map(p => `${p.time}분`).join('\n\n')
@@ -140,12 +140,20 @@ export const usePlanStore = defineStore('plan', () => {
     return result;
   });
 
-  // 오늘의 계획
+  // 오늘 계획
   const todayPlans = computed(() => {
     return plans.value.filter(p => {
       return dayjs(p.date).isSame(today, 'day');
     });
   });
+
+  // 내일 계획
+  const tomorrowPlans = computed(() => {
+    const tomorrow = dayjs().add(1, 'day').startOf('day');
+    return plans.value.filter(p => {
+      return dayjs(p.date).isSame(tomorrow, 'day');
+    });
+  })
 
   /**
    * actions: 상태 변경 로직
@@ -161,7 +169,7 @@ export const usePlanStore = defineStore('plan', () => {
 
     try {
       const res = await api.get('/plan/');
-      
+
       plans.value = res.data.planList;
     } catch (error) {
       console.error('계획 로드 실패:', error);
@@ -183,8 +191,8 @@ export const usePlanStore = defineStore('plan', () => {
         res = await api.post('/plan/weekly');
       }
       // else 
-        // AI 
-      
+      // AI 
+
       await fetchPlan(true);
 
     } catch (error) {
@@ -215,37 +223,37 @@ export const usePlanStore = defineStore('plan', () => {
 
   // 계획 완료 토글
   const togglePlanComplete = async (date) => {
-  loading.value = true;
-  error.value = null;
+    loading.value = true;
+    error.value = null;
 
-  try {
-    // 해당 날짜의 계획들 찾기
-    const dayPlans = plans.value.filter(p => {
-      return dayjs(p.date).isSame(dayjs(date), 'day');
-    });
+    try {
+      // 해당 날짜의 계획들 찾기
+      const dayPlans = plans.value.filter(p => {
+        return dayjs(p.date).isSame(dayjs(date), 'day');
+      });
 
-    if (dayPlans.length === 0) return;
+      if (dayPlans.length === 0) return;
 
-    // 이미 완료된 경우 -> 완료 취소
-    const isCompleted = dayPlans.some(p => p.completeDate !== null);
-    
-    if (isCompleted) {
-      // 완료 취소 API
-      await api.put(`/plan/uncomplete`, { date });
-    } else {
-      // 완료 처리 API
-      await api.put(`/plan/complete`, { date });
+      // 이미 완료된 경우 -> 완료 취소
+      const isCompleted = dayPlans.some(p => p.completeDate !== null);
+
+      if (isCompleted) {
+        // 완료 취소 API
+        await api.put(`/plan/uncomplete`, { date });
+      } else {
+        // 완료 처리 API
+        await api.put(`/plan/complete`, { date });
+      }
+
+      // 데이터 새로고침
+      await fetchPlan(true);
+    } catch (error) {
+      console.error('계획 완료 토글 실패:', error);
+      error.value = error.message;
+    } finally {
+      loading.value = false;
     }
-
-    // 데이터 새로고침
-    await fetchPlan(true);
-  } catch (error) {
-    console.error('계획 완료 토글 실패:', error);
-    error.value = error.message;
-  } finally {
-    loading.value = false;
-  }
-};
+  };
 
   return {
     plans,
@@ -258,11 +266,12 @@ export const usePlanStore = defineStore('plan', () => {
     startOfWeek: startOfWeek.format('YYYY-MM-DD'),
     weeklyWorkouts,
     hasWeeklyPlan,
-    weekDaysWithPlans, 
-    todayPlans, 
+    weekDaysWithPlans,
+    todayPlans,
+    tomorrowPlans,
     fetchPlan,
-    createWeeklyPlan, 
-    updateTodayPlan, 
+    createWeeklyPlan,
+    updateTodayPlan,
     togglePlanComplete,
   }
 
