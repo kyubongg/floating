@@ -1,6 +1,7 @@
 package com.floating.mvc.controller;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -22,11 +23,11 @@ public class ReviewController {
 
 	private final ReviewService reviewService;
 	
-	@GetMapping("/{planPk}")
-	public ResponseEntity<? super GetReviewResponseDto> getReview(
-			@PathVariable int planPk
+	@GetMapping("/")
+	public ResponseEntity<? super GetReviewResponseDto> getReviews(
+			@AuthenticationPrincipal String userId
 	){
-		ResponseEntity<? super GetReviewResponseDto> response = reviewService.getReview(planPk);
+		ResponseEntity<? super GetReviewResponseDto> response = reviewService.getReviews(userId);
 		return response;
 	}
 	

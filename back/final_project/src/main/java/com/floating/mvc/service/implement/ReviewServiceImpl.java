@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.floating.mvc.dao.ReviewDao;
 import com.floating.mvc.dto.request.review.PutReviewRequestDto;
+import com.floating.mvc.dto.request.review.ReviewRequestDto;
 import com.floating.mvc.dto.response.ResponseDto;
 import com.floating.mvc.dto.response.review.GetReviewResponseDto;
 import com.floating.mvc.dto.response.review.ImageInfoDto;
@@ -40,19 +41,20 @@ public class ReviewServiceImpl implements ReviewService {
 	}
 	
 	@Override
-	public ResponseEntity<? super GetReviewResponseDto> getReview(int planPk) {
+	public ResponseEntity<? super GetReviewResponseDto> getReviews(String userId) {
 		
-		GetReviewResponseDto dto = null;
+		List<ReviewRequestDto> reviewList = null;
 		try {
 			
-			dto = reviewDao.getReview(planPk);
-			if(dto == null) return ResponseDto.noExistReview();
+			reviewList = reviewDao.getReviews(userId);
+			if(reviewList == null) return ResponseDto.noExistReview();
 			
 		}catch(Exception e) {
+			e.printStackTrace();
 			return ResponseDto.databaseError();
 		}
 		
-		return GetReviewResponseDto.success(dto);
+		return GetReviewResponseDto.success(reviewList);
 	}
 
 	@Override

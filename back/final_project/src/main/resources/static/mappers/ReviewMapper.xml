@@ -10,24 +10,33 @@
 	</insert>
 	
 	<!-- 리뷰 조회 -->
-	<resultMap id="ReviewWithImageResultMap" type="com.floating.mvc.dto.response.review.GetReviewResponseDto">
-		<id property="reviewPk" column="review_pk"/>
-		<result property="content" column="content"/>
-		
-		<collection property="imageUrls" ofType="com.floating.mvc.dto.response.review.ImageInfoDto">
-			<id property="imgPk" column="img_pk"/>
-			<result property="imgPath" column="img_path"/>
-		</collection>
+	<resultMap id="UserReviewResultMap" type="com.floating.mvc.dto.request.review.ReviewRequestDto">
+	    <id property="reviewPk" column="review_pk"/>    
+	    <result property="content" column="content"/>
+	    <result property="completeDate" column="complete_date"/>
+	    
+	    <collection property="imageUrls" resultMap="ImageInfoResultMap"/>
 	</resultMap>
-	<select id="getReview" resultMap="ReviewWithImageResultMap">
+	
+	<resultMap id="ImageInfoResultMap" type="com.floating.mvc.dto.response.review.ImageInfoDto">
+	    <id property="imgPk" column="img_pk"/>
+	    <result property="imgPath" column="img_path"/>
+	</resultMap>
+	
+	<select id="getReviews" resultMap="UserReviewResultMap">
 		SELECT 
 			r.review_pk,
 			r.content,
+			p.complete_date,
 			i.img_pk,
 			i.img_path 
-		FROM review r LEFT JOIN img i
+		FROM review r
+		INNER JOIN plan p
+		ON r.plan_pk = p.plan_pk 
+		LEFT JOIN img i
 		ON r.review_pk = i.review_pk
-		WHERE r.review_pk = #{reviewPk}
+		WHERE p.user_id = #{userId}
+		ORDER BY p.complete_date DESC
 	</select>
 	
 	<!-- 리뷰 수정 -->

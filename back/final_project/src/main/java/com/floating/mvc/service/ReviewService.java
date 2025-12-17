@@ -11,7 +11,7 @@ public interface ReviewService {
 	// 리뷰 삽입
 	ResponseEntity<ResponseDto> insertReview(int planPk);
 	// 리뷰 조회
-	ResponseEntity<? super GetReviewResponseDto> getReview(int planPk);
+	ResponseEntity<? super GetReviewResponseDto> getReviews(String userId);
 	// 리뷰 수정
 	ResponseEntity<ResponseDto> updateReview(PutReviewRequestDto dto);
 }
