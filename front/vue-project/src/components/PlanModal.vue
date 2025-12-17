@@ -5,8 +5,9 @@
         <div class="modal-content" @click.stop>
           <h2 class="modal-title">{{ title }}</h2>
           
-          <div class="modal-options">
+          <div class="modal-options" :class="{ single: singleButton }">
             <button 
+              v-if="!singleButton"
               class="option-button primary" 
               @click="handlePrimaryClick"
             >
@@ -14,7 +15,8 @@
             </button>
             
             <button 
-              class="option-button secondary" 
+              class="option-button" 
+              :class="singleButton ? 'secondary-single' : 'secondary'"
               @click="handleSecondaryClick"
             >
               {{ secondaryText }}
@@ -43,6 +45,10 @@ const props = defineProps({
   secondaryText: {
     type: String,
     required: true
+  },
+  singleButton: {
+    type: Boolean,
+    default: false
   }
 });
 
@@ -81,6 +87,7 @@ const handleSecondaryClick = () => {
   flex-direction: column;
   align-items: center;
   gap: 2rem;
+  white-space: pre-line;
 }
 
 .modal-title {
@@ -91,12 +98,22 @@ const handleSecondaryClick = () => {
   text-align: center;
   color: #FFFFFF;
   margin: 0;
-  max-width: 35.875rem;  /* 574px */
+  max-width: 40rem;
+  white-space: pre-line;
 }
 
 .modal-options {
   display: flex;
   gap: 2.5rem;  /* 40px */
+}
+
+.modal-options.single {
+  justify-content: center;
+}
+
+.option-button.secondary-single {
+  background: #769BEF;
+  color: #FFFFFF;
 }
 
 .option-button {
@@ -115,6 +132,7 @@ const handleSecondaryClick = () => {
   display: flex;
   align-items: center;
   justify-content: center;
+  white-space: pre-line;
 }
 
 .option-button:hover {

@@ -20,6 +20,7 @@ public class SignInResponseDto extends ResponseDto {
 	private String name;
 	private Date birth;
 	private String mbtiName;
+	private int petScore;
 	private String accessToken;
 	private Integer expiration;
 	
@@ -27,6 +28,7 @@ public class SignInResponseDto extends ResponseDto {
 		this.name = dto.getName();
 		this.birth = dto.getBirth();
 		this.mbtiName = dto.getMbtiName();
+		this.petScore = dto.getPetScore();
 		this.accessToken = accessToken;
 		this.expiration = 60 * 60 * 9;		// JwtProvider에 9시간으로 설정해놔서 9시간으로 넘겨주는거야. 
 											// 9시간 지나면 accessToken이 만료된다는 뜻이고, 시간은 그냥 9시간으로 했어. 바꿔도 돼!

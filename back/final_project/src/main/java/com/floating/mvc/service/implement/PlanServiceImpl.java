@@ -13,6 +13,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.event.TransactionalEventListener;
+import org.springframework.transaction.interceptor.TransactionAspectSupport;
 
 import com.floating.mvc.dao.PlanDao;
 import com.floating.mvc.dto.request.plan.PlanRegistRequestDto;
@@ -139,6 +140,49 @@ public class PlanServiceImpl implements PlanService {
 		}
 		
 		return ResponseDto.success(HttpStatus.OK);
+	}
+
+	@Override
+	public ResponseEntity<ResponseDto> insertWeeklyPlan(String userId) {
+
+		try {
+			
+			int result = planDao.insertWeeklyPlan(userId);
+
+			if(result == 0) return ResponseDto.databaseError();
+			
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+			return ResponseDto.databaseError();
+		}
+		
+		return ResponseDto.success(HttpStatus.CREATED);
+	}
+
+	@Override
+	@Transactional(rollbackFor = Exception.class)
+	public ResponseEntity<ResponseDto> shiftTodayPlanToTomorrow(String userId) {
+
+		try {
+			
+			int insertResult = planDao.insertTomorrowPlan(userId);
+			if (insertResult == 0) return ResponseDto.noExistPlan();
+			
+			int deleteResult = planDao.deleteTodayPlan(userId);
+			if(deleteResult == 0) {
+	            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly(); // 롤백 마킹
+	            return ResponseDto.databaseError();
+	        }
+			
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+			TransactionAspectSupport.currentTransactionStatus().setRollbackOnly(); // 롤백 마킹
+	        return ResponseDto.databaseError();
+		}
+		
+		return ResponseDto.success(HttpStatus.CREATED);
 	}
 
 }

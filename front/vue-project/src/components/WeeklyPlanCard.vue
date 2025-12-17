@@ -46,13 +46,29 @@
     </div>
 
     <!-- 주간 계획 생성 모달 -->
-    <PlanModal :isOpen="showCreateModal" title="어떤 방식으로 이번주 운동 계획을 작성할까요?" primaryText="지난 주 못한 운동으로 미루기"
-      secondaryText="AI기반 새로운 운동 추천받기" @close="showCreateModal = false" @primary-click="handlePostponePreviousWeek"
+    <PlanModal :isOpen="showCreateModal" 
+      title="어떤 방식으로 이번주 운동 계획을 작성할까요?" 
+      primaryText="지난 주 계획 
+      다시 
+      사용하기"
+      secondaryText="AI 기반 
+      새로운 계획 
+      추천받기" 
+      @close="showCreateModal = false" 
+      @primary-click="handlePostponePreviousWeek"
       @secondary-click="handleAIRecommendation" />
 
     <!-- 오늘 계획 변경 모달 -->
-    <PlanModal :isOpen="showChangeModal" title="어떤 방식으로 오늘 운동 계획을 수정할까요?" primaryText="다음 날로 미루기"
-      secondaryText="AI기반 대체 운동 추천받기" @close="showChangeModal = false" @primary-click="handlePostponeToday"
+    <PlanModal :isOpen="showChangeModal" 
+      :title="changeModalTitle" 
+      primaryText="다음 날로 
+      미루기"
+      secondaryText="AI기반 
+      대체 운동 
+      추천받기" 
+      :single-button="hasTomorrowPlan"
+      @close="showChangeModal = false" 
+      @primary-click="handlePostponeToday"
       @secondary-click="handleAIAlternative" />
   </div>
 </template>
@@ -72,7 +88,7 @@ const planStore = usePlanStore();
 const showCreateModal = ref(false);
 const showChangeModal = ref(false);
 
-// 오늘 계획이 있는지 확인
+// 오늘 계획 유무 확인
 const hasTodayPlan = computed(() => {
   return planStore.todayPlans && planStore.todayPlans.length > 0;
 });
@@ -89,6 +105,18 @@ const handleDayClick = async (day) => {
     console.error('계획 완료 토글 실패:', error);
   }
 };
+
+// 내일 계획 유무 확인
+const hasTomorrowPlan = computed(() => {
+  return planStore.tomorrowPlans && planStore.tomorrowPlans.length > 0;
+});
+
+// 내일 계획 유무에 따른 모달 설정
+const changeModalTitle = computed(() => {
+  return hasTomorrowPlan.value 
+    ? "오늘 운동 계획을 수정할까요?"
+    : "어떤 방식으로\n오늘 운동 계획을 수정할까요?";
+});
 
 const handlePostponePreviousWeek = async () => {
   await planStore.createWeeklyPlan('postpone');
@@ -294,8 +322,6 @@ const handleAIAlternative = async () => {
   /* 14px */
   color: #7D7D7D;
   margin: 0;
-  position: absolute;
-  bottom: 0.5rem;
   white-space: nowrap;
 }
 

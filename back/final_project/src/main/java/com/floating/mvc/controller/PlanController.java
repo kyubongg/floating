@@ -61,4 +61,20 @@ public class PlanController {
 		return response;
 	}
 	
+	@PostMapping("/weekly")
+	public ResponseEntity<ResponseDto> insertWeeklyPlan(
+		@AuthenticationPrincipal String userId
+	){
+		ResponseEntity<ResponseDto> response = planService.insertWeeklyPlan(userId);
+		return response;
+	}
+	
+	@PostMapping("/today")
+	public ResponseEntity<ResponseDto> shiftTodayPlanToTomorrow(
+			@AuthenticationPrincipal String userId
+	){
+		ResponseEntity<ResponseDto> response = planService.shiftTodayPlanToTomorrow(userId);
+		return response;
+	}
+	
 }
