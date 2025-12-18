@@ -66,8 +66,8 @@
 	<insert id="insertNewImages">
 		INSERT INTO img(img_path, review_pk)
 		VALUES 
-		<foreach collection="newImgs" item="img" separator=",">
-			(#{img.imgPath}, #{reviewPk})
+		<foreach collection="newImgs" item="path" separator=",">
+			(#{path}, #{reviewPk})
 		</foreach>
 	</insert>
 	

@@ -1,12 +1,16 @@
 package com.floating.mvc.service.implement;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.floating.mvc.dao.ReviewDao;
 import com.floating.mvc.dto.request.review.PutReviewRequestDto;
@@ -22,6 +26,9 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class ReviewServiceImpl implements ReviewService {
 
+	@Value("${file.upload-dir}")
+	private String uploadDir;
+	
 	private final ReviewDao reviewDao;
 	
 	@Override
@@ -66,13 +73,16 @@ public class ReviewServiceImpl implements ReviewService {
 			int reviewUpdateResult = reviewDao.updateReview(dto);
 			if(reviewUpdateResult == 0) return ResponseDto.noExistReview();
 			
+			List<ImageInfoDto> requestImagePaths = (dto.getImgPaths() == null)
+													? new ArrayList<>()
+													: dto.getImgPaths();
 			
 			// DB에 저장된 기존 이미지 PK 목록 조회
-			List<Integer> existImgPks = reviewDao.selectImgPksByReviewPk(reviewUpdateResult);
+			List<Integer> existImgPks = reviewDao.selectImgPksByReviewPk(dto.getReviewPk());
 			
 			// 요청 DTO에 포함된 이미지 PK 목록 추출
 			List<Integer> putImgPks = new ArrayList<>();
-			for(ImageInfoDto img : dto.getImagePaths()) {
+			for(ImageInfoDto img : dto.getImgPaths()) {
 				// pk가 0이 아닌 것만 유지할 목록에 추가
 				if(img.getImgPk() != 0) {
 					putImgPks.add(img.getImgPk());
@@ -89,16 +99,35 @@ public class ReviewServiceImpl implements ReviewService {
 				reviewDao.deleteImgsByPks(deletePks);
 			}
 			
-			// 새 이미지 추가
-			List<ImageInfoDto> newImages = new ArrayList<>();
-			for(ImageInfoDto img : dto.getImagePaths()) {
-				if(img.getImgPk() == 0) {
-					newImages.add(img);
+
+			// 새 이미지 물리 파일 저장 및 DB 등
+			if(dto.getImages() != null && !dto.getImages().isEmpty()) {
+				
+				List<String> savedPaths = new ArrayList<>();
+				
+				File directory = new File(uploadDir);
+
+			    if (!directory.exists()) {
+			        boolean isCreated = directory.mkdirs(); // mkdir()이 아니라 mkdirs()를 써야 하위까지 다 만듭니다.
+			        if (isCreated) {
+			            System.out.println("폴더가 생성되었습니다: " + uploadDir);
+			        }
+			    }
+				
+				for(MultipartFile file: dto.getImages()) {
+					
+					if (!file.isEmpty()) {
+						String fileName = UUID.randomUUID().toString() + "_" + file.getOriginalFilename();
+			            File saveFile = new File(uploadDir, fileName);
+			            file.transferTo(saveFile);
+			            
+			            savedPaths.add("/images/reviews/" + fileName);
+					}
 				}
-			}
-			
-			if(!newImages.isEmpty()) {
-				reviewDao.insertNewImages(dto.getReviewPk(), newImages);
+				
+				if(!savedPaths.isEmpty()) {
+					reviewDao.insertNewImages(dto.getReviewPk(), savedPaths);
+				}
 			}
 				
 			

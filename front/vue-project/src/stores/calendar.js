@@ -21,7 +21,28 @@ export const useCalenderStore = defineStore('calendar', () => {
       const response = await api.get('/review/');
 
       reviews.value = response.data.userReviews;
-      // console.log(response.data.userReviews);
+      console.log(response.data.userReviews);
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  // 리뷰 수정하기
+  const updateReview = async (reviewData) => {
+
+    try {
+
+      const response = await api.put(`/review/`, reviewData, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      });
+
+      await getReviews();
+      console.log(response.data);
+
+      return response.data;
+
     } catch (error) {
       throw error;
     }
@@ -30,6 +51,7 @@ export const useCalenderStore = defineStore('calendar', () => {
   return {
     reviews,
     getReviews,
+    updateReview,
 
   }
 })

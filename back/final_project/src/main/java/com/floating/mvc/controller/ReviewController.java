@@ -3,6 +3,7 @@ package com.floating.mvc.controller;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -31,9 +32,9 @@ public class ReviewController {
 		return response;
 	}
 	
-	@PutMapping("/{planPk}")
+	@PutMapping("/")
 	public ResponseEntity<ResponseDto> putReview(
-			@RequestBody PutReviewRequestDto dto
+			@ModelAttribute PutReviewRequestDto dto
 	){
 		ResponseEntity<ResponseDto> response = reviewService.updateReview(dto);
 		return response;

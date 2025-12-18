@@ -19,5 +19,5 @@ public interface ReviewDao {
 	// 이미지 삭제
 	void deleteImgsByPks(List<Integer> deletePks);
 	// 이미지 추가
-	void insertNewImages(int reviewPk, List<ImageInfoDto> newImgs);
+	void insertNewImages(int reviewPk, List<String> newImgs);
 }

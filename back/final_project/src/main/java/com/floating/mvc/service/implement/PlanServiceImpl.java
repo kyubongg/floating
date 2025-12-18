@@ -84,9 +84,6 @@ public class PlanServiceImpl implements PlanService {
 			
 			planList = planDao.selectAll(userId);
 			
-			
-			if(planList.size() == 0) return ResponseDto.noExistPlanList();
-			
 		}catch(Exception e) {
 			e.printStackTrace();
 			return ResponseDto.databaseError();
