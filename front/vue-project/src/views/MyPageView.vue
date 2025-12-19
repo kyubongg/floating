@@ -59,6 +59,10 @@
     </div>
     
     <div class="withdraw-section">
+      <a href="#" class="logout-link" @click.prevent="doLogout">
+        로그아웃 
+      </a>
+
       <a href="#" class="withdraw-link" @click.prevent="confirmWithdraw">
         탈퇴하시겠습니까?
       </a>
@@ -69,9 +73,11 @@
 <script setup>
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
+import { useAuthStore } from '@/stores/auth';
 import AppHeader from '@/components/AppHeader.vue';
 
 const router = useRouter();
+const auth = useAuthStore();
 
 // 더미 데이터
 const userInfo = ref({
@@ -90,6 +96,17 @@ const goToEditInfo = () => {
 
 const goToWbtiTest = () => {
   router.push('/wbti-test');
+};
+
+const message = ref("");
+
+const doLogout = async () => {
+  message.value = "";
+  
+  await auth.logout(); 
+  
+  message.value = "로그아웃 성공!";
+  router.push('/');
 };
 
 const confirmWithdraw = () => {
@@ -186,9 +203,12 @@ const confirmWithdraw = () => {
 }
 
 .withdraw-section {
-  text-align: center;
+  /* text-align: center; */
+  display: flex;
+  gap: 2.5rem;
 }
 
+.logout-link,
 .withdraw-link {
   font-family: 'Noto Sans KR', sans-serif;
   font-weight: 400;

@@ -110,22 +110,19 @@ export const useAuthStore = defineStore("auth", () => {
    * 로그아웃
    * - /logout 호출 후 user 상태를 null로 초기화
    */
-  const logout = () => {
+  const logout = async () => {
     loading.value = true;
-    error.value = null;
 
-    return api
-      .post("/user/logout")
-      .then(() => {
-        user.value = null;
-      })
-      .catch((e) => {
-        error.value = e?.response?.data || "로그아웃 실패";
-        // 굳이 throw 하지 않아도 되지만, 필요하면 여기서도 throw 가능
-      })
-      .finally(() => {
-        loading.value = false;
-      });
+    try {
+      localStorage.removeItem("accessToken");
+      error.value = null;
+    } 
+    catch (e) {
+      error.value = "로그아웃 중 오류가 발생했습니다.";
+    }
+    finally {
+      loading.value = false;
+    }
   };
 
   /**
