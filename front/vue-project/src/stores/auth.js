@@ -100,6 +100,7 @@ export const useAuthStore = defineStore("auth", () => {
         user.value = res.data;
         initialized.value = true;
 
+        console.log(user.value)
       })
       .catch((e) => {
         error.value = e?.response?.data || "로그인 실패";
