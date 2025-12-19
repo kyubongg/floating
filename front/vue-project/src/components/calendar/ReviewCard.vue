@@ -25,6 +25,7 @@
             :value="modelValue"
             @input="handleInput"
             :disabled="!isReviewEditable"
+            :placeholder="savingMessage"
           ></textarea>
           
           <div class="photo-slider-area">
@@ -70,7 +71,8 @@ const props = defineProps({
   formattedDate: String,
   plans: Array,
   getCategoryColor: Function,
-  initialImages: Array
+  initialImages: Array,
+  isSaving: Boolean,
 });
 
 const emit = defineEmits(['update:modelValue', 'close', 'save', 'image-upload', 'delete-existing-img']);
@@ -91,9 +93,27 @@ const allDisplayImages = computed(() => {
   return [...existing, ...news];
 });
 
+const savingMessage = computed(() => {
+  if (props.isSaving) return "저장 중...";
+
+  if(!props.isSaving && props.modelValue && !isReviewEditable.value) {
+    return '저장 완료!';
+  }
+
+  return isReviewEditable.value ? '리뷰를 남겨보세요' : '계획을 완료해야 리뷰 작성이 가능합니다.';
+})
+
 // 🎯 슬라이더 제어 로직
 const prevSlide = () => { if (currentIndex.value > 0) currentIndex.value--; };
 const nextSlide = () => { if (currentIndex.value < allDisplayImages.value.length - 1) currentIndex.value++; };
+
+// 부모로부터 새로운 리뷰 데이터를 받았을때
+watch(() => props.initialImages, () => {
+  // console.log(props.initialImages)
+  currentIndex.value = 0;
+  newFiles.value = [];
+  newPreviews.value = [];
+}, { deep: true, immediate: true });
 
 // 이미지가 삭제되었을 때 인덱스 보정
 watch(allDisplayImages, (newVal) => {

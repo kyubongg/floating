@@ -27,8 +27,9 @@
           v-model="reviewContent"
           :formattedDate="selectedDate.format('M월 D일')"
           :plans="selectedDayPlans"
-          :initialImage="initialImageUrl"
+          :initialImages="initialImages"
           :getCategoryColor="getCategoryColor"
+          :isSaving="isSaving"
           @close="closeReview"
           @save="saveReview" 
           @image-upload="handleImageUpload"
@@ -64,7 +65,8 @@ const selectedDate = ref(null);
 const reviewContent = ref(''); 
 const lastSavedTime = ref(0); 
 const selectedFiles = ref([]);
-const initialImageUrl = ref(null);
+const initialImages = ref([]);
+const isSaving = ref(false);
 const MIN_SAVE_INTERVAL = 60000; // 1분
 
 // --- Computed ---
@@ -134,13 +136,13 @@ watch(selectedDayReview, (newReview) => {
   
   // 기존 이미지 URL 초기화
   if (newReview?.imageUrls && newReview.imageUrls.length > 0){
-    initialImageUrl.value = newReview.imageUrls[0].imgPath;
+    initialImages.value = newReview.imageUrls;
     
   } else {
-    initialImageUrl.value = null;
+    initialImages.value = [];
   }
 
-  selectedFiles.value = null;
+  selectedFiles.value = [];
 }, { immediate: true });
 
 // --- Actions ---
@@ -153,21 +155,44 @@ const saveReview = (content) => {
         return; 
     }
 
+    isSaving.value = true;
+
     // 리뷰, 이미지 데이터 형태
     const reviewData = new FormData();
 
     reviewData.append('reviewPk', selectedDayReview.value.reviewPk);
     reviewData.append('content', content);
 
+    // 기존 이미지 유지 정보 추가
+    if (initialImages.value && initialImages.value.length > 0) {
+        initialImages.value.forEach((img, index) => {
+            reviewData.append(`imgPaths[${index}].imgPk`, img.imgPk);
+            reviewData.append(`imgPaths[${index}].imgPath`, img.imgPath);
+        });
+    }
+
+    // 새로 추가할 이미지 파일 추가
     if (selectedFiles.value && selectedFiles.value.length > 0) {
         selectedFiles.value.forEach(file => {
             reviewData.append('images', file); 
         });
     }
     
-    console.log(`[Autosave] 서버 저장 실행:`, reviewData);
-    calendarStore.updateReview(reviewData); // API 호출 로직 예시
-    lastSavedTime.value = currentTime;
+    console.log(reviewData);
+    try{
+      console.log(`[Autosave] 서버 저장 실행:`, reviewData);
+      calendarStore.updateReview(reviewData); // API 호출
+
+      lastSavedTime.value = currentTime;
+
+      setTimeout(() => {
+        isSaving.value = false;
+      }, 1500);
+
+    } catch (error) {
+      isSaving.value = false;
+    }
+    
 };
 
 const changeMonth = (delta) => {

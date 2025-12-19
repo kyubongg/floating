@@ -50,11 +50,11 @@
           <label class="input-label">성별</label>
           <div class="radio-group">
             <label class="radio-label">
-              <input type="radio" name="gender" value="남" v-model="formData.gender" required />
+              <input type="radio" name="gender" value="M" v-model="formData.gender" required />
               남
             </label>
             <label class="radio-label">
-              <input type="radio" name="gender" value="여" v-model="formData.gender" required />
+              <input type="radio" name="gender" value="F" v-model="formData.gender" required />
               여
             </label>
           </div>
