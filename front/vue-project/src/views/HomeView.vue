@@ -7,6 +7,7 @@
     - 사용자 정보는 백엔드 세션을 통해 유지되며,
       Vue 앱이 시작될 때 fetchMe()로 동기화된다.
   -->
+  <AppHeader/>
   <div class="home-container">
     <div class="top-section">
       <UserStatusCard />
@@ -20,6 +21,7 @@
 <script setup>
 import { onMounted } from 'vue';
 import { usePlanStore } from '@/stores/plan';
+import AppHeader from '../components/AppHeader.vue';
 import UserStatusCard from '../components/UserStatusCard.vue';
 import PetFeedback from '../components/PetFeedback.vue';
 import WeeklyPlanCard from '../components/WeeklyPlanCard.vue';

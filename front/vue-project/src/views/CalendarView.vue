@@ -6,6 +6,7 @@
     - 계획 정보와 리뷰 정보는 백엔드 세션을 통해 유지되며,
       Vue 앱이 시작될 때 fetchPlan(), getReviews()로 동기화된다.
   -->
+  <AppHeader/>
   <div class="calendar-container">
     <CalendarHeader :currentDate="currentDate" @changeMonth="changeMonth" />
 
@@ -46,6 +47,7 @@ import 'dayjs/locale/ko';
 import updateLocale from 'dayjs/plugin/updateLocale';
 import { usePlanStore } from '@/stores/plan';
 import { useCalenderStore } from '@/stores/calendar';
+import AppHeader from '@/components/AppHeader.vue';
 import CalendarHeader from '@/components/calendar/CalendarHeader.vue';
 import CalendarBody from '@/components/calendar/CalendarBody.vue';
 import ReviewCard from '@/components/calendar/ReviewCard.vue';
@@ -230,8 +232,8 @@ onMounted(() => {
 
 <style scoped>
 /* 전체 컨테이너 및 기본 설정 */
-.calendar-container { max-width: 505px; margin: 0 auto; font-family: sans-serif; }
-.header { display: flex; justify-content: space-between; align-items: center; padding: 10px; }
+.calendar-container { max-width: 505px; margin: 0 auto; font-family: sans-serif; padding-top: 5rem;}
+.header { display: flex; justify-content: space-between; align-items: center; padding: 10px;}
 
 /* 🎨 요일 헤더 스타일 (월요일 시작, 토/일 색상) */
 .days-header { 

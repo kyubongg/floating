@@ -1,4 +1,5 @@
 <template>
+  <AppHeader/>
   <div class="mypage-container">
     <div class="mypage-card">
       <h2 class="mypage-title">내 정보</h2>
@@ -68,6 +69,7 @@
 <script setup>
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
+import AppHeader from '@/components/AppHeader.vue';
 
 const router = useRouter();
 
