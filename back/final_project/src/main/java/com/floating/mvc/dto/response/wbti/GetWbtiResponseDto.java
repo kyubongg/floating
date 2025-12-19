@@ -17,10 +17,10 @@ public class GetWbtiResponseDto extends ResponseDto {
 	private int activityType;
 	
 	private GetWbtiResponseDto(WbtiRequestDto dto) {
-		this.socialType = dto.getSocialType();
-		this.motivationType = dto.getMotivationType();
-		this.executionType = dto.getExecutionType();
-		this.activityType = dto.getActivityType();
+//		this.socialType = dto.getSocialType();
+//		this.motivationType = dto.getMotivationType();
+//		this.executionType = dto.getExecutionType();
+//		this.activityType = dto.getActivityType();
 	}
 	
 	public static ResponseEntity<GetWbtiResponseDto> success(WbtiRequestDto dto){

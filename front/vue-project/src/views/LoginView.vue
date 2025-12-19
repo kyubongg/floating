@@ -75,8 +75,8 @@ const onSubmit = () => {
     })
     .then(() => {
       
-      if(auth.user.mbtiName === '미선택'){
-        router.push('/wbti-main');
+      if(!auth.hasWbti){
+        router.push('/wbti-test');
       }else{
         router.push('/home');
       }

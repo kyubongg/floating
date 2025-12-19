@@ -34,3 +34,10 @@ node_modules/
 
 # Vitest
 __screenshots__/
+
+# 환경 변수 파일 숨기기
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
