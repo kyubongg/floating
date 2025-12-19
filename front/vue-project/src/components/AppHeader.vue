@@ -26,7 +26,7 @@
 
     <!-- 오른쪽 사용자 정보 -->
     <div v-if="auth.isAuthenticated">
-      <span>안녕하세요, {{ auth.user.username }}님</span>
+      <span>안녕하세요, {{ auth.userName }}님</span>
 
       <!-- 로그아웃 버튼 -->
       <button @click="onLogout" style="margin-left: 8px;">

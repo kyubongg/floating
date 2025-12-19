@@ -1,33 +1,26 @@
 <!-- src/views/wbti/WbtiMainView.vue -->
 <template>
-  <div class="wbti-container">
-    <WbtiIntro v-if="step === 'START'" @onNext="step = 'TEST'" />
-    
-    <WbtiTest v-else-if="step === 'TEST'" @onComplete="onTestComplete" />
-    
-    <WbtiResult v-else-if="step === 'RESULT'" :resultData="finalData" />
-    
-    <WbtiLoading v-else-if="step === 'LOADING'" />
-  </div>
+    <div class="main-page">
+        <div class="logo-area">
+            <img class="logo-area__image"src="../../assets/imgs/haedal-workout3.png" alt="FLOATING 로고 수달 이미지" > 
+            <div class="logo-area__title">EBTI 검사 시작하기</div>
+            <span>EBTI는 운동 성향을 측정하는 검사입니다.</span>
+        </div>
+        <div>
+            <button class="start-button" @click="goToWbtiTest">검사 시작</button> 
+        </div>
+    </div>
 </template>
 
 <script setup>
-import { ref } from 'vue';
-import WbtiIntro from './components/WbtiIntro.vue';
-import WbtiTest from './components/WbtiTest.vue';
-import WbtiResult from './components/WbtiResult.vue';
-import WbtiLoading from './components/WbtiLoading.vue';
+import { useRouter } from 'vue-router';
 
-const step = ref('START'); // START, TEST, LOADING, RESULT
-const finalData = ref(null);
 
-const onTestComplete = async (data) => {
-  step.value = 'LOADING';
-  // 여기서 AI 호출 및 DB 저장 로직 실행...
-  // 처리가 완료되면
-  finalData.value = result;
-  step.value = 'RESULT';
-};
+    const router = useRouter();
+
+    const goToWbtiTest = () => {
+        router.push({ name: 'wbtiTest' });
+    }
 </script>
 
 <style scoped>

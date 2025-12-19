@@ -5,15 +5,37 @@
 
 	<!-- Plan을 추가한다. -->
 	<insert id="insertWbti">
-		INSERT INTO wbti(social_type, motivation_type, execution_type, activity_type, user_id)
-		VALUES (
-			#{socialType}, 
-			#{motivationType}, 
-			#{executionType}, 
-			#{activityType},
-			#{userId}
-		)
-	</insert>
+    INSERT INTO wbti (
+        social_score, 
+        motivation_score, 
+        execution_score, 
+        activity_score, 
+        wbti_code,
+        ai_analysis,
+        ai_economic_tip,
+        experiences,
+        quit_reason,
+        body_conditions,
+        available_time,
+        economy,
+        user_id
+    )
+    VALUES (
+        #{socialScore},      
+        #{motivationScore}, 
+        #{executionScore}, 
+        #{activityScore},
+        #{wbtiCode},
+        #{aiAnalysis},
+        #{aiEconomicTip},
+        #{experiencesString}, 
+        #{quitReason},
+        #{bodyConditionsString},
+        #{availableTime},
+        #{economy},
+        #{userId}
+    )
+</insert>
 	
 	<select id="selectByUserId">
 		SELECT * FROM wbti

@@ -19,7 +19,7 @@ import lombok.NoArgsConstructor;
 public class SignInResponseDto extends ResponseDto {
 	private String name;
 	private Date birth;
-	private String mbtiName;
+	private String wbtiCode;
 	private int petScore;
 	private String accessToken;
 	private Integer expiration;
@@ -27,7 +27,7 @@ public class SignInResponseDto extends ResponseDto {
 	private SignInResponseDto(UserRequestDto dto, String accessToken) {
 		this.name = dto.getName();
 		this.birth = dto.getBirth();
-		this.mbtiName = dto.getMbtiName();
+		this.wbtiCode = dto.getWbtiCode();
 		this.petScore = dto.getPetScore();
 		this.accessToken = accessToken;
 		this.expiration = 60 * 60 * 9;		// JwtProvider에 9시간으로 설정해놔서 9시간으로 넘겨주는거야. 

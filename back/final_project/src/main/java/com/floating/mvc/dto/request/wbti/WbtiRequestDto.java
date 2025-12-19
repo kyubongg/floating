@@ -9,8 +9,14 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class WbtiRequestDto {
 	private String userId;
-	private int socialType;
-	private int motivationType;
-	private int executionType;
-	private int activityType;
+	private String wbtiCode;
+	private int sociaScore;
+	private int motivationScore;
+	private int executionScore;
+	private int activityScore;
+	private String aiAnalysis;
+	private String aiEconomicTip;
+	private String pastExperiences;
+	private String bodyConditions;
+	private String availableTime;
 }

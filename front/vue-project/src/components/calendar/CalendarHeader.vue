@@ -9,8 +9,7 @@
 </template>
 
 <script setup>
-  import { defineProps, defineEmits } from 'vue';
-
+  
   defineProps({
     currentDate: {
       type: Object,

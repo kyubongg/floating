@@ -19,6 +19,9 @@ export const useAuthStore = defineStore("auth", () => {
 
   // ---------- getters ----------
   const isAuthenticated = computed(() => !!user.value);
+  const hasWbti = computed(() => {
+    return !!(user.value && user.value.wbtiCode);
+  });
 
   const userName = computed(() => user.value?.name || '게스트');
   const userMbtiName = computed(() => user.value?.mbtiName || '미정');
@@ -96,6 +99,7 @@ export const useAuthStore = defineStore("auth", () => {
         // 사용자 정보 업데이트
         user.value = res.data;
         initialized.value = true;
+
       })
       .catch((e) => {
         error.value = e?.response?.data || "로그인 실패";
@@ -171,6 +175,7 @@ export const useAuthStore = defineStore("auth", () => {
     loading,
     error,
     isAuthenticated,
+    hasWbti,
     userName,
     userMbtiName,
     currentScore,
