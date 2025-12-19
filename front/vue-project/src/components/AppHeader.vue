@@ -18,9 +18,10 @@
   >
     <!-- 왼쪽 메뉴 -->
     <div>
-      <RouterLink to="/">Home</RouterLink>
+      <RouterLink to="/home">Home</RouterLink>
       <RouterLink to="/signup" style="margin-left: 8px;">Signup</RouterLink>
       <RouterLink to="/login" style="margin-left: 8px;">Login</RouterLink>
+      <RouterLink to="/calendar" style="margin-left: 8px;">Calendar</RouterLink>
     </div>
 
     <!-- 오른쪽 사용자 정보 -->

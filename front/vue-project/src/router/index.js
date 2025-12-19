@@ -14,7 +14,7 @@ import { useAuthStore } from "../stores/auth";
 import WbtiMainView from "@/views/wbti/WbtiMainView.vue";
 import WbtiTestView from "@/views/wbti/WbtiTestView.vue";
 import WbtiResultView from "@/views/wbti/WbtiResultView.vue";
-import CalendarView from "@/views/calendar/CalendarView.vue";
+import CalendarView from "@/views/CalendarView.vue";
 
 // 라우터 인스턴스 생성
 const router = createRouter({

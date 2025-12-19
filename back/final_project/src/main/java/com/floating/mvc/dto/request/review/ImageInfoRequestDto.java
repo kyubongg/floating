@@ -11,5 +11,5 @@ import lombok.Setter;
 @AllArgsConstructor
 public class ImageInfoRequestDto {
 	
-	private String imagePath;
+	private String imgPath;
 }

@@ -97,6 +97,8 @@ import { computed, ref } from 'vue';
             try{
                 alert('검사가 완료되었습니다. 결과 페이지로 이동합니다.');
 
+                
+
                 const result = await wbtiStore.submitResults();
                 console.log('서버 응답:', result);
 
