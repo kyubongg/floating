@@ -115,6 +115,7 @@ export const useAuthStore = defineStore("auth", () => {
 
     try {
       localStorage.removeItem("accessToken");
+      user.value = null;
       error.value = null;
     } 
     catch (e) {
