@@ -11,7 +11,7 @@ public interface WbtiService {
 	// wbti 검사 결과 등록
 	ResponseEntity<ResponseDto> insertWbti(PostWbtiRequestDto dto, String userId);
 	// 유저 wbti 조회
-	ResponseEntity<? super GetWbtiResponseDto> selectByUserId(String userId);
+	ResponseEntity<? super GetWbtiResponseDto> getWbtiResult(String userId);
 	// 유저 wbti 수정
 	ResponseEntity<ResponseDto> updateWbti(PutWbtiRequestDto dto, String userId);
 }

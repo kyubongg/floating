@@ -23,7 +23,7 @@
             :class="{ 'active': dayObj.isSelected }"
             @click="$emit('selectDateFromWeek', dayObj.dayjsInstance)"
           >
-            <span class="day-name-small">{{ dayObj.dayName }}</span>
+            <!-- <span class="day-name-small">{{ dayObj.dayName }}</span> -->
             <span class="date-number">{{ dayObj.dateNum }}</span>
           </div>
         </div>

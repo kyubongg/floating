@@ -40,12 +40,12 @@ public class WbtiServiceImpl implements WbtiService {
 	}
 
 	@Override
-	public ResponseEntity<? super GetWbtiResponseDto> selectByUserId(String userId) {
+	public ResponseEntity<? super GetWbtiResponseDto> getWbtiResult(String userId) {
 		
 		WbtiRequestDto body = null;
 		try {
 			
-			body = wbtiDao.selectByUserId(userId);
+			body = wbtiDao.getWbtiResult(userId);
 			if(body == null)
 				return ResponseDto.noExistWbti();
 			

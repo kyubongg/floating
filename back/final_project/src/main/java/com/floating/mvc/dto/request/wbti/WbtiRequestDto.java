@@ -1,22 +1,22 @@
 package com.floating.mvc.dto.request.wbti;
 
-import lombok.AllArgsConstructor;
+import java.util.Map;
+
 import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Getter
-@NoArgsConstructor
-@AllArgsConstructor
+@Setter
 public class WbtiRequestDto {
-	private String userId;
-	private String wbtiCode;
-	private int sociaScore;
-	private int motivationScore;
-	private int executionScore;
-	private int activityScore;
-	private String aiAnalysis;
-	private String aiEconomicTip;
-	private String pastExperiences;
-	private String bodyConditions;
-	private String availableTime;
+    private String userId;
+    private String wbtiCode;
+    
+    private Float socialScore;
+    private Float motivationScore;
+    private Float executionScore;
+    private Float activityScore;
+    
+    // JSON 컬럼에 매핑될 객체들
+    private Map<String, Object> aiResult;
+    private Map<String, Object> userConditions;
 }
