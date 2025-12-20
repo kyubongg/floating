@@ -19,6 +19,9 @@ export const useAuthStore = defineStore("auth", () => {
 
   // ---------- getters ----------
   const isAuthenticated = computed(() => !!user.value);
+  const hasWbti = computed(() => {
+    return !!(user.value && user.value.wbtiCode);
+  });
 
   const userName = computed(() => user.value?.name || '게스트');
   const userMbtiName = computed(() => user.value?.mbtiName || '미정');
@@ -226,6 +229,7 @@ export const useAuthStore = defineStore("auth", () => {
     loading,
     error,
     isAuthenticated,
+    hasWbti,
     userName,
     userMbtiName,
     currentScore,

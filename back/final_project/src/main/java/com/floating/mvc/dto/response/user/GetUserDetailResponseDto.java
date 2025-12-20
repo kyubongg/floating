@@ -22,7 +22,7 @@ public class GetUserDetailResponseDto extends ResponseDto {
     private char gender;
     private int height;
     private int weight;
-    private String mbtiName;
+    private String wbtiCode;
     private int petScore;
     
     private GetUserDetailResponseDto(UserRequestDto dto) {
@@ -33,7 +33,7 @@ public class GetUserDetailResponseDto extends ResponseDto {
     	this.gender = dto.getGender();
     	this.height = dto.getHeight();
     	this.weight = dto.getWeight();
-    	this.mbtiName = dto.getMbtiName();
+    	this.wbtiCode = dto.getWbtiCode();
     	this.petScore = dto.getPetScore();
     }
     

@@ -43,10 +43,10 @@
 	        u.gender,
 	        u.height,
 	        u.weight,
-	        m.name AS mbtiName,
+	        w.wbti_code AS wbtiCode,
 	        p.score AS petScore
 	    FROM user u
-	    LEFT JOIN mbti m ON u.mbti_pk = m.mbti_pk
+	    LEFT JOIN wbti w ON u.id = w.user_id
 	    LEFT JOIN pet p ON u.id = p.user_id
 	    WHERE u.id = #{userId}
 	</select>

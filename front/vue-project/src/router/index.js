@@ -11,7 +11,7 @@ import EditProfileView from "../views/EditProfileView.vue";
 
 // 인증 상태 관리 (Pinia)
 import { useAuthStore } from "../stores/auth";
-import WbtiMainView from "@/views/wbti/WbtiMainView.vue";
+import WbtiMainView from "@/views/wbti/WbtiMainView2.vue";
 import WbtiTestView from "@/views/wbti/WbtiTestView.vue";
 import WbtiResultView from "@/views/wbti/WbtiResultView.vue";
 import CalendarView from "@/views/CalendarView.vue";
@@ -57,16 +57,10 @@ const router = createRouter({
       component: EditProfileView,
     },
     {
-      path: "/wbti-main",
-      name: "wbtiMain",
-      component: WbtiMainView,
-      meta: { requiresAuth: true }, // 🔐 로그인 필요
-    },
-    {
       path: "/wbti-test",
       name: "wbtiTest",
       component: WbtiTestView,
-      meta: { requiresAuth: true }, // 🔐 로그인 필요
+      meta: { requiresAuth: true, disallowHasWbti: true }, // 🔐 로그인 필요
     },
     {
       path: "/wbti-result",
@@ -111,18 +105,28 @@ router.beforeEach((to, from, next) => {
 });
 
 // 라우팅 처리 로직을 함수로 분리 (가독성 ↑)
+// src/router/index.js 수정
 function proceedRouting(to, next, auth) {
-  // 1) 로그인 필요한 페이지인데 로그인 안 되어 있음 → /login
-  if (to.meta.requiresAuth && !auth.isAuthenticated) {
+  const isAuthorized = auth.isAuthenticated;
+  const hasWbti = auth.hasWbti === true; // 확실하게 true인지 체크
+
+  // 1) 로그인하지 않은 유저가 보호된 페이지 접근 시
+  if (to.meta.requiresAuth && !isAuthorized) {
     return next({ name: "login", query: { redirect: to.fullPath } });
   }
 
-  // 2) 로그인한 사용자가 다시 로그인/회원가입으로 가려는 경우 → 홈으로
-  if ((to.name === "login" || to.name === "signup") && auth.isAuthenticated) {
+  // 2) 로그인한 유저가 다시 로그인/회원가입 페이지 접근 시 (이때만 홈으로)
+  if (isAuthorized && (to.name === "login" || to.name === "signup")) {
     return next({ name: "home" });
   }
 
-  // 3) 그 외 정상 라우팅
+  // 3) WBTI 이미 한 유저가 테스트 페이지 접근 시
+  if (to.meta.disallowHasWbti && hasWbti) {
+    alert("이미 검사를 완료하셨습니다. 결과 페이지로 이동합니다.");
+    return next({ name: 'wbtiResult' });
+  }
+
+  // 4) 그 외엔 가려던 곳으로 보냄
   return next();
 }
 

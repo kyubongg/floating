@@ -8,7 +8,7 @@ public interface WbtiDao {
 	// wbti 검사 결과 등록
 	int insertWbti(PostWbtiRequestDto dto);
 	// 유저 wbti 조회
-	WbtiRequestDto selectByUserId(String userId);
+	WbtiRequestDto getWbtiResult(String userId);
 	// 유저 wbti 수정
 	int updateByUserId(PutWbtiRequestDto dto);
 }

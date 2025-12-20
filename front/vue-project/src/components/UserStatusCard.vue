@@ -1,6 +1,6 @@
 <template>
     <div class="status-card">
-        <h2 class="user-info">{{ auth.userName }}님 | {{ auth.userMbtiName }} 운동러</h2>
+        <h2 class="user-info">{{ auth.userName }}님 | {{ auth.user.wbtiCode }} 운동러</h2>
 
         <!-- 레벨 & 경험치 바 -->
         <div class="level-exp-container">

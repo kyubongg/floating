@@ -8,6 +8,7 @@
   -->
   <div>
     <div class="login-container">
+      
       <div class="login-card">
         <h2 class="login-title">로그인</h2>
 
@@ -51,6 +52,7 @@ import { useAuthStore } from "../stores/auth";
 
 // Router: 로그인 성공 시 redirect 처리
 import { useRouter, useRoute } from "vue-router";
+import AppHeader from "@/components/AppHeader.vue";
 
 const auth = useAuthStore();
 const router = useRouter();
@@ -75,8 +77,8 @@ const onSubmit = () => {
     })
     .then(() => {
       
-      if(auth.user.mbtiName === '미선택'){
-        router.push('/wbti-main');
+      if(!auth.hasWbti){
+        router.push('/wbti-test');
       }else{
         router.push('/home');
       }

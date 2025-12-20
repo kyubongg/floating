@@ -232,7 +232,7 @@ onMounted(() => {
 
 <style scoped>
 /* 전체 컨테이너 및 기본 설정 */
-.calendar-container { max-width: 505px; margin: 0 auto; font-family: sans-serif; padding-top: 5rem;}
+.calendar-container { max-width: 505px; margin: 0 auto; font-family: 'Noto Sans KR', sans-serif; padding-top: 5rem;}
 .header { display: flex; justify-content: space-between; align-items: center; padding: 10px;}
 
 /* 🎨 요일 헤더 스타일 (월요일 시작, 토/일 색상) */
