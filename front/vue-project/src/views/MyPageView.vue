@@ -1,6 +1,11 @@
 <template>
   <AppHeader/>
   <div class="mypage-container">
+    <PasswordConfirmModal 
+    :isOpen="showPasswordModal" 
+    @close="showPasswordModal = false" 
+    @confirm="confirmWithdraw" />
+
     <div class="mypage-card">
       <h2 class="mypage-title">내 정보</h2>
       
@@ -63,7 +68,7 @@
         로그아웃 
       </a>
 
-      <a href="#" class="withdraw-link" @click.prevent="confirmWithdraw">
+      <a href="#" class="withdraw-link" @click.prevent="showPasswordModal = true">
         탈퇴하시겠습니까?
       </a>
     </div>
@@ -75,9 +80,13 @@ import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { useAuthStore } from '@/stores/auth';
 import AppHeader from '@/components/AppHeader.vue';
+import PasswordConfirmModal from '@/components/PasswordConfirmModal.vue';
 
 const router = useRouter();
 const auth = useAuthStore();
+
+const message = ref("");
+const showPasswordModal = ref(false);
 
 const goToEditInfo = () => {
   router.push('/edit-profile');
@@ -86,8 +95,6 @@ const goToEditInfo = () => {
 const goToWbtiTest = () => {
   router.push('/wbti-test');
 };
-
-const message = ref("");
 
 const doLogout = async () => {
   try {
@@ -100,9 +107,15 @@ const doLogout = async () => {
   }
 };
 
-const confirmWithdraw = () => {
-  // 비밀번호 확인 모듈
-  // 탈퇴 로직 진행
+const confirmWithdraw = async (password) => {
+  try {
+    await auth.withdraw(password);
+    alert('회원탈퇴 되었습니다!');
+
+    router.push('/home');
+  } catch (e) {
+    alert(auth.error);
+  }
 };
 </script>
 

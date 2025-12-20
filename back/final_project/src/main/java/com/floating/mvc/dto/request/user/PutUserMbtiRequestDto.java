@@ -11,7 +11,6 @@ import lombok.Setter;
 @AllArgsConstructor
 public class PutUserMbtiRequestDto {
 
-	private String id;
 	private int mbtiPk;
 	
 }

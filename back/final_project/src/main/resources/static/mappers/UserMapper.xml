@@ -69,13 +69,13 @@
 		UPDATE user
 		SET
 			mbti_pk = #{mbtiPk}
-		WHERE id = #{id}
+		WHERE id = #{userId}
 	</update>
 	
 	<!-- User 삭제 (회원탈퇴)를 진행한다. -->
 	<delete id="deleteUser">
 		DELETE FROM user
-		WHERE id = #{id}
+		WHERE id = #{userId}
 	</delete>
 	
 	<!-- 비밀번호를 확인한다. -->

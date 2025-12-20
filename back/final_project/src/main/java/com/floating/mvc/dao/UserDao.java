@@ -27,6 +27,6 @@ public interface UserDao {
     int deleteUser(String userId);
     
     //비밀번호 확인
-    String selectPasswordById(String id);
+    String selectPasswordById(String userId);
     
 }

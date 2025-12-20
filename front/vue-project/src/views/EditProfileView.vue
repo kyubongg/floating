@@ -72,6 +72,7 @@ import PasswordConfirmModal from '@/components/PasswordConfirmModal.vue';
 const router = useRouter();
 const auth = useAuthStore();
 
+const showPasswordModal = ref(false);
 const formData = ref({
   email: '',
   name: '',
@@ -80,8 +81,6 @@ const formData = ref({
   height: '',
   weight: ''
 });
-
-const showPasswordModal = ref(false);
 
 // 페이지 로드 시 기존 정보 불러오기
 onMounted(() => {
@@ -109,7 +108,7 @@ const saveChanges = async (password) => {
 
     router.push('/mypage');
   } catch (e) {
-    alert('비밀번호가 일치하지 않습니다.');
+    alert(auth.error);
   }
 };
 
