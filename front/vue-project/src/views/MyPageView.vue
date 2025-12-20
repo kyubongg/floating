@@ -8,43 +8,43 @@
         <div class="info-row">
           <span class="info-label">이메일</span>
           <span class="info-divider">|</span>
-          <span class="info-value">{{ userInfo.email }}</span>
+          <span class="info-value">{{ auth.user?.email }}</span>
         </div>
         
         <div class="info-row">
           <span class="info-label">이름</span>
           <span class="info-divider">|</span>
-          <span class="info-value">{{ userInfo.name }}</span>
+          <span class="info-value">{{ auth.user?.name }}</span>
         </div>
         
         <div class="info-row">
           <span class="info-label">생년월일</span>
           <span class="info-divider">|</span>
-          <span class="info-value">{{ userInfo.birth }}</span>
+          <span class="info-value">{{ auth.user?.birth }}</span>
         </div>
         
         <div class="info-row">
           <span class="info-label">성별</span>
           <span class="info-divider">|</span>
-          <span class="info-value">{{ userInfo.gender }}</span>
+          <span class="info-value">{{ auth.user?.gender }}</span>
         </div>
         
         <div class="info-row">
           <span class="info-label">키</span>
           <span class="info-divider">|</span>
-          <span class="info-value">{{ userInfo.height }}</span>
+          <span class="info-value">{{ auth.user?.height }}</span>
         </div>
         
         <div class="info-row">
           <span class="info-label">몸무게</span>
           <span class="info-divider">|</span>
-          <span class="info-value">{{ userInfo.weight }}</span>
+          <span class="info-value">{{ auth.user?.weight }}</span>
         </div>
         
         <div class="info-row">
           <span class="info-label">WBTI</span>
           <span class="info-divider">|</span>
-          <span class="info-value">{{ userInfo.wbti }}</span>
+          <span class="info-value">{{ auth.user?.mbtiName }}</span>
         </div>
       </div>
       
@@ -79,17 +79,6 @@ import AppHeader from '@/components/AppHeader.vue';
 const router = useRouter();
 const auth = useAuthStore();
 
-// 더미 데이터
-const userInfo = ref({
-  email: 'ssafy@ssafy.com',
-  name: '유규봉',
-  birth: '2025-01-01',
-  gender: '남',
-  height: '2m',
-  weight: '100kg',
-  wbti: 'ISFP'
-});
-
 const goToEditInfo = () => {
   router.push('/edit-profile');
 };
@@ -101,12 +90,14 @@ const goToWbtiTest = () => {
 const message = ref("");
 
 const doLogout = async () => {
-  message.value = "";
-  
-  await auth.logout(); 
-  
-  message.value = "로그아웃 성공!";
-  router.push('/');
+  try {
+    await auth.logout();
+
+    message.value = "로그아웃 성공!";
+    router.push('/'); 
+  } catch (error) {
+    console.error("로그아웃 실패:", error);
+  }
 };
 
 const confirmWithdraw = () => {

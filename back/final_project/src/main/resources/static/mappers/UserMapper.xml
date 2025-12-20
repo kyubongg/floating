@@ -55,13 +55,13 @@
 	<update id="updateUser">
 		UPDATE user
 		SET
-			pw = #{pw},
-			name = #{name},
-			birth = #{birth},
-			gender = #{gender},
-			height = #{height},
-			weight = #{weight}
-		WHERE id = #{id}
+			email = #{dto.email},
+			name = #{dto.name},
+			birth = #{dto.birth},
+			gender = #{dto.gender},
+			height = #{dto.height},
+			weight = #{dto.weight}
+		WHERE id = #{userId}
 	</update>
 	
 	<!-- User Mbti 정보를 수정한다. -->

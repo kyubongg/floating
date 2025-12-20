@@ -20,7 +20,7 @@
       <router-link 
         to="/mypage" 
         class="nav-item"
-        :class="{ active: isActive('/mypage') }"
+        :class="{ active: isActive('/mypage') || isActive('/edit-profile') }"
       >
         마이페이지
       </router-link>

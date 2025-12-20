@@ -73,7 +73,7 @@ export const useAuthStore = defineStore("auth", () => {
    * - username/password로 /login 호출
    * - 성공 시 user 상태를 응답 값으로 세팅
    */
-  const login = ({ id, pw }) => {
+  const login = async({ id, pw }) => {
     loading.value = true;
     error.value = null;
 
@@ -82,28 +82,24 @@ export const useAuthStore = defineStore("auth", () => {
       pw: pw,
     }
 
-    return api
-      .post("/user/signin", requestBody, {
+    try {
+      const res = await api.post("/user/signin", requestBody, {
         headers: {
           "Content-Type": "application/json",
         },
-      })
-      .then((res) => {
-        // 백엔드에서 내려준 JSON: { username: "..." }
-        const accessToken = res.data.accessToken;
-        localStorage.setItem("accessToken", accessToken);
-
-        // 사용자 정보 업데이트
-        user.value = res.data;
-        initialized.value = true;
-      })
-      .catch((e) => {
-        error.value = e?.response?.data || "로그인 실패";
-        throw e;
-      })
-      .finally(() => {
-        loading.value = false;
       });
+
+      const accessToken = res.data.accessToken;
+      localStorage.setItem("accessToken", accessToken);
+      await fetchMe();
+
+      return res;
+    } catch (e) {
+      error.value = e?.response?.data || "로그인 실패";
+        throw e;
+    } finally {
+      loading.value = false;
+    }
   };
 
   /**
@@ -162,6 +158,40 @@ export const useAuthStore = defineStore("auth", () => {
       })
   };
 
+  /**
+   * 회원 정보 수정
+   */
+const editProfile = async( password, formData ) => {
+    loading.value = true;
+    error.value = null;
+
+    const requestBody = {
+      pw: password,
+      email: formData.value.email,
+      name: formData.value.name,
+      birth: formData.value.birth,
+      gender: formData.value.gender,
+      height: formData.value.height,
+      weight: formData.value.weight
+    }
+    try {
+      const res = await api.put("/user/", requestBody, {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      await fetchMe();
+
+      return res;
+    } catch (e) {
+      error.value = e?.response?.data || "회원 정보 수정 실패";
+      throw e;
+    } finally {
+      loading.value = false;
+    }
+  };
+
   // 스토어에서 외부로 노출할 상태/메서드
   return {
     user,
@@ -179,5 +209,6 @@ export const useAuthStore = defineStore("auth", () => {
     login,
     logout,
     fetchMe,
+    editProfile,
   };
 });

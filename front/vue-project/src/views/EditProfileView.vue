@@ -1,24 +1,30 @@
 <template>
+  <AppHeader />
   <div class="edit-container">
+    <PasswordConfirmModal 
+    :isOpen="showPasswordModal" 
+    @close="showPasswordModal = false" 
+    @confirm="saveChanges" />
+
     <div class="edit-card">
       <h2 class="edit-title">정보 수정</h2>
-      
+
       <div class="input-group">
         <div class="input-row">
           <label class="input-label">이메일</label>
           <input type="email" class="input-value" v-model="formData.email" required />
         </div>
-        
+
         <div class="input-row">
           <label class="input-label">이름</label>
           <input type="text" class="input-value" v-model="formData.name" required />
         </div>
-        
+
         <div class="input-row">
           <label class="input-label">생년월일</label>
           <input type="date" class="input-value" v-model="formData.birth" required />
         </div>
-        
+
         <div class="input-row">
           <label class="input-label">성별</label>
           <div class="radio-group">
@@ -32,23 +38,23 @@
             </label>
           </div>
         </div>
-        
+
         <div class="input-row">
           <label class="input-label">키</label>
           <input type="text" class="input-value" v-model="formData.height" required />
         </div>
-        
+
         <div class="input-row">
           <label class="input-label">몸무게</label>
           <input type="text" class="input-value" v-model="formData.weight" required />
         </div>
       </div>
-      
+
       <div class="button-group">
         <button class="action-button cancel-button" @click="cancel">
           취소
         </button>
-        <button class="action-button save-button" @click="saveChanges">
+        <button class="action-button save-button" @click="showPasswordModal = true">
           저장
         </button>
       </div>
@@ -57,10 +63,14 @@
 </template>
 
 <script setup>
+import { useAuthStore } from '@/stores/auth';
 import { ref, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
+import AppHeader from '@/components/AppHeader.vue';
+import PasswordConfirmModal from '@/components/PasswordConfirmModal.vue';
 
 const router = useRouter();
+const auth = useAuthStore();
 
 const formData = ref({
   email: '',
@@ -71,16 +81,17 @@ const formData = ref({
   weight: ''
 });
 
+const showPasswordModal = ref(false);
+
 // 페이지 로드 시 기존 정보 불러오기
 onMounted(() => {
-  // 더미데이터
   formData.value = {
-    email: 'ssafy@ssafy.com',
-    name: '유규봉',
-    birth: '2025-01-01',
-    gender: '남',
-    height: '2m',
-    weight: '100kg'
+    email: auth.user.email,
+    name: auth.user.name,
+    birth: auth.user.birth,
+    gender: auth.user.gender,
+    height: auth.user.height,
+    weight: auth.user.weight
   };
 });
 
@@ -88,13 +99,20 @@ const cancel = () => {
   router.push('/mypage');
 };
 
-const saveChanges = () => {
+const saveChanges = async (password) => {
   console.log('저장할 데이터:', formData.value);
-  // API 호출하여 정보 수정
-  alert('정보가 수정되었습니다!');
+  console.log('입력 비밀번호:', password);
 
-  router.push('/mypage');
+  try {
+    await auth.editProfile(password, formData);
+    alert('정보가 수정되었습니다!');
+
+    router.push('/mypage');
+  } catch (e) {
+    alert('비밀번호가 일치하지 않습니다.');
+  }
 };
+
 </script>
 
 <style scoped>
@@ -109,37 +127,47 @@ const saveChanges = () => {
 
 .edit-card {
   position: relative;
-  width: 23.4375rem;  /* 375px */
+  width: 23.4375rem;
+  /* 375px */
   background: #FFFFFF;
   border: 1px solid #ECECEC;
   box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
-  border-radius: 3.4375rem;  /* 55px */
-  padding: 2.625rem 2.5rem;  /* 42px 40px */
+  border-radius: 3.4375rem;
+  /* 55px */
+  padding: 2.625rem 2.5rem;
+  /* 42px 40px */
   box-sizing: border-box;
 }
 
 .edit-title {
   font-family: 'Noto Sans KR', sans-serif;
   font-weight: 700;
-  font-size: 1rem;  /* 16px */
-  line-height: 1.1875rem;  /* 19px */
+  font-size: 1rem;
+  /* 16px */
+  line-height: 1.1875rem;
+  /* 19px */
   color: #000000;
-  margin: 0 0 3rem 0;  /* 48px */
+  margin: 0 0 3rem 0;
+  /* 48px */
 }
 
 .input-group {
   display: flex;
   flex-direction: column;
-  gap: 0.7rem; /* 11.2px */
-  margin-bottom: 3rem;  /* 48px */
+  gap: 0.7rem;
+  /* 11.2px */
+  margin-bottom: 3rem;
+  /* 48px */
 }
 
 .input-row {
   display: flex;
   align-items: center;
   font-family: 'Noto Sans KR', sans-serif;
-  font-size: 0.9375rem;  /* 15px */
-  line-height: 2.5rem;  /* 40px */
+  font-size: 0.9375rem;
+  /* 15px */
+  line-height: 2.5rem;
+  /* 40px */
   color: #000000;
 }
 
@@ -151,13 +179,17 @@ const saveChanges = () => {
 .input-value {
   flex: 1;
   font-weight: 400;
-  height: 1.5rem;  /* 24px */
+  height: 1.5rem;
+  /* 24px */
   background: #D9D9D9;
   border: none;
-  border-radius: 0.5rem;  /* 8px */
-  padding: 0 0.75rem;  /* 8px */
+  border-radius: 0.5rem;
+  /* 8px */
+  padding: 0 0.75rem;
+  /* 8px */
   font-family: 'Noto Sans KR', sans-serif;
-  font-size: 0.875rem;  /* 14px */
+  font-size: 0.875rem;
+  /* 14px */
   box-sizing: border-box;
 }
 
@@ -189,19 +221,25 @@ const saveChanges = () => {
 .button-group {
   display: flex;
   justify-content: center;
-  gap: 0.75rem;  /* 12px */
+  gap: 0.75rem;
+  /* 12px */
 }
 
 .action-button {
-  width: 6.1875rem;  /* 99px */
-  height: 2.5rem;  /* 40px */
+  width: 6.1875rem;
+  /* 99px */
+  height: 2.5rem;
+  /* 40px */
   background: #7D7D7D;
   border: 1px solid #7D7D7D;
-  border-radius: 1.875rem;  /* 30px */
+  border-radius: 1.875rem;
+  /* 30px */
   font-family: 'Noto Sans KR', sans-serif;
   font-weight: 700;
-  font-size: 0.75rem;  /* 12px */
-  line-height: 0.875rem;  /* 14px */
+  font-size: 0.75rem;
+  /* 12px */
+  line-height: 0.875rem;
+  /* 14px */
   text-align: center;
   color: #FFFFFF;
   cursor: pointer;
