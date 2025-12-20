@@ -34,10 +34,10 @@ public class WbtiController {
 	}
 	
 	@GetMapping("/")
-	public ResponseEntity<? super GetWbtiResponseDto> selectByUserId(
+	public ResponseEntity<? super GetWbtiResponseDto> getWbtiResult(
 			@AuthenticationPrincipal String userId
 	){
-		ResponseEntity<? super GetWbtiResponseDto> response = wbtiService.selectByUserId(userId);
+		ResponseEntity<? super GetWbtiResponseDto> response = wbtiService.getWbtiResult(userId);
 		return response;
 	}
 	

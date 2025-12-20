@@ -169,16 +169,18 @@ const isReviewEditable = computed(() => props.plans && props.plans.some(plan => 
   max-width: 505px; min-height: 483px; background: #FFFFFF;
   border: 1px solid #ECECEC; box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
   border-radius: 55px; padding: 30px; 
+  font-family: 'Noto Sans KR', sans-serif !important;
 }
 
 .review-photo-container { display: flex; justify-content: space-between; gap: 15px; margin-top: 15px; }
 
 .review-input {
   width: 50%; height: 350px; padding: 25px; background: #D9D9D9; 
-  border: none; border-radius: 40px; resize: none; font-size: 14px;
+  border: none; border-radius: 40px; resize: none; font-size: 14px;  
+  font-family: 'Noto Sans KR', sans-serif;
 }
 
-/* 🎯 슬라이더 스타일 */
+/* 슬라이더 스타일 */
 .photo-slider-area {
   width: 50%; display: flex; flex-direction: column; gap: 10px;
 }
@@ -231,11 +233,11 @@ const isReviewEditable = computed(() => props.plans && props.plans.some(plan => 
 
 /* 헤더/리스트 스타일은 이전과 동일 */
 .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
-.card-header h3 { font-family: 'Noto Sans KR'; font-weight: 700; font-size: 16px; color: #000000; margin: 0; }
+.card-header h3 { font-family: 'Noto Sans KR', sans-serif; font-weight: 700; font-size: 16px; color: #000000; margin: 0; }
 .close-btn { background: none; border: none; font-size: 13px; cursor: pointer; color: #000000; }
 .plan-list { margin-bottom: 20px; }
 .plan-item { display: flex; align-items: center; margin-bottom: 10px; }
 .plan-icon-placeholder { width: 22.19px; height: 20.09px; border-radius: 10px; margin-right: 8px; }
-.plan-detail-text { font-family: 'Noto Sans KR'; font-size: 12px; color: #000000; }
+.plan-detail-text { font-family: 'Noto Sans KR', sans-serif; font-size: 12px; color: #000000; }
 .no-plan-text { color: #aaa; font-size: 12px; padding: 10px 0; }
 </style>

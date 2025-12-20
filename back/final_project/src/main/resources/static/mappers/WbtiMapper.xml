@@ -4,42 +4,26 @@
 <mapper namespace="com.floating.mvc.dao.WbtiDao">
 
 	<!-- Plan을 추가한다. -->
-	<insert id="insertWbti">
-    INSERT INTO wbti (
-        social_score, 
-        motivation_score, 
-        execution_score, 
-        activity_score, 
-        wbti_code,
-        ai_analysis,
-        ai_economic_tip,
-        experiences,
-        quit_reason,
-        body_conditions,
-        available_time,
-        economy,
-        user_id
-    )
-    VALUES (
-        #{socialScore},      
-        #{motivationScore}, 
-        #{executionScore}, 
-        #{activityScore},
-        #{wbtiCode},
-        #{aiAnalysis},
-        #{aiEconomicTip},
-        #{experiencesString}, 
-        #{quitReason},
-        #{bodyConditionsString},
-        #{availableTime},
-        #{economy},
-        #{userId}
-    )
-</insert>
+	<insert id="insertWbti" parameterType="PostWbtiRequestDto">
+	    INSERT INTO wbti (
+	        user_id, wbti_code, social_score, motivation_score, 
+	        execution_score, activity_score, ai_result, user_conditions
+	    ) VALUES (
+	        #{userId}, #{wbtiCode}, #{socialScore}, #{motivationScore},
+	        #{executionScore}, #{activityScore}, 
+	        #{aiResult, typeHandler=com.floating.mvc.handler.JsonTypeHandler}, 
+	        #{userConditions, typeHandler=com.floating.mvc.handler.JsonTypeHandler}
+	    )
+	</insert>
+
 	
-	<select id="selectByUserId">
-		SELECT * FROM wbti
-		WHERE user_id = #{userId}
+	<resultMap id="WbtiResultMap" type="com.floating.mvc.dto.request.wbti.WbtiRequestDto">
+	    <result property="aiResult" column="ai_result" typeHandler="com.floating.mvc.handler.JsonTypeHandler"/>
+	    <result property="userConditions" column="user_conditions" typeHandler="com.floating.mvc.handler.JsonTypeHandler"/>
+	</resultMap>
+	
+	<select id="getWbtiResult" resultMap="WbtiResultMap">
+	    SELECT * FROM wbti WHERE user_id = #{userId} ORDER BY created_at DESC LIMIT 1
 	</select>
 	
 	<update id="updateByUserId">

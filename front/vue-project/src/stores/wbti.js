@@ -23,6 +23,8 @@ export const useWbtiStore = defineStore('wbti', () => {
         purpose: '',
     })
 
+    const aiResponse = ref({})
+
     const isSubmitting = ref(false);
 
     // getters
@@ -83,8 +85,7 @@ export const useWbtiStore = defineStore('wbti', () => {
     }
 
     /**
-     * 최종 결과를 백엔드에 전송하는 액션
-     * 
+     * 최종 결과를 백엔드에 저장하는 액션
      */
     const submitResults = async () => {
 
@@ -94,8 +95,10 @@ export const useWbtiStore = defineStore('wbti', () => {
 
             isSubmitting.value = true;
             
-            const aiResponse = await fetchAiAnalysis(wbtiResult.value, userCondition.value);
-        
+            const fetchResponse = await fetchAiAnalysis(wbtiResult.value, userCondition.value);
+            aiResponse.value = fetchResponse;
+
+            console.log(aiResponse.value);
             const payload = {
                 wbtiCode: wbtiResult.value.code,
                 socialScore: wbtiResult.value.averages.socialAvg,
@@ -103,20 +106,48 @@ export const useWbtiStore = defineStore('wbti', () => {
                 executionScore: wbtiResult.value.averages.executionAvg,
                 activityScore: wbtiResult.value.averages.activityAvg,
 
-                aiAnalysis: aiResponse.analysis, 
-                aiEconomicTip: aiResponse.recommendation.economic_tip,
-                ...userCondition.value
+                aiResult: fetchResponse,
+                userConditions: userCondition.value
             }
 
             const response = await api.post('/wbti/', payload)
             
-            console.log('WBTI 결과 전송 성공:', response.data);
+            
             return { dbData: response.data, aiData: aiResponse }
         } catch(error){
-            
+            console.log(error);
             throw error;
         }
     };
+
+    /**
+     * 백엔드에서 유저의 wbti 정보를 가져오는 액션
+     */
+
+    const getUserWbti = async () => {
+
+        try{
+
+            const response = await api.get('/wbti/');
+            const data = response.data;
+
+            if (data) {
+                aiResponse.value = data.aiResult;
+                userCondition.value = data.userConditions;
+
+                resultScores.value = {
+                    socialType: data.socialScore * 4,
+                    motivationType: data.motivationScore * 4,
+                    executionType: data.executionScore * 4,
+                    activityType: data.activityScore * 4
+                }
+                
+            }
+
+        } catch (error) {
+            console.log("데이터 로드 실패: ", error);
+        }
+    }
 
     const resetScores = () => {
         resultScores.value = {
@@ -130,11 +161,13 @@ export const useWbtiStore = defineStore('wbti', () => {
     return {
         resultScores,
         userCondition,
+        aiResponse,
         wbtiQuestions: WBTI_QUESTIONS,
         questionCounts,
         wbtiResult,
         accumulateScore,
         submitResults,
-        resetScores
+        getUserWbti,
+        resetScores,
     }
 })
