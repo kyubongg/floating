@@ -43,7 +43,7 @@ public class PlanController {
 		return response;
 	}
 	
-	@PostMapping("/{planPk}")
+	@PostMapping("/complete/{planPk}")
 	public ResponseEntity<ResponseDto> postPlanCompl(
 			@PathVariable int planPk,
 			@AuthenticationPrincipal String userId
@@ -52,6 +52,14 @@ public class PlanController {
 		return response;
 	}
 	
+	@PostMapping("/uncomplete/{planPk}")
+	public ResponseEntity<ResponseDto> postPlanUncompl(
+			@PathVariable int planPk,
+			@AuthenticationPrincipal String userId
+	){
+		ResponseEntity<ResponseDto> response = planService.postPlanCompl(planPk);
+		return response;
+	}
 	
 	@PutMapping("/")
 	public ResponseEntity<ResponseDto> updatePlan(

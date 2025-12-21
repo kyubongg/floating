@@ -287,10 +287,10 @@ export const usePlanStore = defineStore('plan', () => {
 
       if (isCompleted) {
         // 완료 취소 API
-        await api.put(`/plan/uncomplete`, { date });
+        await api.post(`/plan/uncomplete`, { date });
       } else {
         // 완료 처리 API
-        await api.put(`/plan/complete`, { date });
+        await api.post(`/plan/complete`, { date });
       }
 
       // 데이터 새로고침
