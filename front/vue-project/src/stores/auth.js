@@ -42,7 +42,7 @@ export const useAuthStore = defineStore("auth", () => {
    * - username, password를 받아 /signup API 호출
    * - 성공 시 단순히 완료만 알려주고, user 상태는 변경하지 않음
    */
-  const signup = ( userData ) => {
+  const signup = (userData) => {
     loading.value = true;
     error.value = null;
 
@@ -50,7 +50,7 @@ export const useAuthStore = defineStore("auth", () => {
     return api
       .post("/user/signup", {
         id: userData.id,
-        pw: userData.password,     
+        pw: userData.password,
         email: userData.email,
         name: userData.name,
         birth: userData.birth,
@@ -76,7 +76,7 @@ export const useAuthStore = defineStore("auth", () => {
    * - username/password로 /login 호출
    * - 성공 시 user 상태를 응답 값으로 세팅
    */
-  const login = ({ id, pw }) => {
+  const login = async ({ id, pw }) => {
     loading.value = true;
     error.value = null;
 
@@ -85,52 +85,44 @@ export const useAuthStore = defineStore("auth", () => {
       pw: pw,
     }
 
-    return api
-      .post("/user/signin", requestBody, {
+    try {
+      const res = await api.post("/user/signin", requestBody, {
         headers: {
           "Content-Type": "application/json",
         },
-      })
-      .then((res) => {
-        // 백엔드에서 내려준 JSON: { username: "..." }
-        const accessToken = res.data.accessToken;
-        localStorage.setItem("accessToken", accessToken);
-
-        // 사용자 정보 업데이트
-        user.value = res.data;
-        initialized.value = true;
-
-        console.log(user.value)
-      })
-      .catch((e) => {
-        error.value = e?.response?.data || "로그인 실패";
-        throw e;
-      })
-      .finally(() => {
-        loading.value = false;
       });
+
+      const accessToken = res.data.accessToken;
+      localStorage.setItem("accessToken", accessToken);
+      await fetchMe();
+
+      return res;
+    } catch (e) {
+      error.value = e?.response?.data.message || "로그인 실패";
+      throw e;
+    } finally {
+      loading.value = false;
+    }
   };
 
   /**
    * 로그아웃
    * - /logout 호출 후 user 상태를 null로 초기화
    */
-  const logout = () => {
+  const logout = async () => {
     loading.value = true;
-    error.value = null;
 
-    return api
-      .post("/user/logout")
-      .then(() => {
-        user.value = null;
-      })
-      .catch((e) => {
-        error.value = e?.response?.data || "로그아웃 실패";
-        // 굳이 throw 하지 않아도 되지만, 필요하면 여기서도 throw 가능
-      })
-      .finally(() => {
-        loading.value = false;
-      });
+    try {
+      localStorage.removeItem("accessToken");
+      user.value = null;
+      error.value = null;
+    }
+    catch (e) {
+      error.value = "로그아웃 중 오류가 발생했습니다.";
+    }
+    finally {
+      loading.value = false;
+    }
   };
 
   /**
@@ -169,6 +161,67 @@ export const useAuthStore = defineStore("auth", () => {
       })
   };
 
+  /**
+   * 회원 정보 수정
+   */
+  const editProfile = async (password, formData) => {
+    loading.value = true;
+    error.value = null;
+
+    const requestBody = {
+      pw: password,
+      email: formData.value.email,
+      name: formData.value.name,
+      birth: formData.value.birth,
+      gender: formData.value.gender,
+      height: formData.value.height,
+      weight: formData.value.weight
+    }
+    try {
+      const res = await api.put("/user/", requestBody, {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      await fetchMe();
+
+      return res;
+    } catch (e) {
+      error.value = e?.response?.data.message || "회원 정보 수정 실패";
+      throw e;
+    } finally {
+      loading.value = false;
+    }
+  };
+
+  /**
+   * 회원 탈퇴
+   */
+  const withdraw = async (password) => {
+    loading.value = true;
+    error.value = null;
+
+    try {
+      const res = await api.delete("/user/", {
+        data: { pw: password },
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      localStorage.removeItem("accessToken");
+      user.value = null;
+
+      return res;
+    } catch (e) {
+      error.value = e?.response?.data.message || "회원 탈퇴 실패";
+      throw e;
+    } finally {
+      loading.value = false;
+    }
+  };
+
   // 스토어에서 외부로 노출할 상태/메서드
   return {
     user,
@@ -187,5 +240,7 @@ export const useAuthStore = defineStore("auth", () => {
     login,
     logout,
     fetchMe,
+    editProfile,
+    withdraw,
   };
 });

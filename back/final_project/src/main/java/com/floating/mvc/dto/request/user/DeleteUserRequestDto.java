@@ -11,6 +11,5 @@ import lombok.Setter;
 @AllArgsConstructor
 public class DeleteUserRequestDto {
 	
-	private String id;
 	private String pw;
 }

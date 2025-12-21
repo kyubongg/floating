@@ -20,17 +20,10 @@
       <router-link 
         to="/mypage" 
         class="nav-item"
-        :class="{ active: isActive('/mypage') }"
+        :class="{ active: isActive('/mypage') || isActive('/edit-profile') }"
       >
         마이페이지
       </router-link>
-      
-      <!-- <button 
-        class="nav-item logout-button" 
-        @click="handleLogout"
-      >
-        로그아웃
-      </button> -->
 
       <div
         class="nav-item welcome-user">
@@ -53,14 +46,6 @@ const isActive = (path) => {
   return route.path === path;
 };
 
-// const handleLogout = async () => {
-//   try {
-//     await auth.logout();
-//     router.push('/login');
-//   } catch (error) {
-//     console.error('로그아웃 실패:', error);
-//   }
-// };
 </script>
 
 <style scoped>

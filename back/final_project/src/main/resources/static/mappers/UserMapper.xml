@@ -55,13 +55,13 @@
 	<update id="updateUser">
 		UPDATE user
 		SET
-			pw = #{pw},
-			name = #{name},
-			birth = #{birth},
-			gender = #{gender},
-			height = #{height},
-			weight = #{weight}
-		WHERE id = #{id}
+			email = #{dto.email},
+			name = #{dto.name},
+			birth = #{dto.birth},
+			gender = #{dto.gender},
+			height = #{dto.height},
+			weight = #{dto.weight}
+		WHERE id = #{userId}
 	</update>
 	
 	<!-- User Mbti 정보를 수정한다. -->
@@ -69,13 +69,13 @@
 		UPDATE user
 		SET
 			mbti_pk = #{mbtiPk}
-		WHERE id = #{id}
+		WHERE id = #{userId}
 	</update>
 	
 	<!-- User 삭제 (회원탈퇴)를 진행한다. -->
 	<delete id="deleteUser">
 		DELETE FROM user
-		WHERE id = #{id}
+		WHERE id = #{userId}
 	</delete>
 	
 	<!-- 비밀번호를 확인한다. -->
