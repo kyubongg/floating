@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.floating.mvc.dto.request.plan.PlanRegistRequestDto;
 import com.floating.mvc.dto.request.plan.PlanRequestDto;
 import com.floating.mvc.dto.response.ResponseDto;
 import com.floating.mvc.dto.response.plan.GetPlanDetailResponseDto;
@@ -71,9 +72,10 @@ public class PlanController {
 	
 	@PostMapping("/weekly")
 	public ResponseEntity<ResponseDto> insertWeeklyPlan(
+		@RequestBody PlanRegistRequestDto dto,
 		@AuthenticationPrincipal String userId
 	){
-		ResponseEntity<ResponseDto> response = planService.insertWeeklyPlan(userId);
+		ResponseEntity<ResponseDto> response = planService.insertWeeklyPlan(dto, userId);
 		return response;
 	}
 	
