@@ -24,7 +24,7 @@ export const useAuthStore = defineStore("auth", () => {
   });
 
   const userName = computed(() => user.value?.name || '게스트');
-  const userMbtiName = computed(() => user.value?.mbtiName || '미정');
+  const userWbtiCode = computed(() => user.value?.wbtiCode || '미정');
 
   const currentScore = computed(() => user.value?.petScore || '0');
   const maxScoreByLevel = 100;
@@ -231,7 +231,7 @@ export const useAuthStore = defineStore("auth", () => {
     isAuthenticated,
     hasWbti,
     userName,
-    userMbtiName,
+    userWbtiCode,
     currentScore,
     maxScoreByLevel,
     scorePercentage,

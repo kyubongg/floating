@@ -49,7 +49,7 @@
         <div class="info-row">
           <span class="info-label">WBTI</span>
           <span class="info-divider">|</span>
-          <span class="info-value">{{ auth.user?.mbtiName }}</span>
+          <span class="info-value">{{ auth.user?.wbtiCode }}</span>
         </div>
       </div>
       
