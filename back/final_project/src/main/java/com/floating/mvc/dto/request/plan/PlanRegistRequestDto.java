@@ -1,6 +1,6 @@
 package com.floating.mvc.dto.request.plan;
 
-import java.util.List;
+import java.util.Date;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -13,6 +13,12 @@ import lombok.Setter;
 @AllArgsConstructor
 public class PlanRegistRequestDto {
 	
-	private List<PlanRequestDto> plans;
+	private int planPk;
+	private Date date;
+	private String category;
+	private String detail;
+	private int time;
+	private Date completeDate;
+	private int shifted;
 	
 }
