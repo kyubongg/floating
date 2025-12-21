@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.floating.mvc.dao.PetDao">
+
+	<!-- 펫 생성 -->
+	<insert id="insertPet">
+		INSERT INTO pet (score, user_id)
+		VALUES (0, #{userId});
+	</insert>
+	
+	<!-- 펫 경험치 증가 -->
+	<update id="increaseScore">
+		UPDATE pet
+		SET
+			score = score + 20
+		WHERE user_id = #{userId}
+	</update>
+	
+	<!-- 펫 경험치 감소 -->
+	<update id="decreaseScore">
+		UPDATE pet
+		SET
+			score = score - 20
+		WHERE user_id = #{userId}
+	</update>
+	
+</mapper>

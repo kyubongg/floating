@@ -48,7 +48,7 @@ public class PlanController {
 			@PathVariable int planPk,
 			@AuthenticationPrincipal String userId
 	){
-		ResponseEntity<ResponseDto> response = planService.postPlanCompl(planPk);
+		ResponseEntity<ResponseDto> response = planService.postPlanCompl(planPk, userId);
 		return response;
 	}
 	
@@ -57,7 +57,7 @@ public class PlanController {
 			@PathVariable int planPk,
 			@AuthenticationPrincipal String userId
 	){
-		ResponseEntity<ResponseDto> response = planService.postPlanCompl(planPk);
+		ResponseEntity<ResponseDto> response = planService.postPlanUncompl(planPk, userId);
 		return response;
 	}
 	

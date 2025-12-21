@@ -81,7 +81,10 @@ public class ReviewServiceImpl implements ReviewService {
 			List<Integer> existImgPks = reviewDao.selectImgPksByReviewPk(dto.getReviewPk());
 			
 			// 요청 DTO에 포함된 이미지 PK 목록 추출
-			List<Integer> putImgPks = new ArrayList<>();
+			List<Integer> putImgPks = requestImagePaths.stream()
+			        .map(ImageInfoDto::getImgPk)
+			        .filter(pk -> pk != 0)
+			        .toList();
 			for(ImageInfoDto img : dto.getImgPaths()) {
 				// pk가 0이 아닌 것만 유지할 목록에 추가
 				if(img.getImgPk() != 0) {
