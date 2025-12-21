@@ -37,13 +37,19 @@ public class PlanServiceImpl implements PlanService {
 	@Override
 	public ResponseEntity<ResponseDto> insertPlan(PlanRegistRequestDto dto, String userId) {
 		
-		int planPk = 0;
 		try {
-			// AI API 호출
-			planDao.insertPlan(dto, userId);
+	
+			List<PlanRequestDto> planList = dto.getPlans();
 			
-			if(planPk == 0) return ResponseDto.databaseError();
+			if(planList == null || planList.isEmpty())
+				return ResponseDto.noExistPlanList();
 			
+			for(PlanRequestDto plan : planList)
+				plan.setUserId(userId);
+			
+			int result = planDao.insertPlanBatch(planList);
+			
+			if(result == 0) return ResponseDto.databaseError();
 		}
 		catch (Exception e) {
 			e.printStackTrace();
@@ -140,14 +146,21 @@ public class PlanServiceImpl implements PlanService {
 	}
 
 	@Override
-	public ResponseEntity<ResponseDto> insertWeeklyPlan(String userId) {
+	public ResponseEntity<ResponseDto> insertWeeklyPlan(PlanRegistRequestDto dto, String userId) {
 
 		try {
 			
-			int result = planDao.insertWeeklyPlan(userId);
-
-			if(result == 0) return ResponseDto.databaseError();
+			List<PlanRequestDto> planList = dto.getPlans();
 			
+			if(planList == null || planList.isEmpty())
+				return ResponseDto.noExistPlanList();
+			
+			for(PlanRequestDto plan : planList)
+				plan.setUserId(userId);
+			
+			int result = planDao.insertPlanBatch(planList);
+			
+			if(result == 0) return ResponseDto.databaseError();
 		}
 		catch (Exception e) {
 			e.printStackTrace();

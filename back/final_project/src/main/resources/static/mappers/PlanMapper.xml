@@ -16,6 +16,28 @@
 			#{userId}
 		)
 	</insert>
+	
+	<!-- 일주일치 계획을 추가한다 -->
+	<insert id="insertPlanBatch" parameterType="java.util.List">
+	    INSERT INTO plan (
+	        date, 
+	        category, 
+	        detail, 
+	        time, 
+	        shifted, 
+	        user_id
+	    ) VALUES 
+	    <foreach collection="plans" item="item" separator=",">
+	    (
+	        #{item.date}, 
+	        #{item.category}, 
+	        #{item.detail}, 
+	        #{item.time}, 
+	        0, 
+	        #{item.userId}
+	    )
+	    </foreach>
+	</insert>
 
 	<!-- Plan 정보 전체를 조회한다. -->
 	<select id="selectAll">
