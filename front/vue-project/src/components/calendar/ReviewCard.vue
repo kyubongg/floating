@@ -75,6 +75,7 @@ const props = defineProps({
   isSaving: Boolean,
 });
 
+
 const emit = defineEmits(['update:modelValue', 'close', 'save', 'image-upload', 'delete-existing-img']);
 
 const fileInput = ref(null);

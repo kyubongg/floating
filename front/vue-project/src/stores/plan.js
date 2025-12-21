@@ -282,15 +282,18 @@ export const usePlanStore = defineStore('plan', () => {
 
       if (dayPlans.length === 0) return;
 
+      console.log(dayPlans);
+      console.log(dayPlans[0].planPk);
       // 이미 완료된 경우 -> 완료 취소
       const isCompleted = dayPlans.some(p => p.completeDate !== null);
 
       if (isCompleted) {
         // 완료 취소 API
-        await api.put(`/plan/uncomplete`, { date });
+        await api.post(`/plan/uncomplete/${ dayPlans[0].planPk }`);
+        console.log("계획 취소")
       } else {
         // 완료 처리 API
-        await api.put(`/plan/complete`, { date });
+        await api.post(`/plan/complete/${ dayPlans[0].planPk }`);
       }
 
       // 데이터 새로고침

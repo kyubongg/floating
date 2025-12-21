@@ -5,6 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.floating.mvc.dao.PetDao;
 import com.floating.mvc.dao.UserDao;
 import com.floating.mvc.dto.request.user.DeleteUserRequestDto;
 import com.floating.mvc.dto.request.user.PutUserMbtiRequestDto;
@@ -25,6 +26,7 @@ import lombok.RequiredArgsConstructor;
 public class UserServiceImpl implements UserService {
 
 	private final UserDao userDao;
+	private final PetDao petDao;
 	private final BCryptPasswordEncoder passwordEncoder;
 	private final JwtProvider jwtProvider;
 	
@@ -49,9 +51,12 @@ public class UserServiceImpl implements UserService {
 			dto.setPw(encodedPassword);
 			
 			int result = userDao.insertUser(dto);
-			if (result == 1) 
+			if (result == 1) {
+				
+				petDao.insertPet(userId);
 				return ResponseDto.success(HttpStatus.CREATED);
-
+			}
+			
 		}catch(Exception e) {
 			e.printStackTrace();
 			return ResponseDto.databaseError();

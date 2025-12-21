@@ -15,13 +15,16 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.event.TransactionalEventListener;
 import org.springframework.transaction.interceptor.TransactionAspectSupport;
 
+import com.floating.mvc.dao.PetDao;
 import com.floating.mvc.dao.PlanDao;
 import com.floating.mvc.dto.request.plan.PlanRegistRequestDto;
 import com.floating.mvc.dto.request.plan.PlanRequestDto;
+import com.floating.mvc.dto.request.review.PutReviewRequestDto;
 import com.floating.mvc.dto.response.ResponseDto;
 import com.floating.mvc.dto.response.plan.GetPlanDetailResponseDto;
 import com.floating.mvc.dto.response.plan.GetPlanListResponseDto;
 import com.floating.mvc.event.PlanCompleteEvent;
+import com.floating.mvc.event.PlanUncompleteEvent;
 import com.floating.mvc.service.PlanService;
 import com.floating.mvc.service.ReviewService;
 
@@ -123,7 +126,7 @@ public class PlanServiceImpl implements PlanService {
 
 	@Override
 	@Transactional
-	public ResponseEntity<ResponseDto> postPlanCompl(int planPk) {
+	public ResponseEntity<ResponseDto> postPlanCompl(int planPk, String userId) {
 
 		try {
 			
@@ -135,7 +138,27 @@ public class PlanServiceImpl implements PlanService {
 			
 			if(result == 0) return ResponseDto.noExistPlan();
 			
-			eventPublisher.publishEvent(new PlanCompleteEvent(planPk));
+			eventPublisher.publishEvent(new PlanCompleteEvent(planPk, userId));
+			
+		}catch(Exception e) {
+			e.printStackTrace();
+			return ResponseDto.databaseError();
+		}
+		
+		return ResponseDto.success(HttpStatus.OK);
+	}
+	
+	@Override
+	@Transactional
+	public ResponseEntity<ResponseDto> postPlanUncompl(int planPk, String userId) {
+
+		try {
+			
+			int result = planDao.postPlanUncompl(planPk);
+			
+			if(result == 0) return ResponseDto.noExistPlan();
+			
+			eventPublisher.publishEvent(new PlanUncompleteEvent(planPk, userId));
 			
 		}catch(Exception e) {
 			e.printStackTrace();
@@ -203,11 +226,19 @@ public class PlanServiceImpl implements PlanService {
 class PlanEventListener {
 	
 	private final ReviewService reviewService;
+	private final PetDao petDao;
 	
 	@Async
 	@TransactionalEventListener
 	public void handlePlanCompl(PlanCompleteEvent event) {
-		
 		reviewService.insertReview(event.getPlanPk());
+		petDao.increaseScore(event.getUserId());
+	}
+	
+	@Async
+	@TransactionalEventListener
+	public void handlePlanUncompl(PlanUncompleteEvent event) {
+//		reviewService.updateReview(new PutReviewRequestDto(event.getPlanPk(), null, null, null));
+		petDao.decreaseScore(event.getUserId());
 	}
 }

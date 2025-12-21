@@ -26,6 +26,9 @@ public interface PlanDao {
 	int postPlanCompl(
 			@Param("planPk") int planPk, 
 			@Param("completeDate") String formattedDate);
+	// 계획 완료 취소
+	int postPlanUncompl(
+			@Param("planPk") int planPk);
 	// 이번주 계획 생성 (지난주 계획 복사)
 	int insertWeeklyPlan(
 			@Param("userId") String userId);
@@ -36,5 +39,4 @@ public interface PlanDao {
 	int deleteTodayPlan(
 			@Param("userId") String userId);
 	
-
 }
