@@ -6,9 +6,6 @@ import isoWeek from 'dayjs/plugin/isoWeek';
 dayjs.extend(isBetween);
 dayjs.extend(isoWeek);
 import api from "../api/axios";
-import { fetchAiWeeklyPlan } from "@/api/ai";
-import { useWbtiStore } from "./wbti";
-import { useAuthStore } from "./auth";
 
 export const usePlanStore = defineStore('plan', () => {
 
@@ -187,52 +184,14 @@ export const usePlanStore = defineStore('plan', () => {
     // type: 'postpone' (지난주 미루기) or 'ai' (AI 추천)
     loading.value = true;
     error.value = null;
+    let res = null;
 
-    const wbtiStore = useWbtiStore(); 
-    const authStore = useAuthStore();
-      
     try {
-
-      if (!wbtiStore.aiResponse || Object.keys(wbtiStore.aiResponse).length === 0) {
-        console.log("WBTI 데이터를 불러오는 중...");
-        await wbtiStore.getUserWbti(); // WBTI 스토어에 정의된 조회 함수 호출
-      }
-
-      // 데이터가 여전히 없다면(검사를 안 한 유저라면) 진행 불가 처리
-      if (!wbtiStore.aiResponse) {
-        throw new Error("WBTI 검사 결과가 없습니다. 먼저 테스트를 진행해주세요.");
-      }
-
-      let uncompletedPlans = [];
-
-      // 지난주 계획 다시 사용하기의 경우 지난주 미완료 계획을 가져옴
       if (type === 'postpone') {
-        const lastWeekStart = dayjs().subtract(1, 'week').startOf('isoWeek');
-        const lastWeekEnd = dayjs().subtract(1, 'week').endOf('isoWeek');
-
-        uncompletedPlans = plans.value
-                                .filter(p => {
-                                  const pDate = dayjs(p.date);
-                                  return pDate.isBetween(lastWeekStart, lastWeekEnd, 'day', '[]') && p.completeDate === null;
-                                })
-                                .map(p => ({
-                                  category: p.category,
-                                  detail: p.detail,
-                                  time: p.time
-                                }));
-      } 
-        
-      // AI에게 일주일 계획 요청
-      // AI 기반 새로운 계획 추천받기의 경우 uncompletedPlans는 빈 배열임
-      console.log(wbtiStore.aiResponse)
-      console.log(wbtiStore.userCondition)
-      const aiContent = await fetchAiWeeklyPlan(wbtiStore.aiResponse, wbtiStore.userCondition, uncompletedPlans);
-      
-      const payload = {
-        plans: aiContent.plans,
+        res = await api.post('/plan/weekly');
       }
-
-      await api.post('/plan/weekly', payload);
+      // else 
+      // AI 
 
       await fetchPlan(true);
 
