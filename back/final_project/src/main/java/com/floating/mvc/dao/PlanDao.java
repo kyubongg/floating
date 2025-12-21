@@ -12,6 +12,8 @@ public interface PlanDao {
 	int insertPlan(
 			@Param("plan") PlanRegistRequestDto dto,  
 	        @Param("userId") String userId);
+	int insertPlanBatch(
+			@Param("plans") List<PlanRequestDto> plans);
 	// 계획 수정
 	int updatePlan(PlanRequestDto dto);      
 	// 계획 전체 조회
