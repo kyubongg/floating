@@ -18,7 +18,7 @@ public interface UserDao {
     UserRequestDto selectUser(String userId);
     
     //회원 정보 수정 
-    int updateUser(PutUserRequestDto dto); 
+    int updateUser(PutUserRequestDto dto, String userId); 
     
     //회원 Mbti 정보 수정
     int updateUserMbti(PutUserMbtiRequestDto dto);
@@ -27,6 +27,6 @@ public interface UserDao {
     int deleteUser(String userId);
     
     //비밀번호 확인
-    String selectPasswordById(String id);
+    String selectPasswordById(String userId);
     
 }

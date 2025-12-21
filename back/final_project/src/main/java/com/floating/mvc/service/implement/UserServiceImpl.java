@@ -126,7 +126,7 @@ public class UserServiceImpl implements UserService {
 		    String encodedPassword = passwordEncoder.encode(dto.getPw());
 		    dto.setPw(encodedPassword);
 		    
-			int result = userDao.updateUser(dto);
+			int result = userDao.updateUser(dto, userId);
 			if(result == 0) 
 				return ResponseDto.databaseError();
 			

@@ -13,8 +13,8 @@ import lombok.Setter;
 @AllArgsConstructor
 public class PutUserRequestDto {
 	
-	private String id;
 	private String pw;
+	private String email;
 	private String name;
     private Date birth;
     private char gender;

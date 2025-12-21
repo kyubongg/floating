@@ -1,6 +1,11 @@
 <template>
   <AppHeader/>
   <div class="mypage-container">
+    <PasswordConfirmModal 
+    :isOpen="showPasswordModal" 
+    @close="showPasswordModal = false" 
+    @confirm="confirmWithdraw" />
+
     <div class="mypage-card">
       <h2 class="mypage-title">내 정보</h2>
       
@@ -8,43 +13,43 @@
         <div class="info-row">
           <span class="info-label">이메일</span>
           <span class="info-divider">|</span>
-          <span class="info-value">{{ userInfo.email }}</span>
+          <span class="info-value">{{ auth.user?.email }}</span>
         </div>
         
         <div class="info-row">
           <span class="info-label">이름</span>
           <span class="info-divider">|</span>
-          <span class="info-value">{{ userInfo.name }}</span>
+          <span class="info-value">{{ auth.user?.name }}</span>
         </div>
         
         <div class="info-row">
           <span class="info-label">생년월일</span>
           <span class="info-divider">|</span>
-          <span class="info-value">{{ userInfo.birth }}</span>
+          <span class="info-value">{{ auth.user?.birth }}</span>
         </div>
         
         <div class="info-row">
           <span class="info-label">성별</span>
           <span class="info-divider">|</span>
-          <span class="info-value">{{ userInfo.gender }}</span>
+          <span class="info-value">{{ auth.user?.gender }}</span>
         </div>
         
         <div class="info-row">
           <span class="info-label">키</span>
           <span class="info-divider">|</span>
-          <span class="info-value">{{ userInfo.height }}</span>
+          <span class="info-value">{{ auth.user?.height }}</span>
         </div>
         
         <div class="info-row">
           <span class="info-label">몸무게</span>
           <span class="info-divider">|</span>
-          <span class="info-value">{{ userInfo.weight }}</span>
+          <span class="info-value">{{ auth.user?.weight }}</span>
         </div>
         
         <div class="info-row">
           <span class="info-label">WBTI</span>
           <span class="info-divider">|</span>
-          <span class="info-value">{{ userInfo.wbti }}</span>
+          <span class="info-value">{{ auth.user?.mbtiName }}</span>
         </div>
       </div>
       
@@ -59,7 +64,11 @@
     </div>
     
     <div class="withdraw-section">
-      <a href="#" class="withdraw-link" @click.prevent="confirmWithdraw">
+      <a href="#" class="logout-link" @click.prevent="doLogout">
+        로그아웃 
+      </a>
+
+      <a href="#" class="withdraw-link" @click.prevent="showPasswordModal = true">
         탈퇴하시겠습니까?
       </a>
     </div>
@@ -69,20 +78,15 @@
 <script setup>
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
+import { useAuthStore } from '@/stores/auth';
 import AppHeader from '@/components/AppHeader.vue';
+import PasswordConfirmModal from '@/components/PasswordConfirmModal.vue';
 
 const router = useRouter();
+const auth = useAuthStore();
 
-// 더미 데이터
-const userInfo = ref({
-  email: 'ssafy@ssafy.com',
-  name: '유규봉',
-  birth: '2025-01-01',
-  gender: '남',
-  height: '2m',
-  weight: '100kg',
-  wbti: 'ISFP'
-});
+const message = ref("");
+const showPasswordModal = ref(false);
 
 const goToEditInfo = () => {
   router.push('/edit-profile');
@@ -92,9 +96,26 @@ const goToWbtiTest = () => {
   router.push('/wbti-test');
 };
 
-const confirmWithdraw = () => {
-  // 비밀번호 확인 모듈
-  // 탈퇴 로직 진행
+const doLogout = async () => {
+  try {
+    await auth.logout();
+
+    message.value = "로그아웃 성공!";
+    router.push('/'); 
+  } catch (error) {
+    console.error("로그아웃 실패:", error);
+  }
+};
+
+const confirmWithdraw = async (password) => {
+  try {
+    await auth.withdraw(password);
+    alert('회원탈퇴 되었습니다!');
+
+    router.push('/home');
+  } catch (e) {
+    alert(auth.error);
+  }
 };
 </script>
 
@@ -186,9 +207,12 @@ const confirmWithdraw = () => {
 }
 
 .withdraw-section {
-  text-align: center;
+  /* text-align: center; */
+  display: flex;
+  gap: 2.5rem;
 }
 
+.logout-link,
 .withdraw-link {
   font-family: 'Noto Sans KR', sans-serif;
   font-weight: 400;
