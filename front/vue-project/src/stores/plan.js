@@ -18,6 +18,7 @@ export const usePlanStore = defineStore('plan', () => {
    */
   const plans = ref([]);
   const weeklyPlans = ref([]);
+  const cheerUpQuote = ref([]);
   const error = ref(null);
   const loading = ref(false);
 
@@ -214,6 +215,14 @@ export const usePlanStore = defineStore('plan', () => {
         // AI 기반 새로운 계획 추천받기의 경우 uncompletedPlans는 빈 배열임
         const aiContent = await fetchAiWeeklyPlan(wbtiStore.aiResponse, wbtiStore.userCondition, uncompletedPlans);
         
+        const quotes = Array.isArray(aiContent.cheer_up_quote)
+          ? aiContent.cheer_up_quote
+          : [aiContent.cheer_up_quote];
+
+        cheerUpQuote.value = quotes;
+
+        localStorage.setItem('cheerUpQuotes', JSON.stringify(quotes));
+
         const payload = {
           plans: aiContent.plans,
         }
@@ -250,8 +259,6 @@ export const usePlanStore = defineStore('plan', () => {
           throw new Error("오늘 수정할 계획이 없습니다!");
         }
 
-        console.log(targetPlan);
-
         const aiContent = await fetchAiRevisePlan(
           wbtiStore.aiResponse, 
           wbtiStore.userCondition, 
@@ -262,6 +269,14 @@ export const usePlanStore = defineStore('plan', () => {
           }
         );
 
+        const quotes = Array.isArray(aiContent.cheer_up_quote)
+          ? aiContent.cheer_up_quote
+          : [aiContent.cheer_up_quote];
+
+        cheerUpQuote.value = quotes;
+
+        localStorage.setItem('cheerUpQuotes', JSON.stringify(quotes));
+
         const payload = {
           planPk: targetPlan.planPk,
           date: targetPlan.date,
@@ -270,7 +285,6 @@ export const usePlanStore = defineStore('plan', () => {
           time: aiContent.time,
         }
 
-        console.log(payload);
         await api.put('/plan/today', payload);
 
         console.log("계획 변경 끝!")
@@ -313,6 +327,7 @@ export const usePlanStore = defineStore('plan', () => {
         await api.post(`/plan/complete/${ dayPlans[0].planPk }`);
       }
 
+      await authStore.fetchMe();
       // 데이터 새로고침
       await fetchPlan(true);
     } catch (error) {
@@ -326,6 +341,7 @@ export const usePlanStore = defineStore('plan', () => {
   return {
     plans,
     weeklyPlans,
+    cheerUpQuote,
     error,
     loading,
     streakCount,

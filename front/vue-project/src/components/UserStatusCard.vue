@@ -1,19 +1,19 @@
 <template>
     <div class="status-card">
-        <h2 class="user-info">{{ auth.userName }}님 | {{ auth.user.wbtiCode }} 운동러</h2>
+        <h2 class="user-info">{{ authStore.userName }}님 | {{ authStore.user.wbtiCode }} 운동러</h2>
 
         <!-- 레벨 & 경험치 바 -->
         <div class="level-exp-container">
             <div class="level-badge">
                 <img src="../assets/imgs/trophy-icon.png" alt="trophy" class="trophy-icon" />
-                <span class="level-text">Lv.{{ auth.level }}</span>
+                <span class="level-text">Lv.{{ userLevel }}</span>
             </div>
 
             <div class="exp-bar-wrapper">
                 <div class="exp-bar">
-                    <div class="exp-filled" :style="{ width: auth.scorePercentage + '%' }"></div>
+                    <div class="exp-filled" :style="{ width:scorePercentage + '%' }"></div>
                 </div>
-                <span class="exp-text">{{ auth.scorePercentage }}/100</span>
+                <span class="exp-text">{{ scorePercentage }}/100</span>
             </div>
         </div>
 
@@ -41,9 +41,13 @@
 <script setup>
 import { useAuthStore } from '@/stores/auth';
 import { usePlanStore } from '@/stores/plan';
+import { computed } from 'vue';
 
-const auth = useAuthStore();
+const authStore = useAuthStore();
 const planStore = usePlanStore();
+
+const userLevel = computed(() => authStore.level);
+const scorePercentage = computed(() => authStore.scorePercentage);
 
 </script>
 
