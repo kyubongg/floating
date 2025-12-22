@@ -60,7 +60,7 @@
           정보 수정
         </button>
         <button class="action-button" @click="goToWbtiTest">
-          WBTI 재검사
+          WBTI 검사결과
         </button>
       </div>
     </div>
@@ -95,7 +95,7 @@ const goToEditInfo = () => {
 };
 
 const goToWbtiTest = () => {
-  router.push('/wbti-test');
+  router.push('/wbti-result');
 };
 
 const doLogout = async () => {
@@ -103,7 +103,7 @@ const doLogout = async () => {
     await auth.logout();
 
     message.value = "로그아웃 성공!";
-    router.push('/'); 
+    router.replace('/'); 
   } catch (error) {
     console.error("로그아웃 실패:", error);
   }

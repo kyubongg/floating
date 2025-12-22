@@ -43,15 +43,23 @@ public class PlanController {
 		return response;
 	}
 	
-	@PostMapping("/{planPk}")
+	@PostMapping("/complete/{planPk}")
 	public ResponseEntity<ResponseDto> postPlanCompl(
 			@PathVariable int planPk,
 			@AuthenticationPrincipal String userId
 	){
-		ResponseEntity<ResponseDto> response = planService.postPlanCompl(planPk);
+		ResponseEntity<ResponseDto> response = planService.postPlanCompl(planPk, userId);
 		return response;
 	}
 	
+	@PostMapping("/uncomplete/{planPk}")
+	public ResponseEntity<ResponseDto> postPlanUncompl(
+			@PathVariable int planPk,
+			@AuthenticationPrincipal String userId
+	){
+		ResponseEntity<ResponseDto> response = planService.postPlanUncompl(planPk, userId);
+		return response;
+	}
 	
 	@PutMapping("/")
 	public ResponseEntity<ResponseDto> updatePlan(
@@ -59,6 +67,14 @@ public class PlanController {
 		@AuthenticationPrincipal String userId
 	){
 		ResponseEntity<ResponseDto> response = planService.updatePlan(dto, userId);
+		return response;
+	}
+	
+	@PostMapping("/postpone")
+	public ResponseEntity<ResponseDto> postponeWeeklyPlan(
+			@AuthenticationPrincipal String userId
+	){
+		ResponseEntity<ResponseDto> response = planService.postponeWeeklyPlan(userId);
 		return response;
 	}
 	
@@ -76,6 +92,15 @@ public class PlanController {
 			@AuthenticationPrincipal String userId
 	){
 		ResponseEntity<ResponseDto> response = planService.shiftTodayPlanToTomorrow(userId);
+		return response;
+	}
+	
+	@PutMapping("/today")
+	public ResponseEntity<ResponseDto> updateTodaPlan(
+			@RequestBody PlanRequestDto dto,
+			@AuthenticationPrincipal String userId
+	){
+		ResponseEntity<ResponseDto> response = planService.updateTodayPlan(dto, userId);
 		return response;
 	}
 	

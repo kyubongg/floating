@@ -21,9 +21,15 @@ public interface PlanService {
 	// 계획 상세 조회
 	ResponseEntity<? super GetPlanDetailResponseDto> getPlanDetail(int planPk, String userId);
 	// 계획 완료
-	ResponseEntity<ResponseDto> postPlanCompl(int planPk);
-	// 이번주 계획 생성 (지난주 계획 복사)
+	ResponseEntity<ResponseDto> postPlanCompl(int planPk, String userId);
+	// 계획 완료 취소
+	ResponseEntity<ResponseDto> postPlanUncompl(int planPk, String userId);
+	// 지난주 계획 복사
+	ResponseEntity<ResponseDto> postponeWeeklyPlan(String userId);
+	// 이번주 계획 생성 
 	ResponseEntity<ResponseDto> insertWeeklyPlan(PlanRegistRequestDto dto, String userId);
 	// 내일 계획 생성 (오늘 계획 미루기)
 	ResponseEntity<ResponseDto> shiftTodayPlanToTomorrow(String userId);
+	// 오늘 계획 수정
+	ResponseEntity<ResponseDto> updateTodayPlan(PlanRequestDto dto, String userId);
 }

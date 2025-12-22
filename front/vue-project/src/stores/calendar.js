@@ -32,6 +32,7 @@ export const useCalenderStore = defineStore('calendar', () => {
 
     try {
 
+      console.log(reviewData);
       const response = await api.put(`/review/`, reviewData, {
         headers: {
           'Content-Type': 'multipart/form-data'

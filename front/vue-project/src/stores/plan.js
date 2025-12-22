@@ -6,7 +6,7 @@ import isoWeek from 'dayjs/plugin/isoWeek';
 dayjs.extend(isBetween);
 dayjs.extend(isoWeek);
 import api from "../api/axios";
-import { fetchAiWeeklyPlan } from "@/api/ai";
+import { fetchAiRevisePlan, fetchAiWeeklyPlan } from "@/api/ai";
 import { useWbtiStore } from "./wbti";
 import { useAuthStore } from "./auth";
 
@@ -18,11 +18,15 @@ export const usePlanStore = defineStore('plan', () => {
    */
   const plans = ref([]);
   const weeklyPlans = ref([]);
+  const cheerUpQuote = ref([]);
   const error = ref(null);
   const loading = ref(false);
 
   const today = dayjs().startOf('day');
   const startOfWeek = dayjs().startOf('isoWeek'); // 월요일 기준, 일요일은 week
+
+  const wbtiStore = useWbtiStore(); 
+  const authStore = useAuthStore();
 
   /**
    * getters: 계산된 상태
@@ -187,9 +191,6 @@ export const usePlanStore = defineStore('plan', () => {
     // type: 'postpone' (지난주 미루기) or 'ai' (AI 추천)
     loading.value = true;
     error.value = null;
-
-    const wbtiStore = useWbtiStore(); 
-    const authStore = useAuthStore();
       
     try {
 
@@ -207,33 +208,28 @@ export const usePlanStore = defineStore('plan', () => {
 
       // 지난주 계획 다시 사용하기의 경우 지난주 미완료 계획을 가져옴
       if (type === 'postpone') {
-        const lastWeekStart = dayjs().subtract(1, 'week').startOf('isoWeek');
-        const lastWeekEnd = dayjs().subtract(1, 'week').endOf('isoWeek');
-
-        uncompletedPlans = plans.value
-                                .filter(p => {
-                                  const pDate = dayjs(p.date);
-                                  return pDate.isBetween(lastWeekStart, lastWeekEnd, 'day', '[]') && p.completeDate === null;
-                                })
-                                .map(p => ({
-                                  category: p.category,
-                                  detail: p.detail,
-                                  time: p.time
-                                }));
-      } 
+        console.log("postpone");
+        await api.post('/plan/postpone')
+      } else {
+        // AI에게 일주일 계획 요청
+        // AI 기반 새로운 계획 추천받기의 경우 uncompletedPlans는 빈 배열임
+        const aiContent = await fetchAiWeeklyPlan(wbtiStore.aiResponse, wbtiStore.userCondition, uncompletedPlans);
         
-      // AI에게 일주일 계획 요청
-      // AI 기반 새로운 계획 추천받기의 경우 uncompletedPlans는 빈 배열임
-      console.log(wbtiStore.aiResponse)
-      console.log(wbtiStore.userCondition)
-      const aiContent = await fetchAiWeeklyPlan(wbtiStore.aiResponse, wbtiStore.userCondition, uncompletedPlans);
-      
-      const payload = {
-        plans: aiContent.plans,
+        const quotes = Array.isArray(aiContent.cheer_up_quote)
+          ? aiContent.cheer_up_quote
+          : [aiContent.cheer_up_quote];
+
+        cheerUpQuote.value = quotes;
+
+        localStorage.setItem('cheerUpQuotes', JSON.stringify(quotes));
+
+        const payload = {
+          plans: aiContent.plans,
+        }
+
+        await api.post('/plan/weekly', payload);
       }
-
-      await api.post('/plan/weekly', payload);
-
+        
       await fetchPlan(true);
 
     } catch (error) {
@@ -255,9 +251,44 @@ export const usePlanStore = defineStore('plan', () => {
     try {
       if (type === 'postpone') {
         res = await api.post('/plan/today');
+      } else {
+
+        const targetPlan = todayPlans.value[0];
+
+        if (!targetPlan) {
+          throw new Error("오늘 수정할 계획이 없습니다!");
+        }
+
+        const aiContent = await fetchAiRevisePlan(
+          wbtiStore.aiResponse, 
+          wbtiStore.userCondition, 
+          {
+            category: targetPlan.category,
+            detail: targetPlan.detail,
+            time: targetPlan.time,
+          }
+        );
+
+        const quotes = Array.isArray(aiContent.cheer_up_quote)
+          ? aiContent.cheer_up_quote
+          : [aiContent.cheer_up_quote];
+
+        cheerUpQuote.value = quotes;
+
+        localStorage.setItem('cheerUpQuotes', JSON.stringify(quotes));
+
+        const payload = {
+          planPk: targetPlan.planPk,
+          date: targetPlan.date,
+          category: aiContent.category,
+          detail: aiContent.detail,
+          time: aiContent.time,
+        }
+
+        await api.put('/plan/today', payload);
+
+        console.log("계획 변경 끝!")
       }
-      // else 
-      // AI 
 
       await fetchPlan(true);
 
@@ -282,17 +313,21 @@ export const usePlanStore = defineStore('plan', () => {
 
       if (dayPlans.length === 0) return;
 
+      console.log(dayPlans);
+      console.log(dayPlans[0].planPk);
       // 이미 완료된 경우 -> 완료 취소
       const isCompleted = dayPlans.some(p => p.completeDate !== null);
 
       if (isCompleted) {
         // 완료 취소 API
-        await api.put(`/plan/uncomplete`, { date });
+        await api.post(`/plan/uncomplete/${ dayPlans[0].planPk }`);
+        console.log("계획 취소")
       } else {
         // 완료 처리 API
-        await api.put(`/plan/complete`, { date });
+        await api.post(`/plan/complete/${ dayPlans[0].planPk }`);
       }
 
+      await authStore.fetchMe();
       // 데이터 새로고침
       await fetchPlan(true);
     } catch (error) {
@@ -306,6 +341,7 @@ export const usePlanStore = defineStore('plan', () => {
   return {
     plans,
     weeklyPlans,
+    cheerUpQuote,
     error,
     loading,
     streakCount,

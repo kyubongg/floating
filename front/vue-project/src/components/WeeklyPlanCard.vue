@@ -1,7 +1,10 @@
 <template>
   <div class="weekly-plan-card">
-    <h2 class="plan-title">이번주 계획</h2>
-
+    <div class="plan-card-header">
+      <h2 class="plan-title">이번주 계획</h2>
+      <div v-if="planStore.loading">로딩 중...</div>
+    </div>
+    
     <div class="plan-content">
       <!-- 계획 없을 때 -->
       <div v-if="!planStore.hasWeeklyPlan" class="no-plan-container">
@@ -12,7 +15,6 @@
 
       <!-- 계획 있을 때 -->
       <div v-else class="plan-week">
-        <div v-if="planStore.loading">로딩 중...</div>
         <div class="week-days">
           <template v-for="(day, index) in planStore.weekDaysWithPlans" :key="day.name">
             <!-- 요일 아이템 -->
@@ -30,12 +32,15 @@
                 <div v-if="day.exercise" class="exercise-info">{{ day.exerciseDetail }}</div>
                 <div v-if="day.exercise" class="exercise-info">{{ day.exerciseTime }}</div>
               </div>
-              <p v-if="day.postponed > 0" class="postponed-text">➜ {{ day.postponed }}번 미룸!</p>
+              <div v-if="day.date && dayjs().isToday()" class="today-container">
+                <p v-if="day.postponed > 0" class="postponed-text">➜ {{ day.postponed }}번 미룸!</p>
 
-              <!-- 오늘 계획 변경하기 버튼 -->
-              <button v-if="day.isToday && hasTodayPlan" class="change-button" @click="showChangeModal = true">
-                오늘 계획<br />변경하기
-              </button>
+                <!-- 오늘 계획 변경하기 버튼 -->
+                <button v-if="day.isToday && hasTodayPlan && !day.completed" class="change-button" @click="showChangeModal = true">
+                  오늘 계획<br/>변경하기
+                </button>
+              </div>
+              <div v-else></div>          
             </div>
 
             <!-- 구분선 (마지막 제외) -->
@@ -80,6 +85,8 @@ import { useRouter } from 'vue-router';
 import { useAuthStore } from '@/stores/auth';
 import { usePlanStore } from '@/stores/plan';
 import PlanModal from './PlanModal.vue';
+import dayjs from 'dayjs';
+import isToday from 'dayjs/plugin/isToday'
 
 const router = useRouter();
 const auth = useAuthStore();
@@ -88,7 +95,8 @@ const planStore = usePlanStore();
 const showCreateModal = ref(false);
 const showChangeModal = ref(false);
 
-// 오늘 계획 유무 확인
+dayjs.extend(isToday);
+
 const hasTodayPlan = computed(() => {
   return planStore.todayPlans && planStore.todayPlans.length > 0;
 });
@@ -96,7 +104,10 @@ const hasTodayPlan = computed(() => {
 // 날짜 인디케이터 클릭 (완료 토글)
 const handleDayClick = async (day) => {
   if (!day.hasExercise) return; // 계획 없으면 무시
+  if (day.date !== dayjs().format('YYYY-MM-DD')) return;
 
+  console.log(day.date);
+  console.log(dayjs().format('YYYY-MM-DD'));
   // 이미 완료된 경우 -> 완료 취소
   // 완료 안 된 경우 -> 완료 처리
   try {
@@ -141,6 +152,12 @@ const handleAIAlternative = async () => {
 
 
 <style scoped>
+
+.plan-card-header {
+  display: flex;
+  gap: 20px;
+}
+
 .weekly-plan-card {
   width: 100%;
   max-width: 51.125rem;
@@ -311,6 +328,12 @@ const handleAIAlternative = async () => {
   background: #7D7D7D;
   flex-shrink: 0;
   margin: 0;
+}
+
+.today-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .postponed-text {
