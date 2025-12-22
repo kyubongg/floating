@@ -1,5 +1,6 @@
 package com.floating.mvc.dao;
 
+import com.floating.mvc.dto.request.user.FindInfoRequestDto;
 import com.floating.mvc.dto.request.user.PutUserMbtiRequestDto;
 import com.floating.mvc.dto.request.user.PutUserRequestDto;
 import com.floating.mvc.dto.request.user.SignupRequestDto;
@@ -29,4 +30,12 @@ public interface UserDao {
     //비밀번호 확인
     String selectPasswordById(String userId);
     
+    //사용자 조회 (이름, 이메일 입력)
+    boolean existUser(FindInfoRequestDto dto);
+    
+    //아이디 조회
+    String selectIdByEmail(String email);
+    
+    //비밀번호 재설정
+    int updatePassword(FindInfoRequestDto dto);
 }

@@ -1,8 +1,10 @@
 <template>
   <AppHeader/>
   <div class="mypage-container">
-    <PasswordConfirmModal 
+    <InputConfirmModal 
     :isOpen="showPasswordModal" 
+    title="비밀번호 확인"
+    inputType="password"
     @close="showPasswordModal = false" 
     @confirm="confirmWithdraw" />
 
@@ -31,7 +33,7 @@
         <div class="info-row">
           <span class="info-label">성별</span>
           <span class="info-divider">|</span>
-          <span class="info-value">{{ auth.user?.gender }}</span>
+          <span class="info-value">{{ auth.userGender }}</span>
         </div>
         
         <div class="info-row">
@@ -49,7 +51,7 @@
         <div class="info-row">
           <span class="info-label">WBTI</span>
           <span class="info-divider">|</span>
-          <span class="info-value">{{ auth.user?.mbtiName }}</span>
+          <span class="info-value">{{ auth.user?.wbtiCode }}</span>
         </div>
       </div>
       
@@ -80,7 +82,7 @@ import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { useAuthStore } from '@/stores/auth';
 import AppHeader from '@/components/AppHeader.vue';
-import PasswordConfirmModal from '@/components/PasswordConfirmModal.vue';
+import InputConfirmModal from '@/components/InputConfirmModal.vue';
 
 const router = useRouter();
 const auth = useAuthStore();

@@ -1,16 +1,15 @@
-<!-- src/views/LoginView.vue -->
+<!-- src/views/FindInfoView.vue -->
 <template>
   <!--
-    로그인 화면(LoginView)
-    - 로그인 폼 입력 후 submit 시 Pinia auth 스토어의 login() 호출
-    - 로그인 성공 → redirect 혹은 "/" 페이지로 이동
-    - 로그인 실패 → auth.error에 에러 메시지 표시
+    ID/비밀번호 찾기 화면(FindInfoView)
   -->
   <div>
-    <div class="login-container">
+    <div class="find-container">
+      <InputConfirmModal :isOpen="ShowEmailModal" title="이메일 코드 인증" inputType="emailCode"
+        @close="ShowEmailModal = false" @confirm="handleVerifyConfirm" />
 
-      <div class="login-card">
-        <h2 class="login-title">로그인</h2>
+      <div class="find-card">
+        <h2 class="find-title">{{ title }}</h2>
 
         <!-- 에러 메시지 -->
         <p v-if="auth.error" class="error-message">
@@ -20,27 +19,18 @@
         <form @submit.prevent="onSubmit">
           <div class="input-group">
             <div class="input-wrapper">
-              <label class="input-label">아이디</label>
-              <input type="id" class="input-field" v-model="id" required />
+              <label class="input-label">이름</label>
+              <input type="name" class="input-field" v-model="name" required />
             </div>
 
             <div class="input-wrapper">
-              <label class="input-label">비밀번호</label>
-              <input type="password" class="input-field" v-model="pw" required />
+              <label class="input-label">이메일</label>
+              <input type="email" class="input-field" v-model="email" required />
             </div>
           </div>
 
-          <button class="login-button">로그인</button>
+          <button class="find-button">확인</button>
         </form>
-
-        <div class="find-links">
-          <router-link :to="{ path: '/findInfo', query: { mode: 'id' } }" class="find-link">
-            아이디 찾기
-          </router-link>
-          <router-link :to="{ path: '/findInfo', query: { mode: 'pw' } }" class="find-link">
-            비밀번호 찾기
-          </router-link>
-        </div>
 
       </div>
     </div>
@@ -48,68 +38,76 @@
 </template>
 
 <script setup>
-// Vue Composition API
-import { ref, onMounted } from "vue";
-
-// Pinia 인증 스토어
+import { ref, onMounted, computed } from "vue";
 import { useAuthStore } from "../stores/auth";
-
-// Router: 로그인 성공 시 redirect 처리
 import { useRouter, useRoute } from "vue-router";
-import AppHeader from "@/components/AppHeader.vue";
-
-import FindInfoView from "./FindInfoView.vue";
+import InputConfirmModal from "@/components/InputConfirmModal.vue";
 
 const auth = useAuthStore();
 const router = useRouter();
 const route = useRoute();
 
-// 폼 입력 데이터
-const id = ref("");
-const pw = ref("");
+const name = ref("");
+const email = ref("");
 
-// 에러메세지 초기화
+const ShowEmailModal = ref(false);
+
+const title = computed(() => {
+  const mode = route.query.mode;
+  if (mode === 'id') return '아이디 찾기';
+  if (mode === 'pw') return '비밀번호 찾기';
+  return '내 정보 찾기';
+});
+
 onMounted(() => {
   auth.error = null;
 });
 
-// 로그인 폼 submit 이벤트 핸들러
-const onSubmit = () => {
-  // login()은 axios 요청을 포함하므로 Promise 반환됨
-  auth
-    .login({
-      id: id.value,
-      pw: pw.value,
-    })
-    .then(() => {
-
-      if (!auth.hasWbti) {
-        router.push('/wbti-test');
-      } else {
-        router.push('/home');
-      }
-
-    })
-    .catch(() => {
-      // 오류 메시지는 auth.error에 저장되므로 추가 처리 필요 없음
-    });
+const onSubmit = async () => {
+  try {
+    await auth.sendVerificationCode(name.value, email.value, route.query.mode);
+    alert("인증번호가 발송되었습니다.");
+    ShowEmailModal.value = true;
+  } catch (e) {
+    // alert(auth.error || "사용자 정보를 확인해주세요.");
+  }
 };
+
+const handleVerifyConfirm = async (inputCode) => {
+  try {
+    const res = await auth.verifyCode(email.value, inputCode);
+
+    console.log(res);
+    console.log(res.data);
+    if (route.query.mode === 'id') {
+      alert(`찾으시는 아이디는 [ ${res.data.data} ] 입니다.`);
+      router.push('/login');
+    } else {
+      alert("인증 성공! 비밀번호 재설정 페이지로 이동합니다.");
+      router.push('/resetPassword');
+    }
+
+    ShowEmailModal.value = false;
+  } catch (e) {
+    alert(auth.error || "인증번호가 틀렸습니다.");
+  }
+};
+
 </script>
 
 <style scoped>
-.login-container {
+.find-container {
   display: flex;
   justify-content: center;
   align-items: center;
   min-height: 100vh;
 }
 
-.login-card {
+.find-card {
   position: relative;
   width: 20.0625rem;
   /* 321px */
-  height: 19.125rem;
-  /* 306px */
+  height: 16rem;
   background: #FFFFFF;
   border: 1px solid #ECECEC;
   box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
@@ -120,7 +118,7 @@ const onSubmit = () => {
   box-sizing: border-box;
 }
 
-.login-title {
+.find-title {
   font-family: 'Noto Sans KR', sans-serif;
   font-weight: 700;
   font-size: 1rem;
@@ -179,7 +177,7 @@ const onSubmit = () => {
   background: #CACACA;
 }
 
-.login-button {
+.find-button {
   width: 3rem;
   /* 48px */
   height: 1.8675rem;
@@ -198,37 +196,8 @@ const onSubmit = () => {
   display: block;
 }
 
-.login-button:hover {
+.find-button:hover {
   background: #5A85E0;
-}
-
-.find-links {
-  display: flex;
-  justify-content: center;
-  gap: 0.5rem;
-  /* 8px */
-  padding-top: 1.875rem;
-  /* 30px */
-}
-
-.find-link {
-  font-family: 'Noto Sans KR', sans-serif;
-  font-weight: 400;
-  font-size: 0.625rem;
-  /* 10px */
-  line-height: 0.75rem;
-  /* 12px */
-  text-align: center;
-  color: #000000;
-  text-decoration: none;
-  padding-bottom: 0.375rem;
-  /* 6px */
-  border-bottom: 1px solid #000000;
-}
-
-.find-link:hover {
-  color: #769BEF;
-  border-bottom-color: #769BEF;
 }
 
 .error-message {
