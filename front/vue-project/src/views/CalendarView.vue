@@ -18,8 +18,9 @@
       :selectedDate="selectedDate"
       :startDayOfWeek="startDayOfWeek"
       :daysInMonth="daysInMonth"
-      :currentWeekDays="currentWeekDays"
+      :currentDate="currentDate"
       :getDayClass="getDayClass"
+      :currentWeekDays="currentWeekDays"
       @selectDate="selectDate"
       @selectDateFromWeek="selectDateFromWeek"
     >
@@ -209,6 +210,8 @@ const selectDate = (dayNum) => {
 const selectDateFromWeek = (dayjsObj) => {
   selectedDate.value = dayjsObj;
   currentDate.value = dayjsObj; 
+
+  console.log(selectDate.value)
 };
 
 const closeReview = () => {
