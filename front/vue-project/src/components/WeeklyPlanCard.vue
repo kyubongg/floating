@@ -32,12 +32,12 @@
                 <div v-if="day.exercise" class="exercise-info">{{ day.exerciseDetail }}</div>
                 <div v-if="day.exercise" class="exercise-info">{{ day.exerciseTime }}</div>
               </div>
-              <div v-if="day.date && dayjs().isToday()">
+              <div v-if="day.date && dayjs().isToday()" class="today-container">
                 <p v-if="day.postponed > 0" class="postponed-text">➜ {{ day.postponed }}번 미룸!</p>
 
                 <!-- 오늘 계획 변경하기 버튼 -->
                 <button v-if="day.isToday && hasTodayPlan && !day.completed" class="change-button" @click="showChangeModal = true">
-                  오늘 계획<br />변경하기
+                  오늘 계획<br/>변경하기
                 </button>
               </div>
               <div v-else></div>          
@@ -97,7 +97,6 @@ const showChangeModal = ref(false);
 
 dayjs.extend(isToday);
 
-// 오늘 계획 유무 확인
 const hasTodayPlan = computed(() => {
   return planStore.todayPlans && planStore.todayPlans.length > 0;
 });
@@ -329,6 +328,12 @@ const handleAIAlternative = async () => {
   background: #7D7D7D;
   flex-shrink: 0;
   margin: 0;
+}
+
+.today-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .postponed-text {
