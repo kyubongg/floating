@@ -2,7 +2,7 @@
     <div class="feedback-section">
         <div class="feedback-bubble">
             <img :src="currentPetSrc" class="current-pet" />
-            <div class="speech-bubble">
+            <div v-if="feedbackMessage" class="speech-bubble">
                 <p>{{ feedbackMessage }}</p>
             </div>
         </div>
@@ -20,11 +20,13 @@ import haedalSadImg3 from '../assets/imgs/haedal-sad3.png'
 import haedalHappyImg1 from '../assets/imgs/haedal-happy1.png'
 import haedalHappyImg2 from '../assets/imgs/haedal-happy2.png'
 import haedalHappyImg3 from '../assets/imgs/haedal-happy3.png'
+import { usePlanStore } from '@/stores/plan';
 
-const auth = useAuthStore();
+const authStore = useAuthStore();
+const planStore = usePlanStore();
 
 const currentPetSrc = computed(() => {
-    switch (auth.level) {
+    switch (authStore.level) {
         case 1:
             return haedalSadImg3;
         case 2:
@@ -42,8 +44,18 @@ const currentPetSrc = computed(() => {
     }
 })
 
-// 더미 데이터
-const feedbackMessage = ref('조금만 더 열심히 해줘!');
+const feedbackMessage = computed(() => {
+    if (localStorage.getItem('cheerUpQuotes').length > 0) {
+        const storedQuotes = JSON.parse(localStorage.getItem('cheerUpQuotes'));
+
+        const randomIdx = Math.floor(Math.random() * storedQuotes.length);
+        console.log(randomIdx)
+        console.log(storedQuotes[0]);
+        return storedQuotes[randomIdx]
+    }
+    return null;
+}); 
+
 onMounted(async () => {
     // AI로 메세지 가져오기
 });

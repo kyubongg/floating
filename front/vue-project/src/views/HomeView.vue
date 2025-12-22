@@ -42,7 +42,7 @@ onMounted(() => {
   align-items: center;
   padding: 2rem;
   gap: 2rem;
-  min-height: 100vh;
+  margin-top: 100px;
 }
 
 .top-section {
