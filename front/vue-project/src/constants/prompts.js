@@ -108,3 +108,35 @@ export const getWeeklyPlanPrompt = (aiResult, condition, uncompletedPlans = []) 
   2. **빈도 결정**: 사용자의 WBTI 성향을 분석하여, 무리하게 7일을 채우지 말고 주 2~5회 정도로 적절히 휴식일을 섞어 계획을 짜주세요.
   3. **미완료분 처리**: 지난주 미완료 계획을 먼저 배치하되, 해당 날짜의 총 운동 시간이 '${condition.availableTime}'을 넘지 않도록 조정하세요.
 `;
+
+export const REVISE_PLAN_PROMPTS = `
+  당신은 사용자의 기분과 컨디션을 고려하는 유연한 퍼스널 트레이너입니다.
+  원래 계획된 운동이 현재 사용자에게 적절하지 않으므로, 이를 대체할 최적의 운동을 하나만 추천하세요.
+
+  ### 분석 및 생성 규칙 ###
+  1. **대안 제시**: 원래 하려던 운동과 중복되지 않으면서, 사용자의 '가용 시간' 내에 끝낼 수 있는 가벼운 활동이나 다른 종목을 추천하세요.
+  2. **성향 유지**: 사용자의 WBTI 성향을 고려하여, 혼자 하는 것을 선호하면 홈트 위주로, 활동적인 것을 선호하면 야외 활동 위주로 추천하세요.
+  3. **부상 부위 보호**: '통증 부위'를 자극하지 않는 동작으로 구성하세요.
+  4. **응답 제한**: JSON 형식만 허용하며 설명이나 인사말을 절대 포함하지 마세요.
+
+  ### 출력 형식 (JSON) ###
+  {
+    "category": "대체 운동 카테고리",
+    "detail": "대체 운동 이름",
+    "time": 소요시간(분, 정수),
+    "reason": "이 운동을 추천하는 이유 (친절한 말투로)"
+  }
+`;
+
+export const getRevisePlanPrompt = (aiResult, condition, originalPlan) => `
+  사용자 데이터:
+  - 성향: ${aiResult.persona_name} (${aiResult.persona_code})
+  - 가용 시간: ${condition.availableTime} / 통증 부위: ${condition.bodyConditions.join(', ')}
+
+  원래 계획:
+  - 종목: ${originalPlan.category}
+  - 상세 내용: ${originalPlan.detail}
+  - 소요 시간: ${originalPlan.time}분
+
+  위 운동을 대신할 수 있는 새로운 운동을 하나만 추천해줘.
+`;

@@ -125,5 +125,17 @@
 	      AND complete_date IS NULL
 	</delete>
 	
+	<!-- 오늘 계획을 수정한다 -->
+	<update id="updateTodayPlan">
+		UPDATE plan
+		SET
+			date = #{date},
+			category = #{category},
+			detail = #{detail},
+			time = #{time}
+		WHERE plan_pk = #{planPk}
+	</update>
+	
+	
 	
 </mapper>

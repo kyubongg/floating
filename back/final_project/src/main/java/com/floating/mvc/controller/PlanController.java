@@ -95,4 +95,13 @@ public class PlanController {
 		return response;
 	}
 	
+	@PutMapping("/today")
+	public ResponseEntity<ResponseDto> updateTodaPlan(
+			@RequestBody PlanRequestDto dto,
+			@AuthenticationPrincipal String userId
+	){
+		ResponseEntity<ResponseDto> response = planService.updateTodayPlan(dto, userId);
+		return response;
+	}
+	
 }

@@ -237,6 +237,31 @@ public class PlanServiceImpl implements PlanService {
 		return ResponseDto.success(HttpStatus.CREATED);
 	}
 
+	@Override
+	public ResponseEntity<ResponseDto> updateTodayPlan(PlanRequestDto dto, String userId) {
+		
+		try {
+			
+			// userId를 이용해 계획을 조회
+			PlanRequestDto plan = planDao.selectPlan(dto.getPlanPk(), userId);
+		
+			if(plan == null)
+				return ResponseDto.noExistPlan();
+			
+			dto.setPlanPk(plan.getPlanPk());
+			
+			int result = planDao.updateTodayPlan(dto);
+			
+			if(result == 0) return ResponseDto.databaseError();
+			
+		}catch(Exception e) {
+			e.printStackTrace();
+			return ResponseDto.databaseError();
+		}
+		
+		return ResponseDto.success(HttpStatus.OK);
+	}
+
 }
 
 
