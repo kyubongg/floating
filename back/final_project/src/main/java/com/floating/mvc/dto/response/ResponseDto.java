@@ -5,23 +5,37 @@ import org.springframework.http.ResponseEntity;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.Setter;
 
 @Getter
+@Setter
 @AllArgsConstructor
 public class ResponseDto {
 	
 	private String code;
 	private String message;
+	private Object data;
 	
 	public ResponseDto() {
 		this.code = ResponseCode.SUCCESS;
 		this.message = ResponseMessage.SUCCESS;
 	}
+	
+	public ResponseDto(String code, String message) {
+        this.code = code;
+        this.message = message;
+    }
 
 	public static ResponseEntity<ResponseDto> success(HttpStatus status){
 		ResponseDto body = new ResponseDto();
 		return ResponseEntity.status(status).body(body);
 	}
+	
+	public static ResponseEntity<ResponseDto> success(Object data) {
+        ResponseDto response = new ResponseDto();
+        response.setData(data);
+        return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
 	
 	
 	// ============================================== //

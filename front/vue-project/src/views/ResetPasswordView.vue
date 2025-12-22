@@ -1,16 +1,13 @@
-<!-- src/views/LoginView.vue -->
+<!-- src/views/ResetPasswordView.vue -->
 <template>
   <!--
-    로그인 화면(LoginView)
-    - 로그인 폼 입력 후 submit 시 Pinia auth 스토어의 login() 호출
-    - 로그인 성공 → redirect 혹은 "/" 페이지로 이동
-    - 로그인 실패 → auth.error에 에러 메시지 표시
+    비밀번호 재설정 화면(ResetPasswordView)
   -->
   <div>
-    <div class="login-container">
+    <div class="reset-container">
 
-      <div class="login-card">
-        <h2 class="login-title">로그인</h2>
+      <div class="reset-card">
+        <h2 class="reset-title">비밀번호 재설정</h2>
 
         <!-- 에러 메시지 -->
         <p v-if="auth.error" class="error-message">
@@ -20,27 +17,18 @@
         <form @submit.prevent="onSubmit">
           <div class="input-group">
             <div class="input-wrapper">
-              <label class="input-label">아이디</label>
-              <input type="id" class="input-field" v-model="id" required />
+              <label class="input-label">새 비밀번호</label>
+              <input type="password" class="input-field" v-model="newPassword" required />
             </div>
 
             <div class="input-wrapper">
-              <label class="input-label">비밀번호</label>
-              <input type="password" class="input-field" v-model="pw" required />
+              <label class="input-label">새 비밀번호 확인</label>
+              <input type="password" class="input-field" v-model="newPasswordConfirm" required />
             </div>
           </div>
 
-          <button class="login-button">로그인</button>
+          <button class="reset-button" @click="resetPassword">확인</button>
         </form>
-
-        <div class="find-links">
-          <router-link :to="{ path: '/findInfo', query: { mode: 'id' } }" class="find-link">
-            아이디 찾기
-          </router-link>
-          <router-link :to="{ path: '/findInfo', query: { mode: 'pw' } }" class="find-link">
-            비밀번호 찾기
-          </router-link>
-        </div>
 
       </div>
     </div>
@@ -48,68 +36,55 @@
 </template>
 
 <script setup>
-// Vue Composition API
-import { ref, onMounted } from "vue";
-
-// Pinia 인증 스토어
+import { ref, onMounted, computed } from "vue";
 import { useAuthStore } from "../stores/auth";
-
-// Router: 로그인 성공 시 redirect 처리
 import { useRouter, useRoute } from "vue-router";
-import AppHeader from "@/components/AppHeader.vue";
-
-import FindInfoView from "./FindInfoView.vue";
 
 const auth = useAuthStore();
 const router = useRouter();
 const route = useRoute();
 
-// 폼 입력 데이터
-const id = ref("");
-const pw = ref("");
+const newPassword = ref("");
+const newPasswordConfirm = ref("");
 
-// 에러메세지 초기화
 onMounted(() => {
   auth.error = null;
 });
 
-// 로그인 폼 submit 이벤트 핸들러
-const onSubmit = () => {
-  // login()은 axios 요청을 포함하므로 Promise 반환됨
-  auth
-    .login({
-      id: id.value,
-      pw: pw.value,
-    })
-    .then(() => {
+const resetPassword = async () => {
+  
+  auth.error = null;
 
-      if (!auth.hasWbti) {
-        router.push('/wbti-test');
-      } else {
-        router.push('/home');
-      }
+  if (newPassword.value !== newPasswordConfirm.value) {
+    auth.error = "비밀번호가 일치하지 않습니다.";
+    return;
+  }
 
-    })
-    .catch(() => {
-      // 오류 메시지는 auth.error에 저장되므로 추가 처리 필요 없음
-    });
-};
+  try {
+    await auth.resetPassword(newPassword.value, auth.verifiedEmail);
+    alert('비밀번호가 수정되었습니다!');
+
+    router.push('/login');
+  } catch (e) {
+    alert(auth.error);
+  }
+}
+
 </script>
 
 <style scoped>
-.login-container {
+.reset-container {
   display: flex;
   justify-content: center;
   align-items: center;
   min-height: 100vh;
 }
 
-.login-card {
+.reset-card {
   position: relative;
   width: 20.0625rem;
   /* 321px */
-  height: 19.125rem;
-  /* 306px */
+  height: 16rem;
   background: #FFFFFF;
   border: 1px solid #ECECEC;
   box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
@@ -120,7 +95,7 @@ const onSubmit = () => {
   box-sizing: border-box;
 }
 
-.login-title {
+.reset-title {
   font-family: 'Noto Sans KR', sans-serif;
   font-weight: 700;
   font-size: 1rem;
@@ -179,7 +154,7 @@ const onSubmit = () => {
   background: #CACACA;
 }
 
-.login-button {
+.reset-button {
   width: 3rem;
   /* 48px */
   height: 1.8675rem;
@@ -198,37 +173,8 @@ const onSubmit = () => {
   display: block;
 }
 
-.login-button:hover {
+.reset-button:hover {
   background: #5A85E0;
-}
-
-.find-links {
-  display: flex;
-  justify-content: center;
-  gap: 0.5rem;
-  /* 8px */
-  padding-top: 1.875rem;
-  /* 30px */
-}
-
-.find-link {
-  font-family: 'Noto Sans KR', sans-serif;
-  font-weight: 400;
-  font-size: 0.625rem;
-  /* 10px */
-  line-height: 0.75rem;
-  /* 12px */
-  text-align: center;
-  color: #000000;
-  text-decoration: none;
-  padding-bottom: 0.375rem;
-  /* 6px */
-  border-bottom: 1px solid #000000;
-}
-
-.find-link:hover {
-  color: #769BEF;
-  border-bottom-color: #769BEF;
 }
 
 .error-message {

@@ -15,6 +15,8 @@ import WbtiMainView from "@/views/wbti/WbtiMainView2.vue";
 import WbtiTestView from "@/views/wbti/WbtiTestView.vue";
 import WbtiResultView from "@/views/wbti/WbtiResultView.vue";
 import CalendarView from "@/views/CalendarView.vue";
+import FindInfoView from "@/views/FindInfoView.vue";
+import ResetPasswordView from "@/views/ResetPasswordView.vue";
 
 // 라우터 인스턴스 생성
 const router = createRouter({
@@ -73,6 +75,16 @@ const router = createRouter({
       name: "calendar",
       component: CalendarView,
       meta: { requiresAuth: true }, // 🔐 로그인 필요
+    },
+    {
+      path: "/findInfo",
+      name: "findInfo",
+      component: FindInfoView,
+    },
+    {
+      path: "/resetPassword",
+      name: "resetPassword",
+      component: ResetPasswordView,
     },
   ],
 });

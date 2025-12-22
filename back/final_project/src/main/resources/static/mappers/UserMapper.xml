@@ -5,7 +5,7 @@
 
 	<!-- User 등록 (회원가입)을 진행한다. -->
 	<insert id="insertUser">
-		INSERT INTO user(id, email, pw, name, birth, gender, height, weight, wbti_code)
+		INSERT INTO user(id, email, pw, name, birth, gender, height, weight)
 		VALUES (
 			#{id},
 			#{email},
@@ -14,8 +14,7 @@
 			#{birth},
 			#{gender},
 			#{height},
-			#{weight},
-			null
+			#{weight}
 		)
 	</insert>
 	
@@ -84,5 +83,22 @@
 	    FROM user 
 	    WHERE id = #{userId}
 	</select>
+	
+	<!-- 입력한 name, email 정보에 맞는 User 존재 유무를 파악한다. -->
+	<select id="existUser">
+		SELECT COUNT(*) FROM user
+		WHERE name = #{name} AND email = #{email}
+	</select>
+	
+	<!-- 이메일로 Id를 조회한다. -->
+	<select id="selectIdByEmail">
+		SELECT id FROM user WHERE email = #{email}
+	</select>
+	
+	<!-- 비밀번호를 수정한다. -->
+	<update id="updatePassword">
+		UPDATE user SET pw = #{newPw} 
+        WHERE email = #{email}
+	</update>
 
 </mapper>
