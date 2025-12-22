@@ -30,7 +30,7 @@ public interface PlanDao {
 	int postPlanUncompl(
 			@Param("planPk") int planPk);
 	// 이번주 계획 생성 (지난주 계획 복사)
-	int insertWeeklyPlan(
+	int postponeWeeklyPlan(
 			@Param("userId") String userId);
 	// 내일 계획 생성 (오늘 계획 복사)
 	int insertTomorrowPlan(

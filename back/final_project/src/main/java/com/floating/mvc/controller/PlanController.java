@@ -70,6 +70,14 @@ public class PlanController {
 		return response;
 	}
 	
+	@PostMapping("/postpone")
+	public ResponseEntity<ResponseDto> postponeWeeklyPlan(
+			@AuthenticationPrincipal String userId
+	){
+		ResponseEntity<ResponseDto> response = planService.postponeWeeklyPlan(userId);
+		return response;
+	}
+	
 	@PostMapping("/weekly")
 	public ResponseEntity<ResponseDto> insertWeeklyPlan(
 		@RequestBody PlanRegistRequestDto dto,

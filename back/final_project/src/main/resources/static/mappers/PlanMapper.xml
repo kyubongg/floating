@@ -82,7 +82,7 @@
 	</update>
 	
 	<!-- 지난 주 계획을 복사하여 이번주 계획으로 추가한다. -->
-	<insert id="insertWeeklyPlan">
+	<insert id="postponeWeeklyPlan">
 		INSERT INTO plan (user_id, date, category, detail, time, complete_date, shifted)
 		    SELECT 
 		        user_id,
