@@ -38,5 +38,8 @@ public interface PlanDao {
 	// 오늘 계획 삭제
 	int deleteTodayPlan(
 			@Param("userId") String userId);
+	// 오늘 계획 수정
+	int updateTodayPlan(PlanRequestDto dto);
+	
 	
 }

@@ -6,7 +6,7 @@ import isoWeek from 'dayjs/plugin/isoWeek';
 dayjs.extend(isBetween);
 dayjs.extend(isoWeek);
 import api from "../api/axios";
-import { fetchAiWeeklyPlan } from "@/api/ai";
+import { fetchAiRevisePlan, fetchAiWeeklyPlan } from "@/api/ai";
 import { useWbtiStore } from "./wbti";
 import { useAuthStore } from "./auth";
 
@@ -23,6 +23,9 @@ export const usePlanStore = defineStore('plan', () => {
 
   const today = dayjs().startOf('day');
   const startOfWeek = dayjs().startOf('isoWeek'); // 월요일 기준, 일요일은 week
+
+  const wbtiStore = useWbtiStore(); 
+  const authStore = useAuthStore();
 
   /**
    * getters: 계산된 상태
@@ -187,9 +190,6 @@ export const usePlanStore = defineStore('plan', () => {
     // type: 'postpone' (지난주 미루기) or 'ai' (AI 추천)
     loading.value = true;
     error.value = null;
-
-    const wbtiStore = useWbtiStore(); 
-    const authStore = useAuthStore();
       
     try {
 
@@ -242,9 +242,39 @@ export const usePlanStore = defineStore('plan', () => {
     try {
       if (type === 'postpone') {
         res = await api.post('/plan/today');
+      } else {
+
+        const targetPlan = todayPlans.value[0];
+
+        if (!targetPlan) {
+          throw new Error("오늘 수정할 계획이 없습니다!");
+        }
+
+        console.log(targetPlan);
+
+        const aiContent = await fetchAiRevisePlan(
+          wbtiStore.aiResponse, 
+          wbtiStore.userCondition, 
+          {
+            category: targetPlan.category,
+            detail: targetPlan.detail,
+            time: targetPlan.time,
+          }
+        );
+
+        const payload = {
+          planPk: targetPlan.planPk,
+          date: targetPlan.date,
+          category: aiContent.category,
+          detail: aiContent.detail,
+          time: aiContent.time,
+        }
+
+        console.log(payload);
+        await api.put('/plan/today', payload);
+
+        console.log("계획 변경 끝!")
       }
-      // else 
-      // AI 
 
       await fetchPlan(true);
 
