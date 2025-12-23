@@ -8,7 +8,7 @@
   -->
   <AppHeader/>
   <div class="calendar-container">
-    <CalendarHeader :currentDate="currentDate" @changeMonth="changeMonth" />
+    <CalendarHeader :currentDate="currentDate" @changeMonth="changeDate" />
 
     <div class="days-header">
       <div v-for="day in daysOfWeek" :key="day" class="day-name">{{ day }}</div>
@@ -70,7 +70,7 @@ const lastSavedTime = ref(0);
 const selectedFiles = ref([]);
 const initialImages = ref([]);
 const isSaving = ref(false);
-const MIN_SAVE_INTERVAL = 60000; // 1분
+const MIN_SAVE_INTERVAL = 1000; // 1초
 
 // --- Computed ---
 const plans = computed(() => planStore.plans);
@@ -181,7 +181,6 @@ const saveReview = (content) => {
         });
     }
     
-    console.log(reviewData);
     try{
       console.log(`[Autosave] 서버 저장 실행:`, reviewData);
       calendarStore.updateReview(reviewData); // API 호출
@@ -198,6 +197,23 @@ const saveReview = (content) => {
     
 };
 
+const changeDate = (delta) => {
+  // 1. 주간 달력 모드일 때 
+  if (selectedDate.value) {
+    const newDate = selectedDate.value.add(delta, 'week');
+    selectedDate.value = newDate;
+    
+    if (!newDate.isSame(currentDate.value, 'month')) {
+      currentDate.value = newDate;
+    }
+    console.log(`[Week Change] ${newDate.format('YYYY-MM-DD')}`);
+  } 
+  // 2. 월간 달력 모드일 때
+  else {
+    currentDate.value = currentDate.value.add(delta, 'month');
+    console.log(`[Month Change] ${currentDate.value.format('YYYY-MM')}`);
+  }
+}
 const changeMonth = (delta) => {
   currentDate.value = currentDate.value.add(delta, 'month');
   selectedDate.value = null; 

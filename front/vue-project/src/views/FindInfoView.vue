@@ -107,9 +107,9 @@ const handleVerifyConfirm = async (inputCode) => {
 
 .find-card {
   position: relative;
-  width: 20.0625rem;
+  width: 25rem;
   /* 321px */
-  height: 16rem;
+  height: 18rem;
   background: #FFFFFF;
   border: 1px solid #ECECEC;
   box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
@@ -142,7 +142,7 @@ const handleVerifyConfirm = async (inputCode) => {
 .input-label {
   font-family: 'Noto Sans KR', sans-serif;
   font-weight: 400;
-  font-size: 0.9375rem;
+  font-size: 1rem;
   /* 15px */
   color: #000000;
   min-width: 4.375rem;
@@ -166,10 +166,10 @@ const handleVerifyConfirm = async (inputCode) => {
   border: none;
   border-radius: 0.5rem;
   /* 8px */
-  padding: 0 0.5rem;
+  padding: 1rem;
   /* 8px */
   font-family: 'Noto Sans KR', sans-serif;
-  font-size: 0.625rem;
+  font-size: 1rem;
   /* 10px */
   box-sizing: border-box;
 }

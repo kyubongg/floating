@@ -11,7 +11,6 @@ import EditProfileView from "../views/EditProfileView.vue";
 
 // 인증 상태 관리 (Pinia)
 import { useAuthStore } from "../stores/auth";
-import WbtiMainView from "@/views/wbti/WbtiMainView2.vue";
 import WbtiTestView from "@/views/wbti/WbtiTestView.vue";
 import WbtiResultView from "@/views/wbti/WbtiResultView.vue";
 import CalendarView from "@/views/CalendarView.vue";

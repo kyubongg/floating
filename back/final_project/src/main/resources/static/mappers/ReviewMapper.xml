@@ -5,8 +5,14 @@
 	
 	<!-- 리뷰 생성 -->
 	<insert id="insertReview" parameterType="int">
-		INSERT INTO review (plan_pk)
-		VALUES (#{planPk})
+	    INSERT INTO review (plan_pk)
+	    SELECT #{planPk}
+	    FROM DUAL
+	    WHERE NOT EXISTS (
+	        SELECT 1 
+	        FROM review 
+	        WHERE plan_pk = #{planPk}
+	    )
 	</insert>
 	
 	<!-- 리뷰 조회 -->

@@ -49,8 +49,6 @@ const feedbackMessage = computed(() => {
         const storedQuotes = JSON.parse(localStorage.getItem('cheerUpQuotes'));
 
         const randomIdx = Math.floor(Math.random() * storedQuotes.length);
-        console.log(randomIdx)
-        console.log(storedQuotes[0]);
         return storedQuotes[randomIdx]
     }
     return null;

@@ -40,7 +40,7 @@ const handleTestComplete = async () => {
 
 <style scoped>
 .main-page {
-  background-color: #6C6C6C;
+  background-color: #DCDEE1;
   min-height: 100vh;
   display: flex;
   justify-content: center;

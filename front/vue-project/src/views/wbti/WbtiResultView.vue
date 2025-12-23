@@ -1,263 +1,354 @@
 <template>
-  <div v-if="wbtiResult && authStore.user" class="result-page">
-    <div class="result-container">
-      <header class="result-header">
-        <h1 class="wbti-code">{{ wbtiResult.code }}</h1>
-        <h2>"{{ persona.name }}"</h2>
-      </header>
-
-      <section class="score-section">
-        <div v-for="(labels, key) in scoreLabels" :key="key" class="score-row">
-           </div>
-      </section>
-
-      <section class="ai-section card">
-        <div class="badge">AI 분석 결과</div>
-        <p class="ai-text">{{ resultData.analysis }}</p>
-      </section>
-
-      <section class="activity-section card">
-        <h3 class="section-title">🚀 추천 활동</h3>
-        <ul class="activity-list">
-          <li v-for="(item, index) in resultData.activities" :key="index" class="activity-item">
-            {{ item }}
-          </li>
-        </ul>
-      </section>
-
-      <section class="motivation-section card">
-        <div class="quote-container">
-          
-          <div class="motivation-text">
-            <p v-for="(sentence, index) in motivationSentences" :key="index" class="sentence">
-              {{ sentence }}
-            </p>
-          </div>
-          
-        </div>
-      </section>
-
-      <section class="tip-section card">
-        <div class="tip-header">
-          <span class="tip-icon">💡</span>
-          <span class="section-title">경제적 팁</span>
-        </div>
-        <p class="tip-text">{{ resultData.economicTip }}</p>
-      </section>
-
-      <footer class="action-area">
-        <button class="btn primary" @click.prevent="goToHome">
-          홈으로 돌아가기
-        </button>
-        
-        <button class="btn secondary" @click="router.push('/wbti-test')">
-          테스트 다시하기
-        </button>
-      </footer>
-    </div>
+  <AppHeader/>
+  <div class="result-container">
+    <div class="result-wrapper">
 
     
-  </div>
-  <div v-else class="loading-state">
-    결과를 불러오는 중입니다...
+      <div class="result-card">
+        <!-- 상단: 캐릭터 + 결과 정보 -->
+        <div class="result-header">
+          <!-- 캐릭터 이미지 -->
+          <div class="character-section">
+            <img 
+              v-if="personaCode !== '진단 중...'"
+              :src="getImageUrl(personaCode)" 
+              alt="운동 성향 캐릭터" 
+              class="character-image" 
+            />
+          </div>
+
+          <!-- 결과 정보 -->
+          <div class="info-section">
+            <div class="result-title">
+              <h1>{{ personaName }}</h1>
+              <h1>{{ personaCode }}</h1>
+            </div>
+
+            <!-- 지표 바 -->
+            <div class="indicators">
+              <div 
+                v-for="(indicator, index) in indicators" 
+                :key="index"
+                class="indicator-row"
+              >
+                <span class="indicator-label left" v-html="indicator.leftLabel"></span>
+                
+                <div class="indicator-bar">
+                  <div 
+                    class="indicator-fill"
+                    :style="{ width: indicator.leftPercent + '%' }"
+                  ></div>
+                </div>
+                
+                <span class="indicator-label right" v-html="indicator.rightLabel"></span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 설명 텍스트 -->
+        <div class="description">
+          {{ description }}
+        </div>
+      </div>
+
+      <!-- 하단: 추천 운동 & 경제적 팁 -->
+      <div class="tips-section">
+        <!-- 추천 운동 -->
+        <div class="tip-card">
+          <h2 class="tip-title">추천 운동</h2>
+          <ul class="tip-list">
+            <li v-for="(exercise, index) in recommendedExercises" :key="index">
+              {{ exercise }}
+            </li>
+          </ul>
+        </div>
+
+        <!-- 경제적 팁 -->
+        <div class="tip-card">
+          <h2 class="tip-title">경제적 팁</h2>
+          <p class="tip-content">
+            {{ economicTip }}
+          </p>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
 <script setup>
-  import { computed, onMounted, ref } from 'vue';
+  import AppHeader from '@/components/AppHeader.vue';
   import { useWbtiStore } from '@/stores/wbti';
-  import { useAuthStore } from '@/stores/auth';
-  import { useRouter } from 'vue-router';
+  import { onMounted, computed, ref } from 'vue';
 
   const wbtiStore = useWbtiStore();
-  const authStore = useAuthStore();
-  const router = useRouter();
 
-  const isLoading = ref(true);
+  const aiData = computed(() => wbtiStore.aiResponse || {});
 
-  // 점수 막대 그래프에 표시할 라벨 정의 (scoreLabels 에러 해결)
-  const scoreLabels = {
-    socialAvg: { left: '개인형(I)', right: '단체형(G)' },
-    motivationAvg: { left: '외적동기(E)', right: '내적동기(R)' },
-    executionAvg: { left: '계획적(P)', right: '즉흥적(J)' },
-    activityAvg: { left: '정적인(C)', right: '활동적인(D)' }
-  };
-
-  // WBTI 결과 및 점수 가져오기
-  const wbtiResult = computed(() => wbtiStore.wbtiResult);
-
-  // AI 분석 결과 데이터 연결 
-  const resultData = computed(() => {
-
-    const aiResponse = wbtiStore.aiResponse || {};
-    const recommendation = aiResponse.recommendation || {};
-
-    return {
-      analysis: aiResponse.analysis || "분석 데이터를 찾을 수 없습니다.",
-      economicTip: recommendation.economic_tip || "경제적 팁을 불러올 수 없습니다.",
-      motivationMessage: aiResponse.motivation_message || "동기부여 메세지를 불러올 수 없습니다.",
-      activities: Array.isArray(recommendation.activities) ? recommendation.activities : [recommendation.activities || "추천 활동이 없습니다."],
-    };
+  const personaName = computed(() => {
+    if (!aiData.value.persona_name) return '진단 중...';
+    return `${aiData.value.persona_name}`;
   });
 
-  const motivationSentences = computed(() => {
-
-    const message = resultData.value.motivationMessage;
-
-    return message
-      .split(/([.!])\s+/)  // 마침표나 느낌표와 그 뒤 공백으로 분리
-      .reduce((acc, curr, index, array) => {
-        if (index % 2 === 0 && curr.trim()) {
-          // 문장 본문
-          const punctuation = array[index + 1] || '';
-          acc.push(curr.trim() + punctuation);
-        }
-        return acc;
-      }, [])
-      .filter(sentence => sentence.trim());
+  const personaCode = computed(() => {
+    if (!wbtiStore.wbtiResult.code) return '진단 중...';
+    return `${wbtiStore.wbtiResult.code}`;
   });
 
-  console.log(motivationSentences.value)
+  const description = computed(() => aiData.value.analysis|| '결과를 불러오는 중입니다.');
 
-  // 페르소나 정보 (코드별 이름 정의)
-  const persona = computed(() => {
-    const code = wbtiResult.value?.code;
+  const recommendedExercises = computed(() => aiData.value.recommendation?.activities || []);
+
+  // economic_tip 도 마찬가지로 depth를 맞춰줍니다.
+  const economicTip = computed(() => aiData.value.recommendation?.economic_tip || '팁을 불러오는 중입니다.');
+  
+  const indicators = computed(() => {
+    const avgs = wbtiStore.wbtiResult.averages;
+    return [
+        { 
+          leftLabel: `${Math.round(avgs.socialAvg * 14.2)}%<br> I (개인)`,
+          rightLabel: `${100 - Math.round(avgs.socialAvg * 14.2)}%<br> G (그룹)`, 
+          leftPercent: (avgs.socialAvg * 14.2) 
+        },
+        { 
+          leftLabel: `${Math.round(avgs.motivationAvg * 14.2)}%<br> E (과정)`, 
+          rightLabel: `${100 - Math.round(avgs.motivationAvg * 14.2)}%<br>  R (결과)`, 
+          leftPercent: (avgs.motivationAvg * 14.2) 
+        },
+        { 
+          leftLabel: `${Math.round(avgs.executionAvg * 14.2)}%<br> P (자율)`, 
+          rightLabel: `${100 - Math.round(avgs.executionAvg * 14.2)}%<br> J (계획)`, 
+          leftPercent: (avgs.executionAvg * 14.2) 
+        },
+        { 
+          leftLabel: `${Math.round(avgs.activityAvg * 14.2)}%<br> C (저강도)`, 
+          rightLabel: `${100 - Math.round(avgs.activityAvg * 14.2)}%<br> D (고강도)`, 
+          leftPercent: (avgs.activityAvg * 14.2) 
+        },
+      ];
+  });
+
+  // Vite에서 동적 경로 이미지를 가져오는 함수
+  const getImageUrl = (code) => {
+    if (code === '진단 중...') return '';
     
-    return {
-      name: wbtiStore.aiResponse.persona_name,
-    };
-  });
-
-  const goToHome = () => {
-    router.push({ name: 'home'})
-  }
-
+    // 주의: 경로는 현재 파일(WbtiResultView.vue) 기준으로 상대 경로를 적어야 합니다.
+    return new URL(`../../assets/imgs/wbti_result/${code}.jpg`, import.meta.url).href;
+  };
   onMounted(async () => {
-    if (!wbtiStore.aiResponse.analysis) {
+    // 스토어에 데이터가 없다면(새로고침 된 경우) DB에서 다시 가져옵니다.
+    if (!wbtiStore.aiResponse || Object.keys(wbtiStore.aiResponse).length === 0) {
       await wbtiStore.getUserWbti();
     }
-    isLoading.value = false;
-  })
+  });
 </script>
 
 <style scoped>
-/* 기본 레이아웃 */
-.result-page {
-  font-family: 'Noto Sans KR', sans-serif;
-  background-color: #F8F9FD;
-  min-height: 100vh;
-  padding: 40px 20px;
-  color: #333;
-}
-
 .result-container {
-  max-width: 600px;
-  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 6rem;
+  gap: 2rem;
+  min-height: 100vh;
+
 }
 
+.result-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  min-width: 800px;
+
+  background: #dedede;
+  border: 1px solid #dedede;
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+  border-radius: 3.4375rem;  /* 55px */
+  padding: 0.5rem 2.25rem 2.25rem 2.25rem;  /* 36px */
+  box-sizing: border-box;
+}
+
+/* 메인 결과 카드 */
+.result-card {
+  width: 100%;
+  max-width: 52.25rem;  /* 836px */
+  
+}
+
+/* 상단 헤더 */
 .result-header {
+  display: flex;
+  gap: 2rem;
+  margin-bottom: 2.5rem;
+}
+
+.character-section {
+  flex-shrink: 0;
+}
+
+.character-image {
+  width: 19.1875rem;  /* 307px */
+  height: 20.75rem;  /* 332px */
+  object-fit: contain;
+  border-radius: 1rem;
+}
+
+/* 정보 섹션 */
+.info-section {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  padding-top: 1rem;
+}
+
+.result-title h1{
+  font-family: 'Noto Sans KR', sans-serif;
+  font-weight: 700;
+  font-size: 1.5625rem;  /* 25px */
+  line-height: 2.5rem;  /* 40px */
   text-align: center;
-  margin-bottom: 30px;
-}
-
-.wbti-code {
-  font-size: 42px;
-  color: #769BEF;
-  font-weight: 900;
+  color: #000000;
   margin: 0;
 }
 
-/* 카드 공통 디자인 */
-.card {
-  background: #ffffff;
-  border-radius: 20px;
-  padding: 24px;
-  margin-bottom: 20px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+/* 지표 바 */
+.indicators {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;  /* 24px */
 }
 
-.section-title {
-  font-size: 18px;
+.indicator-row {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.indicator-label {
+  font-family: 'Noto Sans KR', sans-serif;
   font-weight: 700;
-  margin-bottom: 16px;
-  display: block;
+  font-size: 0.875rem;  /* 14px */
+  line-height: 0.9375rem;  /* 15px */
+  color: #000000;
+  
+  white-space: pre-line; 
+  display: flex; 
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 }
 
-/* AI 분석 & 텍스트 */
-.badge {
-  display: inline-block;
+.indicator-label.left {
+  min-width: 3.5625rem;  /* 57px */
+  text-align: center;
+}
+
+.indicator-label.right {
+  min-width: 3.5625rem;  /* 57px */
+  text-align: center;
+}
+
+.indicator-bar {
+  flex: 1;
+  height: 1rem;  /* 16px */
   background: #769BEF;
-  color: white;
-  font-size: 12px;
+  border-radius: 0.625rem;  /* 10px */
+  position: relative;
+  overflow: hidden;
+}
+
+.indicator-fill {
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 100%;
+  background: #FFFFFF;
+  border-radius: 0.625rem 0 0 0.625rem;
+  transition: width 0.5s ease;
+}
+
+/* 설명 */
+.description {
+  font-family: 'Noto Sans KR', sans-serif;
+  font-weight: 400;
+  font-size: 1rem;  /* 16px */
+  line-height: 1.875rem;  /* 30px */
+  color: #000000;
+  text-align: left;
+  padding: 0 1rem;
+}
+
+/* 팁 섹션 */
+.tips-section {
+  display: flex;
+  gap: 2rem;
+  width: 100%;
+  max-width: 52.25rem;
+}
+
+.tip-card {
+  flex: 1;
+  background: #FFFFFF;
+  border: 1px solid #ECECEC;
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+  border-radius: 3.4375rem;  /* 55px */
+  padding: 2rem;
+  box-sizing: border-box;
+  min-height: 11.5rem;  /* 184px */
+}
+
+.tip-title {
+  font-family: 'Noto Sans KR', sans-serif;
   font-weight: 700;
-  padding: 4px 12px;
-  border-radius: 50px;
-  margin-bottom: 12px;
+  font-size: 1.25rem;  /* 20px */
+  line-height: 2.5rem;  /* 40px */
+  text-align: center;
+  color: #000000;
+  margin: 0 0 1rem 0;
 }
 
-.ai-text, .tip-text {
-  line-height: 1.7;
-  font-size: 15px;
-  color: #444;
-  margin: 0;
-}
-
-/* 추천 활동 리스트 */
-.activity-list {
+.tip-list {
   list-style: none;
   padding: 0;
   margin: 0;
-}
-
-.activity-item {
-  background: #f8f9fd;
-  margin-bottom: 8px;
-  padding: 12px 16px;
-  border-radius: 10px;
-  font-size: 14px;
-  border-left: 4px solid #769BEF;
-}
-
-/* 동기부여 섹션 (강조형) */
-.motivation-section {
+  font-family: 'Noto Sans KR', sans-serif;
+  font-weight: 400;
+  font-size: 1rem;  /* 16px */
+  line-height: 1.875rem;  /* 30px */
+  color: #000000;
   text-align: center;
-  background: linear-gradient(135deg, #769BEF 0%, #5d81d6 100%);
-  color: white;
 }
 
-.motivation-text {
-  font-size: 16px;
-  font-weight: 500;
-  font-style: italic;
+.tip-list li {
+  margin-bottom: 0.5rem;
+}
+
+.tip-content {
+  font-family: 'Noto Sans KR', sans-serif;
+  font-weight: 400;
+  font-size: 1rem;  /* 16px */
+  line-height: 1.875rem;  /* 30px */
+  color: #000000;
+  text-align: center;
   margin: 0;
+  padding: 0 1rem;
 }
 
-/* 버튼 영역 */
-.action-area {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  margin-top: 30px;
-}
+/* 반응형 */
+@media (max-width: 768px) {
+  .result-header {
+    flex-direction: column;
+    align-items: center;
+  }
 
-.btn {
-  padding: 16px;
-  border-radius: 12px;
-  font-size: 16px;
-  font-weight: 700;
-  cursor: pointer;
-  border: none;
-  transition: 0.2s;
-}
+  .tips-section {
+    flex-direction: column;
+  }
 
-.btn.primary { background: #769BEF; color: white; }
-.btn.secondary { background: #E8EEFF; color: #769BEF; }
-.btn:hover { opacity: 0.9; }
-
-/* 로딩 상태 */
-.loading-state {
-  text-align: center;
-  padding: 100px;
-  color: #999;
+  .character-image {
+    width: 15rem;
+    height: auto;
+  }
 }
 </style>

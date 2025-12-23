@@ -25,11 +25,14 @@ import AppHeader from '../components/AppHeader.vue';
 import UserStatusCard from '../components/UserStatusCard.vue';
 import PetFeedback from '../components/PetFeedback.vue';
 import WeeklyPlanCard from '../components/WeeklyPlanCard.vue';
+import { useWbtiStore } from '@/stores/wbti';
 
 const planStore = usePlanStore();
+const wbtiStore = useWbtiStore();
 
 onMounted(() => {
   planStore.fetchPlan();
+  wbtiStore.getUserWbti();
 });
 
 </script>

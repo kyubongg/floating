@@ -63,16 +63,15 @@ const isActive = (path) => {
   display: flex;
   align-items: center;
   gap: 3rem;  /* 48px */
-  max-width: 56.25rem;  /* 900px */
+  max-width: 51.125rem;  
   height: 3.3125rem;  /* 53px */
   margin: 0 auto;
-  padding: 0 2.5rem;  /* 40px */
 }
 
 .nav-item {
   font-family: 'Noto Sans KR', sans-serif;
   font-weight: 400;
-  font-size: 0.875rem;  /* 14px */
+  font-size: 0.95rem;  /* 14px */
   line-height: 1.0625rem;  /* 17px */
   color: #000000;
   text-decoration: none;
@@ -91,8 +90,8 @@ const isActive = (path) => {
 /* 첫 번째 아이템 (FLOATING)은 항상 파란색 */
 .nav-item:first-child {
   font-weight: 700;
-  font-size: 0.9375rem;  /* 15px */
-  line-height: 1.125rem;  /* 18px */
+  font-size: 0.95rem;  /* 15px */
+  line-height: 1.0625rem;  /* 18px */
   color: #769BEF;
 }
 

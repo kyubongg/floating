@@ -204,14 +204,15 @@ export const usePlanStore = defineStore('plan', () => {
         throw new Error("WBTI 검사 결과가 없습니다. 먼저 테스트를 진행해주세요.");
       }
 
+      let uncompletedPlans = [];
+
       // 지난주 계획 다시 사용하기의 경우 지난주 미완료 계획을 가져옴
       if (type === 'postpone') {
-        console.log("postpone");
         await api.post('/plan/postpone')
       } else {
         // AI에게 일주일 계획 요청
         // AI 기반 새로운 계획 추천받기의 경우 uncompletedPlans는 빈 배열임
-        const aiContent = await fetchAiWeeklyPlan(wbtiStore.aiResponse, wbtiStore.userCondition);
+        const aiContent = await fetchAiWeeklyPlan(wbtiStore.aiResponse, wbtiStore.userCondition, uncompletedPlans);
         
         const quotes = Array.isArray(aiContent.cheer_up_quote)
           ? aiContent.cheer_up_quote
@@ -253,9 +254,13 @@ export const usePlanStore = defineStore('plan', () => {
 
         const targetPlan = todayPlans.value[0];
 
+        
         if (!targetPlan) {
           throw new Error("오늘 수정할 계획이 없습니다!");
         }
+
+        console.log(targetPlan);
+        console.log(wbtiStore.userCondition);
 
         const aiContent = await fetchAiRevisePlan(
           wbtiStore.aiResponse, 
@@ -267,6 +272,7 @@ export const usePlanStore = defineStore('plan', () => {
           }
         );
 
+        console.log(aiContent.cheer_up_quote);
         const quotes = Array.isArray(aiContent.cheer_up_quote)
           ? aiContent.cheer_up_quote
           : [aiContent.cheer_up_quote];
@@ -310,9 +316,7 @@ export const usePlanStore = defineStore('plan', () => {
       });
 
       if (dayPlans.length === 0) return;
-
-      console.log(dayPlans);
-      console.log(dayPlans[0].planPk);
+      
       // 이미 완료된 경우 -> 완료 취소
       const isCompleted = dayPlans.some(p => p.completeDate !== null);
 
