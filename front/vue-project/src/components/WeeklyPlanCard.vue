@@ -52,6 +52,7 @@
 
     <!-- 주간 계획 생성 모달 -->
     <PlanModal :isOpen="showCreateModal" 
+      :isAiLoading="isAiLoading"
       title="어떤 방식으로 이번주 운동 계획을 작성할까요?" 
       primaryText="지난 주 계획 
       다시 
@@ -65,6 +66,7 @@
 
     <!-- 오늘 계획 변경 모달 -->
     <PlanModal :isOpen="showChangeModal" 
+      :isAiLoading="isAiLoading"
       :title="changeModalTitle" 
       primaryText="다음 날로 
       미루기"
@@ -94,6 +96,7 @@ const planStore = usePlanStore();
 
 const showCreateModal = ref(false);
 const showChangeModal = ref(false);
+const isAiLoading = ref(false); 
 
 dayjs.extend(isToday);
 
@@ -106,8 +109,6 @@ const handleDayClick = async (day) => {
   if (!day.hasExercise) return; // 계획 없으면 무시
   if (day.date !== dayjs().format('YYYY-MM-DD')) return;
 
-  console.log(day.date);
-  console.log(dayjs().format('YYYY-MM-DD'));
   // 이미 완료된 경우 -> 완료 취소
   // 완료 안 된 경우 -> 완료 처리
   try {
@@ -135,8 +136,15 @@ const handlePostponePreviousWeek = async () => {
 };
 
 const handleAIRecommendation = async () => {
-  await planStore.createWeeklyPlan('ai');
-  showCreateModal.value = false;
+  try {
+    isAiLoading.value = true; // 로딩 시작
+    await planStore.createWeeklyPlan('ai'); // AI 호출 및 저장
+    showCreateModal.value = false;
+  } catch (error) {
+    console.error("AI 추천 실패:", error);
+  } finally {
+    isAiLoading.value = false; // 완료 후 로딩 종료
+  }
 };
 
 const handlePostponeToday = async () => {
@@ -145,8 +153,15 @@ const handlePostponeToday = async () => {
 };
 
 const handleAIAlternative = async () => {
-  await planStore.updateTodayPlan('alternative');
-  showChangeModal.value = false;
+  try {
+    isAiLoading.value = true; // 로딩 시작
+    await planStore.updateTodayPlan('alternative'); // AI 대체 운동 호출
+    showChangeModal.value = false;
+  } catch (error) {
+    console.error("AI 대체 추천 실패:", error);
+  } finally {
+    isAiLoading.value = false; // 완료 후 로딩 종료
+  }
 };
 </script>
 

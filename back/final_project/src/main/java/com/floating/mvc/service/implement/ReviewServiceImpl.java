@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
@@ -83,14 +84,8 @@ public class ReviewServiceImpl implements ReviewService {
 			// 요청 DTO에 포함된 이미지 PK 목록 추출
 			List<Integer> putImgPks = requestImagePaths.stream()
 			        .map(ImageInfoDto::getImgPk)
-			        .filter(pk -> pk != 0)
-			        .toList();
-			for(ImageInfoDto img : dto.getImgPaths()) {
-				// pk가 0이 아닌 것만 유지할 목록에 추가
-				if(img.getImgPk() != 0) {
-					putImgPks.add(img.getImgPk());
-				}
-			}
+			        .filter(pk -> pk != null && pk != 0)
+			        .collect(Collectors.toList());
 			
 			// 삭제할 이미지 식별
 			List<Integer> deletePks = new ArrayList<>();

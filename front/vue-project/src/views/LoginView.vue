@@ -106,18 +106,21 @@ const onSubmit = () => {
 
 .login-card {
   position: relative;
-  width: 20.0625rem;
+  width: 25rem;
   /* 321px */
-  height: 19.125rem;
+  height: 25rem;
   /* 306px */
   background: #FFFFFF;
   border: 1px solid #ECECEC;
   box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
   border-radius: 3.4375rem;
   /* 55px */
-  padding: 2.625rem 2.5625rem;
+  padding: 2.5rem;
   /* 42px 41px */
   box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
 }
 
 .login-title {
@@ -142,7 +145,7 @@ const onSubmit = () => {
 .input-label {
   font-family: 'Noto Sans KR', sans-serif;
   font-weight: 400;
-  font-size: 0.9375rem;
+  font-size: 1rem;
   /* 15px */
   color: #000000;
   min-width: 4.375rem;
@@ -166,10 +169,10 @@ const onSubmit = () => {
   border: none;
   border-radius: 0.5rem;
   /* 8px */
-  padding: 0 0.5rem;
+  padding: 1rem;
   /* 8px */
   font-family: 'Noto Sans KR', sans-serif;
-  font-size: 0.625rem;
+  font-size: 1rem;
   /* 10px */
   box-sizing: border-box;
 }
@@ -180,10 +183,9 @@ const onSubmit = () => {
 }
 
 .login-button {
-  width: 3rem;
-  /* 48px */
-  height: 1.8675rem;
-  /* 29.88px */
+  width: 5rem;
+  height: 2rem;
+  
   background: #769BEF;
   border: none;
   border-radius: 0.625rem;
@@ -214,7 +216,7 @@ const onSubmit = () => {
 .find-link {
   font-family: 'Noto Sans KR', sans-serif;
   font-weight: 400;
-  font-size: 0.625rem;
+  font-size: 0.8rem;
   /* 10px */
   line-height: 0.75rem;
   /* 12px */

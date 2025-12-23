@@ -122,7 +122,7 @@ const handleConfirm = () => {
 .modal-title {
   font-family: 'Noto Sans KR', sans-serif;
   font-weight: 700;
-  font-size: 0.9375rem;
+  font-size: 1rem;
   /* 15px */
   line-height: 1.125rem;
   /* 18px */
@@ -146,10 +146,10 @@ const handleConfirm = () => {
   border: none;
   border-radius: 0.625rem;
   /* 10px */
-  padding: 0 0.75rem;
+  padding: 1rem;
   /* 12px */
   font-family: 'Noto Sans KR', sans-serif;
-  font-size: 0.625rem;
+  font-size: 1rem;
   /* 10px */
   line-height: 0.75rem;
   /* 12px */

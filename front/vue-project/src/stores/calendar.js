@@ -21,7 +21,6 @@ export const useCalenderStore = defineStore('calendar', () => {
       const response = await api.get('/review/');
 
       reviews.value = response.data.userReviews;
-      console.log(response.data.userReviews);
     } catch (error) {
       throw error;
     }
@@ -40,7 +39,6 @@ export const useCalenderStore = defineStore('calendar', () => {
       });
 
       await getReviews();
-      console.log(response.data);
 
       return response.data;
 

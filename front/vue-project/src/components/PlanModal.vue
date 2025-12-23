@@ -16,10 +16,17 @@
             
             <button 
               class="option-button" 
-              :class="singleButton ? 'secondary-single' : 'secondary'"
+              :class="[singleButton ? 'secondary-single' : 'secondary', { 'loading': isAiLoading }]"
               @click="handleSecondaryClick"
+              :disabled="isAiLoading" 
             >
-              {{ secondaryText }}
+              <template v-if="isAiLoading">
+                <div class="spinner"></div>
+                <span>분석 중...</span>
+              </template>
+              <template v-else>
+                {{ secondaryText }}
+              </template>
             </button>
           </div>
         </div>
@@ -47,6 +54,10 @@ const props = defineProps({
     required: true
   },
   singleButton: {
+    type: Boolean,
+    default: false
+  },
+  isAiLoading: {
     type: Boolean,
     default: false
   }
@@ -183,5 +194,26 @@ const handleSecondaryClick = () => {
     height: 16rem;
     font-size: 1.5rem;
   }
+}
+
+.option-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.8;
+  transform: none !important; /* 호버 애니메이션 중단 */
+}
+
+.spinner {
+  width: 2rem;
+  height: 2rem;
+  border: 4px solid rgba(118, 155, 239, 0.3);
+  border-top: 4px solid #769BEF;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: 1rem;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
 }
 </style>

@@ -23,8 +23,6 @@ const finalData = ref(null);
 
 const onTestComplete = async (data) => {
   step.value = 'LOADING';
-  // 여기서 AI 호출 및 DB 저장 로직 실행...
-  // 처리가 완료되면
   finalData.value = result;
   step.value = 'RESULT';
 };
@@ -34,8 +32,7 @@ const onTestComplete = async (data) => {
 /* 전체 페이지 스타일 설정 */
 
 .main-page {
-    /* 이미지와 같이 전체 배경색을 어두운 회색으로 설정 */
-    background-color: #6C6C6C; /* 이미지 배경색과 유사하게 설정 */
+    background-color: #DCDEE1; 
     min-height: 100vh;
     display: flex;
     flex-direction: column;

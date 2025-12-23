@@ -29,7 +29,7 @@
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: #6C6C6C; /* 이미지의 배경색과 유사한 진한 회색 */
+  background-color: #DCDEE1; /* 이미지의 배경색과 유사한 진한 회색 */
   display: flex;
   justify-content: center;
   align-items: center;
@@ -39,7 +39,7 @@
 
 .intro-content {
   text-align: center;
-  color: #FFFFFF;
+  color: #000;
 }
 
 /* 캐릭터 이미지 스타일 */
@@ -63,7 +63,7 @@
 .intro-description {
   font-size: 16px;
   font-weight: 400;
-  color: rgba(255, 255, 255, 0.9);
+  color: #000;
   margin-bottom: 40px;
 }
 

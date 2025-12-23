@@ -25,28 +25,24 @@ export const WBTI_QUESTIONS = [
   { id: 2, type: 'socialType', text: '운동 후 나 자신과의 약속을 지켰을 때보다 사람들과 하이파이브 할 때 더 만족스럽다.', left: '자신과의 약속', right: '하이파이브' },
   { id: 3, type: 'socialType', text: '새로운 운동을 시작한다면 유튜브 독학보다 PT나 그룹 수업을 듣는 편을 택한다.', left: '유튜브 독학', right: '그룹 수업' },
   { id: 4, type: 'socialType', text: '운동 중 옆 사람이 말을 걸면 집중이 깨지기보다 반갑고 재미있다.', left: '집중 깨짐', right: '반갑고 재미남' },
-  { id: 5, type: 'socialType', text: '운동 메이트가 있으면 신경 쓰이기보다 동기부여가 되어 지속하기 쉽다.', left: '부담/신경쓰임', right: '동기부여/지속' },
 
   // [R/E] 핵심 동기 (motivationType)
-  { id: 6, type: 'motivationType', text: '운동을 하는 진짜 이유는 운동하는 순간의 즐거움보다 몸무게나 근육량 숫자를 확인하기 위해서다.', left: '순간의 즐거움', right: '숫자 확인', isReverse: true },
-  { id: 7, type: 'motivationType', text: '성공적인 운동의 기준은 과정의 즐거움보다 목표 달성(3kg 감량 등) 여부다.', left: '즐거웠던 과정', right: '목표 달성', isReverse: true },
-  { id: 8, type: 'motivationType', text: '사진을 찍는다면 운동하는 순간의 풍경보다 인바디 결과지나 숫자를 찍고 싶다.', left: '순간의 풍경', right: '인바디/결과', isReverse: true },
-  { id: 9, type: 'motivationType', text: '운동 후 가장 먼저 하는 생각은 "기분 좋다"보다 "오늘 몇 칼로리 소모했지?"이다.', left: '기분 좋다', right: '칼로리 소모', isReverse: true },
-  { id: 10, type: 'motivationType', text: '한 달 뒤 내 모습으로 기대되는 것은 여유로워진 마음보다 눈에 띄게 달라진 몸이다.', left: '여유로운 마음', right: '달라진 몸', isReverse: true },
+  { id: 5, type: 'motivationType', text: '운동을 하는 진짜 이유는 운동하는 순간의 즐거움보다 몸무게나 근육량 숫자를 확인하기 위해서다.', left: '순간의 즐거움', right: '숫자 확인', isReverse: true },
+  { id: 6, type: 'motivationType', text: '성공적인 운동의 기준은 과정의 즐거움보다 목표 달성(3kg 감량 등) 여부다.', left: '즐거웠던 과정', right: '목표 달성', isReverse: true },
+  { id: 7, type: 'motivationType', text: '사진을 찍는다면 운동하는 순간의 풍경보다 인바디 결과지나 숫자를 찍고 싶다.', left: '순간의 풍경', right: '인바디/결과', isReverse: true },
+  { id: 8, type: 'motivationType', text: '한 달 뒤 내 모습으로 기대되는 것은 여유로워진 마음보다 눈에 띄게 달라진 몸이다.', left: '여유로운 마음', right: '달라진 몸', isReverse: true },
 
   // [J/P] 운동 방식 (executionType)
-  { id: 11, type: 'executionType', text: '운동 계획을 세울 때 나는 기분대로 하기보다 요일별로 상세히 짜놓는 편이다.', left: '기분대로', right: '상세한 계획' },
-  { id: 12, type: 'executionType', text: '운동 루틴이 깨지면 수용하기보다 스트레스와 죄책감을 느낀다.', left: '수용함', right: '스트레스/죄책감' },
-  { id: 13, type: 'executionType', text: '운동 기록은 특별히 안 하기보다 앱이나 수첩에 매일 상세히 적는 편이다.', left: '안 함', right: '매일 기록' },
-  { id: 14, type: 'executionType', text: '같은 운동을 반복하는 것이 지루하기보다 익숙하고 효과적이라서 좋다.', left: '지루함', right: '익숙하고 좋음' },
-  { id: 15, type: 'executionType', text: '운동 프로그램 선택 시 자유로운 구성보다 체계적으로 짜여진 커리큘럼을 선호한다.', left: '자유로운 구성', right: '체계적 커리큘럼' },
+  { id: 9, type: 'executionType', text: '운동 계획을 세울 때 나는 기분대로 하기보다 요일별로 상세히 짜놓는 편이다.', left: '기분대로', right: '상세한 계획' },
+  { id: 10, type: 'executionType', text: '운동 루틴이 깨지면 수용하기보다 스트레스와 죄책감을 느낀다.', left: '수용함', right: '스트레스/죄책감' },
+  { id: 11, type: 'executionType', text: '같은 운동을 반복하는 것이 지루하기보다 익숙하고 효과적이라서 좋다.', left: '지루함', right: '익숙하고 좋음' },
+  { id: 12, type: 'executionType', text: '운동 프로그램 선택 시 자유로운 구성보다 체계적으로 짜여진 커리큘럼을 선호한다.', left: '자유로운 구성', right: '체계적 커리큘럼' },
 
   // [D/C] 선호 강도 (activityType)
-  { id: 16, type: 'activityType', text: '운동 후 이상적인 상태는 상쾌하고 가벼운 몸보다 땀이 흠뻑 나고 숨이 헐떡이는 상태다.', left: '상쾌/가벼움', right: '땀/헐떡임' },
-  { id: 17, type: 'activityType', text: '내가 좋아하는 운동 템포는 부드러운 움직임보다 빠르고 격렬한 동작이다.', left: '부드러움', right: '빠르고 격렬함' },
-  { id: 18, type: 'activityType', text: '운동 강도를 높이는 것은 부담스럽기보다 흥미진진하고 도전적이다.', left: '부담스러움', right: '흥미진진함' },
-  { id: 19, type: 'activityType', text: '근육통이 오면 걱정되기보다 제대로 운동했다는 증거 같아 뿌듯하다.', left: '무리가 갈까 걱정', right: '뿌듯함' },
-  { id: 20, type: 'activityType', text: '심박수가 높게 오르면 멈추고 싶기보다 운동이 잘 되는 느낌이라 최고다.', left: '멈추고 싶음', right: '운동되는 느낌' }
+  { id: 13, type: 'activityType', text: '내가 좋아하는 운동 템포는 부드러운 움직임보다 빠르고 격렬한 동작이다.', left: '부드러움', right: '빠르고 격렬함' },
+  { id: 14, type: 'activityType', text: '운동 강도를 높이는 것은 부담스럽기보다 흥미진진하고 도전적이다.', left: '부담스러움', right: '흥미진진함' },
+  { id: 15, type: 'activityType', text: '근육통이 오면 걱정되기보다 제대로 운동했다는 증거 같아 뿌듯하다.', left: '무리가 갈까 걱정', right: '뿌듯함' },
+  { id: 16, type: 'activityType', text: '심박수가 높게 오르면 멈추고 싶기보다 운동이 잘 되는 느낌이라 최고다.', left: '멈추고 싶음', right: '운동되는 느낌' }
 ];
 
 // src/constants/wbtiQuestions.js에 추가
