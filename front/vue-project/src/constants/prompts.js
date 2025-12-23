@@ -66,31 +66,35 @@ export const WEEKLY_PLAN_PROMPTS = `
   4. **부상 방지**: 사용자의 '통증 부위'를 자극하는 운동은 제외하고 대체 운동을 제시하세요.
   5. **데이터 형식**: 응답의 'plans' 배열 내 각 객체는 다음 형식을 따르세요.
      - weekely_goal: 이번 주의 응원 문구 (한 문장), 해달 캐릭터가 말하는 문구라고 생각하고 귀엽게 응원하는 문구로 만들어줘(예시: 조금만 더 열심히 해줘!)
-     - date: 이번주의 월~일까지의 날짜
+     - date: 이번주의 월~일까지의 날짜(반드시 'YYYY-MM-DD' 형식의 문자열로 응답하세요.)
      - category: 운동 대분류
-     - detail: 구체적 내용
+     - detail: 구체적 내용 (여기에는 시간을 넣지마)
      - time: 소요 시간 (정수)
      - cheer_up_quote: 사용자의 성향에 맞는 동기부여 문구 한문장(공백, 특수문자 포함 14글자)이고, 하나의 요일마다 3문장씩 만들어줘. (if, 계획이 3일 => 9문장)
-  6. **응답 제한**: JSON 형식만 허용하며 설명이나 인사말을 절대 포함하지 마세요.
+  6. **요일 분산 원칙 (중요)**: 운동 계획이 특정 요일에 몰리지 않도록 하세요.
+    - 가용 횟수가 주 3회라면 (월, 수, 금)보다는 사용자의 컨디션에 따라 다양한 조합을 고려하세요.
+    - 연속된 날짜에 고강도 운동이 배치되지 않도록 '운동-휴식-운동'의 리듬을 권장합니다.
+  7. **가용 시간 준수**: 사용자의 'availableTime' 총 횟수와 하루 시간을 넘기지 마세요.
+  8. **다양성 확보**: 매주 같은 요일, 같은 종목이 반복되지 않도록 유산소, 근력, 유연성 운동을 골고루 섞으세요.
+  9. **응답 제한**: JSON 형식만 허용하며 설명이나 인사말을 절대 포함하지 마세요.
 
-  ### 출력 형식 ###
   ### 출력 형식 (JSON) ###
   {
     "weekly_goal": "이번 주의 핵심 목표 (한 문장)",
     "plans": [
       { 
-        "date": 2025-12-15, 
+        "date": 'YYYY-MM-DD', 
         "category": "유산소", 
         "detail": "집 앞 공원 가볍게 걷기 및 조깅", 
         "time": 30 
       },
       { 
-        "date": 2025-12-16, 
+        "date": 'YYYY-MM-DD', 
         "category": "근력", 
         "detail": "스쿼트 20회 3세트 및 푸쉬업 10회 3세트", 
         "time": 40 
-      }
-      // ... 일요일(day_offset: 2025-12-21)까지 총 7개의 계획 생성
+      },
+      ...
     ],
     "special_tip": "사용자의 경제 상황을 고려한 맞춤형 팁",
     "cheer_up_quote": [
@@ -102,12 +106,12 @@ export const WEEKLY_PLAN_PROMPTS = `
   }
 `;
 
-export const getWeeklyPlanPrompt = (aiResult, condition, uncompletedPlans = []) => `
+export const getWeeklyPlanPrompt = (aiResult, condition, startDate) => `
   사용자 데이터:
   - 성향: ${aiResult.persona_name} (${aiResult.persona_code})
   - 가용 조건: ${condition.availableTime} (중요: 이 시간 내에서만 계획을 짜주세요)
   - 통증 부위: ${condition.bodyConditions.join(', ')}
-  - 지난주 미완료 계획: ${JSON.stringify(uncompletedPlans)}
+  - 기준 날짜(오늘): ${startDate} (이 날짜가 속한 주의 계획을 세워줘)
 
   ### 계획 생성 지침 ###
   1. **시간 엄수**: 모든 'time' 값은 사용자의 하루 가용 시간인 '${condition.availableTime}' 이내여야 합니다.
