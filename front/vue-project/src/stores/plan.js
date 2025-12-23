@@ -204,8 +204,6 @@ export const usePlanStore = defineStore('plan', () => {
         throw new Error("WBTI 검사 결과가 없습니다. 먼저 테스트를 진행해주세요.");
       }
 
-      let uncompletedPlans = [];
-
       // 지난주 계획 다시 사용하기의 경우 지난주 미완료 계획을 가져옴
       if (type === 'postpone') {
         console.log("postpone");
@@ -213,7 +211,7 @@ export const usePlanStore = defineStore('plan', () => {
       } else {
         // AI에게 일주일 계획 요청
         // AI 기반 새로운 계획 추천받기의 경우 uncompletedPlans는 빈 배열임
-        const aiContent = await fetchAiWeeklyPlan(wbtiStore.aiResponse, wbtiStore.userCondition, uncompletedPlans);
+        const aiContent = await fetchAiWeeklyPlan(wbtiStore.aiResponse, wbtiStore.userCondition);
         
         const quotes = Array.isArray(aiContent.cheer_up_quote)
           ? aiContent.cheer_up_quote
