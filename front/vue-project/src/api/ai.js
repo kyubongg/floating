@@ -1,6 +1,7 @@
 import { getRevisePlanPrompt, getWbtiAnalysisPrompt, getWeeklyPlanPrompt, REVISE_PLAN_PROMPTS, WBTI_PROMPTS, WEEKLY_PLAN_PROMPTS } from "@/constants/prompts"
 import axios from "axios";
 import api from "./axios";
+import dayjs from "dayjs";
 
 // function: wbti 검사 요청 함수
 export const fetchAiAnalysis = async (wbtiResult, userCondition) => {
@@ -43,8 +44,10 @@ export const fetchAiAnalysis = async (wbtiResult, userCondition) => {
 // function: wbti 기반 사용자 운동 주간 계획 추천 함수
 export const fetchAiWeeklyPlan = async (aiResult, userCondition) => {
 
+  const todayStr = dayjs().format('YYYY-MM-DD');
+  
   const systemPrompt = WEEKLY_PLAN_PROMPTS;
-  const userPrompt = getWeeklyPlanPrompt(aiResult, userCondition);
+  const userPrompt = getWeeklyPlanPrompt(aiResult, userCondition, todayStr);
 
   try {
 

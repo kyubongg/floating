@@ -28,9 +28,9 @@
                 <span class="day-name">{{ day.name }}</span>
               </div>
               <div class="exerciseText">
-                <div v-if="day.exercise" class="exercise-info">{{ day.exerciseCategory }}</div>
-                <div v-if="day.exercise" class="exercise-info">{{ day.exerciseDetail }}</div>
-                <div v-if="day.exercise" class="exercise-info">{{ day.exerciseTime }}</div>
+                <div v-if="day.exercise" class="exercise-category">{{ day.exerciseCategory }}</div>
+                <div v-if="day.exercise" class="exercise-detail">{{ day.exerciseDetail }}</div>
+                <div v-if="day.exercise" class="exercise-time">{{ day.exerciseTime }}</div>
               </div>
               <div v-if="day.date && dayjs().isToday()" class="today-container">
                 <p v-if="day.postponed > 0" class="postponed-text">➜ {{ day.postponed }}번 미룸!</p>
@@ -70,7 +70,7 @@
       미루기"
       secondaryText="AI기반 
       대체 운동 
-      추천받기" 
+      추천받기"  
       :single-button="hasTomorrowPlan"
       @close="showChangeModal = false" 
       @primary-click="handlePostponeToday"
@@ -237,7 +237,7 @@ const handleAIAlternative = async () => {
 .week-days {
   display: flex;
   justify-content: space-between;
-  align-items: flex-start;
+  align-items: stretch;
   width: 97%;
   position: relative;
 }
@@ -324,10 +324,10 @@ const handleAIAlternative = async () => {
 /* 구분선 */
 .divider {
   width: 1px;
-  height: 7.875rem;
-  background: #7D7D7D;
+  align-self: stretch;
+  background: #ececec;
   flex-shrink: 0;
-  margin: 0;
+  margin: 0 10px;
 }
 
 .today-container {
@@ -372,7 +372,55 @@ const handleAIAlternative = async () => {
 .change-button:hover {
   background: #5D5D5D;
 }
+/* 운동 정보 컨테이너 */
+.exerciseText {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px; /* 글자 그룹 간의 간격 */
+  width: 100%;
+  min-height: 5.5rem; /* 높이를 고정하여 요일간 수평 정렬 유지 */
+  margin-top: 0.5rem;
+}
 
+/* 1. 카테고리 (유산소, 근력 등) */
+.exercise-category {
+  font-family: 'Noto Sans KR', sans-serif;
+  font-weight: 700;
+  font-size: 0.8rem;
+  letter-spacing: -0.02em; /* 자간을 좁혀 세련되게 */
+  color: #769BEF; /* 포인트 컬러로 시선 분산 방지 */
+  margin-bottom: 2px;
+}
+
+/* 2. 상세 내용 (조깅, 스트레칭 등) */
+.exercise-detail {
+  font-family: 'Noto Sans KR', sans-serif;
+  font-weight: 500;
+  font-size: 0.75rem;
+  line-height: 1.4; /* 행간을 넓혀 가독성 확보 */
+  color: #333333;
+  width: 100%;
+  word-break: keep-all; /* 한글이 단어 단위로 예쁘게 줄바꿈됨 */
+  text-align: center;
+}
+
+/* 3. 운동 시간 (50분 등) */
+.exercise-time {
+  font-family: 'Noto Sans KR', sans-serif;
+  font-weight: 400;
+  font-size: 0.7rem;
+  color: #999999; /* 부가 정보는 연하게 처리 */
+  margin-top: auto; /* 시간 정보를 항상 하단에 배치 */
+}
+
+/* 구분선 (디자인에 맞춰 더 연하게 조정) */
+.divider {
+  width: 1px;
+  height: 8rem;
+  background: #dcdcdc; /* 선이 너무 진하면 글자가 묻히므로 연하게 변경 */
+  flex-shrink: 0;
+}
 /* 반응형 */
 @media (max-width: 768px) {
   .week-days {

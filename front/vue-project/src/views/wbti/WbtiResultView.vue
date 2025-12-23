@@ -27,9 +27,13 @@
 
       <section class="motivation-section card">
         <div class="quote-container">
-          <span class="quote-icon">"</span>
-          <p class="motivation-text">{{ resultData.motivationMessage }}</p>
-          <span class="quote-icon">"</span>
+          
+          <div class="motivation-text">
+            <p v-for="(sentence, index) in motivationSentences" :key="index" class="sentence">
+              {{ sentence }}
+            </p>
+          </div>
+          
         </div>
       </section>
 
@@ -95,6 +99,25 @@
       activities: Array.isArray(recommendation.activities) ? recommendation.activities : [recommendation.activities || "추천 활동이 없습니다."],
     };
   });
+
+  const motivationSentences = computed(() => {
+
+    const message = resultData.value.motivationMessage;
+
+    return message
+      .split(/([.!])\s+/)  // 마침표나 느낌표와 그 뒤 공백으로 분리
+      .reduce((acc, curr, index, array) => {
+        if (index % 2 === 0 && curr.trim()) {
+          // 문장 본문
+          const punctuation = array[index + 1] || '';
+          acc.push(curr.trim() + punctuation);
+        }
+        return acc;
+      }, [])
+      .filter(sentence => sentence.trim());
+  });
+
+  console.log(motivationSentences.value)
 
   // 페르소나 정보 (코드별 이름 정의)
   const persona = computed(() => {
@@ -207,11 +230,6 @@
   font-weight: 500;
   font-style: italic;
   margin: 0;
-}
-
-.quote-icon {
-  font-size: 24px;
-  opacity: 0.6;
 }
 
 /* 버튼 영역 */
