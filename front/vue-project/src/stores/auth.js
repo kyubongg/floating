@@ -27,7 +27,16 @@ export const useAuthStore = defineStore("auth", () => {
   });
 
   const userName = computed(() => user.value?.name || '게스트');
-  const userMbtiName = computed(() => user.value?.mbtiName || '미정');
+  const userWbtiCode = computed(() => user.value?.wbtiCode || '미정');
+  const userGender = computed(() => {
+    if (user.value?.gender === 'M') {
+      return '남';
+    }
+    else {
+      return '여';
+    }
+  })
+  const verifiedEmail = ref('');
 
   const currentScore = computed(() => user.value?.petScore || '0');
   const maxScoreByLevel = 100;
@@ -240,6 +249,79 @@ export const useAuthStore = defineStore("auth", () => {
     }
   };
 
+  /**
+   * 이메일 인증 코드 전송 
+   */
+  const sendVerificationCode = async (name, email) => {
+    loading.value = true;
+    error.value = null;
+
+    try {
+      const res = await api.post("/user/send-code", {
+        name: name,
+        email: email,
+      },
+      { withCredentials: true });
+      return res;
+    } catch (e) {
+      error.value = e?.response?.data?.message || "인증 코드 발송 실패";
+      throw e;
+    } finally {
+      loading.value = false;
+    }
+  };
+
+  /**
+   * 이메일 인증 코드 검증
+   */
+  const verifyCode = async (email, code) => {
+    loading.value = true;
+    error.value = null;
+
+    const requestBody = {
+      email: email,
+      code: code,
+    }
+
+    try {
+      const res = await api.post("/user/verify-code", requestBody,
+      { withCredentials: true });
+
+      verifiedEmail.value = email;
+      return res;
+    } catch (e) {
+      error.value = e?.response?.data?.message || "인증 번호가 일치하지 않습니다.";
+      throw e;
+    } finally {
+      loading.value = false;
+    }
+  };
+
+  /**
+  * 비밀번호 재설정
+  */
+  const resetPassword = async (newPassword, verifiedEmail) => {
+    loading.value = true;
+    error.value = null;
+
+    const requestBody = {
+      newPw: newPassword,
+      email: verifiedEmail,
+    }
+
+    try {
+      console.log(requestBody);
+      const res = await api.put("/user/password", requestBody,
+      { withCredentials: true });
+      return res;
+    } catch (e) {
+      error.value = e?.response?.data?.message || "비밀번호 변경 실패";
+      throw e;
+    } finally {
+      loading.value = false;
+    }
+  };
+
   // 스토어에서 외부로 노출할 상태/메서드
   return {
     user,
@@ -249,7 +331,9 @@ export const useAuthStore = defineStore("auth", () => {
     isAuthenticated,
     hasWbti,
     userName,
-    userMbtiName,
+    userWbtiCode,
+    userGender,
+    verifiedEmail,
     currentScore,
     maxScoreByLevel,
     scorePercentage,
@@ -260,5 +344,8 @@ export const useAuthStore = defineStore("auth", () => {
     fetchMe,
     editProfile,
     withdraw,
+    sendVerificationCode,
+    verifyCode,
+    resetPassword,
   };
 });

@@ -1,8 +1,10 @@
 <template>
   <AppHeader />
   <div class="edit-container">
-    <PasswordConfirmModal 
+    <InputConfirmModal 
     :isOpen="showPasswordModal" 
+    title="비밀번호 확인"
+    inputType="password"
     @close="showPasswordModal = false" 
     @confirm="saveChanges" />
 
@@ -29,11 +31,11 @@
           <label class="input-label">성별</label>
           <div class="radio-group">
             <label class="radio-label">
-              <input type="radio" name="gender" value="남" v-model="formData.gender" />
+              <input type="radio" name="gender" value="M" v-model="formData.gender" />
               남
             </label>
             <label class="radio-label">
-              <input type="radio" name="gender" value="여" v-model="formData.gender" />
+              <input type="radio" name="gender" value="F" v-model="formData.gender" />
               여
             </label>
           </div>
@@ -67,7 +69,7 @@ import { useAuthStore } from '@/stores/auth';
 import { ref, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 import AppHeader from '@/components/AppHeader.vue';
-import PasswordConfirmModal from '@/components/PasswordConfirmModal.vue';
+import InputConfirmModal from '@/components/InputConfirmModal.vue';
 
 const router = useRouter();
 const auth = useAuthStore();

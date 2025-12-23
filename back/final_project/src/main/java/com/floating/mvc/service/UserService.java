@@ -3,6 +3,7 @@ package com.floating.mvc.service;
 import org.springframework.http.ResponseEntity;
 
 import com.floating.mvc.dto.request.user.DeleteUserRequestDto;
+import com.floating.mvc.dto.request.user.FindInfoRequestDto;
 import com.floating.mvc.dto.request.user.PutUserMbtiRequestDto;
 import com.floating.mvc.dto.request.user.PutUserRequestDto;
 import com.floating.mvc.dto.request.user.SignInRequestDto;
@@ -24,6 +25,12 @@ public interface UserService {
 	ResponseEntity<ResponseDto> updateUser(PutUserRequestDto dto, String userId);
 	// 회원 Mbti 수정
 	ResponseEntity<ResponseDto> updateUserMbti(PutUserMbtiRequestDto dto, String userId);
-	//회원탈퇴
+	// 회원탈퇴
 	ResponseEntity<ResponseDto> deleteUser(DeleteUserRequestDto dto, String userId);
+	// 이메일 인증 코드 전송
+	ResponseEntity<ResponseDto> sendCode(FindInfoRequestDto dto);
+	// 이메일 인증 코드 검증
+	ResponseEntity<ResponseDto> verifyCode(FindInfoRequestDto dto, String savedCode);
+	// 비밀번호 재설정
+	ResponseEntity<ResponseDto> resetPassword(FindInfoRequestDto dto);
 }

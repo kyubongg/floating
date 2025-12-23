@@ -1,13 +1,19 @@
 package com.floating.mvc.service.implement;
 
+import java.util.Random;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.floating.mvc.dao.PetDao;
 import com.floating.mvc.dao.UserDao;
 import com.floating.mvc.dto.request.user.DeleteUserRequestDto;
+import com.floating.mvc.dto.request.user.FindInfoRequestDto;
 import com.floating.mvc.dto.request.user.PutUserMbtiRequestDto;
 import com.floating.mvc.dto.request.user.PutUserRequestDto;
 import com.floating.mvc.dto.request.user.SignInRequestDto;
@@ -29,6 +35,8 @@ public class UserServiceImpl implements UserService {
 	private final PetDao petDao;
 	private final BCryptPasswordEncoder passwordEncoder;
 	private final JwtProvider jwtProvider;
+	@Autowired
+    private JavaMailSender mailSender;
 	
 	@Override
 	public ResponseEntity<ResponseDto> signUpUser(SignupRequestDto dto) {
@@ -186,4 +194,77 @@ public class UserServiceImpl implements UserService {
         
         return passwordEncoder.matches(rawPassword, encodedPassword);
     }
+
+	@Override
+	public ResponseEntity<ResponseDto> sendCode(FindInfoRequestDto dto) {
+		try {
+	        // 유저 확인
+	        boolean userCount = userDao.existUser(dto);
+	        if (!userCount) {
+	            return ResponseDto.validationFail();
+	        }
+
+	        // 6자리 인증 코드 생성
+	        String code = String.format("%06d", new Random().nextInt(1000000));
+
+	        // 메일 발송
+	        SimpleMailMessage message = new SimpleMailMessage();
+	        message.setTo(dto.getEmail());
+	        message.setSubject("[Floating] 비밀번호 찾기 인증번호");
+	        message.setText("요청하신 인증번호는 [" + code + "] 입니다.\n5분 이내에 입력해주세요.");
+	        mailSender.send(message);
+
+	        // 세션 저장을 위한 코드 전달
+	        return ResponseDto.success(code); 
+
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	        return ResponseDto.databaseError();
+	    }
+	}
+
+	@Override
+	public ResponseEntity<ResponseDto> verifyCode(FindInfoRequestDto dto, String savedCode) {
+		String userId = null;
+		try {
+	        if (savedCode == null) {
+	            return ResponseDto.validationFail();
+	        }
+
+	        if (!savedCode.equals(dto.getCode())) {
+	            return ResponseDto.validationFail();
+	        }
+	        
+	        userId = userDao.selectIdByEmail(dto.getEmail());
+	        
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	        return ResponseDto.databaseError();
+	    }
+	    return ResponseDto.success(userId);
+	}
+	
+	@Override
+	public ResponseEntity<ResponseDto> resetPassword(FindInfoRequestDto dto) {
+	    try {
+	        if (dto.getNewPw() == null || dto.getNewPw().trim().isEmpty()) {
+	            return ResponseDto.validationFail();
+	        }
+
+			// 비밀번호 암호화
+			String encodedPassword = passwordEncoder.encode(dto.getNewPw());
+			dto.setNewPw(encodedPassword);
+			
+			int result = userDao.updatePassword(dto);
+	        if (result == 0) {
+	            return ResponseDto.databaseError();
+	        }
+
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	        return ResponseDto.databaseError();
+	    }
+
+	    return ResponseDto.success(HttpStatus.OK);
+	}
 }

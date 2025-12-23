@@ -19,7 +19,6 @@ public class UserRequestDto {
     private char gender;
     private int height;
     private int weight;
-    private int mbtiPk;
     private String wbtiCode;
     private int petScore;
 	
