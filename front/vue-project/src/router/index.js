@@ -138,7 +138,15 @@ function proceedRouting(to, next, auth) {
     return next({ name: 'wbtiResult' });
   }
 
-  // 4) 그 외엔 가려던 곳으로 보냄
+  // 4) 이메일 검증을 거치지 않은 유저가 비밀번호 재설정 페이지 접근 시
+  if (to.name === 'resetPassword') {
+    if (!auth.verifiedEmail) {
+      alert('이메일 인증이 필요합니다.');
+      return next({ name: "findInfo" });
+    }
+  }
+
+  // 5) 그 외엔 가려던 곳으로 보냄
   return next();
 }
 
