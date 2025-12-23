@@ -18,6 +18,9 @@ import CalendarView from "@/views/CalendarView.vue";
 import FindInfoView from "@/views/FindInfoView.vue";
 import ResetPasswordView from "@/views/ResetPasswordView.vue";
 
+import { useAlert } from '@/composables/useAlert';
+const alert = useAlert();
+
 // 라우터 인스턴스 생성
 const router = createRouter({
   history: createWebHistory(),
@@ -134,14 +137,14 @@ function proceedRouting(to, next, auth) {
 
   // 3) WBTI 이미 한 유저가 테스트 페이지 접근 시
   if (to.meta.disallowHasWbti && hasWbti) {
-    alert("이미 검사를 완료하셨습니다. 결과 페이지로 이동합니다.");
+    alert.show("이미 검사를 완료하셨습니다. 결과 페이지로 이동합니다.", 'warning');
     return next({ name: 'wbtiResult' });
   }
 
   // 4) 이메일 검증을 거치지 않은 유저가 비밀번호 재설정 페이지 접근 시
   if (to.name === 'resetPassword') {
     if (!auth.verifiedEmail) {
-      alert('이메일 인증이 필요합니다.');
+      alert.show("이메일 인증이 필요합니다.", 'error');
       return next({ name: "findInfo" });
     }
   }

@@ -70,9 +70,11 @@ import { ref, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 import AppHeader from '@/components/AppHeader.vue';
 import InputConfirmModal from '@/components/InputConfirmModal.vue';
+import { useAlert } from '@/composables/useAlert';
 
 const router = useRouter();
 const auth = useAuthStore();
+const alert = useAlert();
 
 const showPasswordModal = ref(false);
 const formData = ref({
@@ -106,11 +108,11 @@ const saveChanges = async (password) => {
 
   try {
     await auth.editProfile(password, formData);
-    alert('정보가 수정되었습니다!');
+    alert.show('정보가 수정되었습니다!', 'sucess');
 
     router.push('/mypage');
   } catch (e) {
-    alert(auth.error);
+    alert.show(auth.error, 'error');
   }
 };
 

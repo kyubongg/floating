@@ -70,9 +70,11 @@
     import { USER_CONDITION_QUESTIONS } from '@/constants/wbtiData'; // 상수로 분리 권장
     import { computed, ref } from 'vue';
     import { useRouter } from 'vue-router';
+    import { useAlert } from '@/composables/useAlert';
 
     const router = useRouter();
     const wbtiStore = useWbtiStore();
+    const alert = useAlert();
 
     // --- 1. 질문 데이터 통합 ---
     const questions = [
@@ -135,7 +137,7 @@
         console.log("3단계")
         router.replace({ name: 'wbtiResult' });
         } catch (error) {
-            alert('결과 전송 중 오류가 발생했습니다.');
+            alert.show('결과 전송 중 오류가 발생했습니다.', 'warning');
             console.log(error)
         }
     }
