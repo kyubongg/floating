@@ -3,6 +3,14 @@ import axios from "axios";
 import api from "./axios";
 import dayjs from "dayjs";
 
+const timeMap = {
+  '15분 이하': 15,
+  '20-30분': 30,
+  '40분-1시간': 60,
+  '1시간 이상': 90,
+  '상관없음': 30
+};
+
 // function: wbti 검사 요청 함수
 export const fetchAiAnalysis = async (wbtiResult, userCondition) => {
   
@@ -11,16 +19,16 @@ export const fetchAiAnalysis = async (wbtiResult, userCondition) => {
 
   try {
 
+    console.log('AI 분석 시작');
     const response = await axios.post(
       '/api-openai/api.openai.com/v1/chat/completions',
       {
-        model: 'gpt-4o-mini',
+        model: 'gpt-4o',
         messages: [
           { role: 'system', content: systemPrompt },
           { role: 'user', content: userPrompt }
         ],
-        response_format: { type: 'json_object' },
-        temperature: 0.7
+        response_format: { type: 'json_object' }
       },
       {
         headers: {
@@ -45,22 +53,27 @@ export const fetchAiAnalysis = async (wbtiResult, userCondition) => {
 export const fetchAiWeeklyPlan = async (aiResult, userCondition) => {
 
   const todayStr = dayjs().format('YYYY-MM-DD');
-  
-  const systemPrompt = WEEKLY_PLAN_PROMPTS;
-  const userPrompt = getWeeklyPlanPrompt(aiResult, userCondition, todayStr);
+  const limitTime = timeMap[userCondition.availableTime] || 30;
 
+  const systemPrompt = WEEKLY_PLAN_PROMPTS;
+
+  const modifiedCondition = { ...userCondition, availableTime: `${limitTime}` };
+
+  const userPrompt = getWeeklyPlanPrompt(aiResult, modifiedCondition, todayStr);
+
+  console.log(userCondition);
+  console.log(modifiedCondition);
   try {
 
     const response = await axios.post(
       '/api-openai/api.openai.com/v1/chat/completions',
       {
-        model: 'gpt-4o-mini',
+        model: 'gpt-4o',
         messages: [
           { role: 'system', content: systemPrompt },
           { role: 'user', content: userPrompt }
         ],
-        response_format: { type: 'json_object' },
-        temperature: 0.7
+        response_format: { type: 'json_object' }
       },
       {
         headers: {
@@ -84,21 +97,27 @@ export const fetchAiWeeklyPlan = async (aiResult, userCondition) => {
 // function: wbti 기반 사용자 운동 하루 계획 추천 함수
 export const fetchAiRevisePlan = async (aiResult, userCondition, originalPlan) => {
 
-  const systemPrompt = REVISE_PLAN_PROMPTS;
-  const userPrompt = getRevisePlanPrompt(aiResult, userCondition, originalPlan);
+  const limitTime = timeMap[userCondition.availableTime] || 30;
+  const modifiedCondition = { ...userCondition, availableTime: `${limitTime}분` };
 
+  const systemPrompt = REVISE_PLAN_PROMPTS;
+  const userPrompt = getRevisePlanPrompt(aiResult, modifiedCondition, originalPlan);
+
+  console.log(userCondition.availableTime);
+  console.log(limitTime);
+  console.log(userCondition);
+  console.log(modifiedCondition);
   try {
 
     const response = await axios.post(
       '/api-openai/api.openai.com/v1/chat/completions',
       {
-        model: 'gpt-4o-mini',
+        model: 'gpt-4o',
         messages: [
           { role: 'system', content: systemPrompt },
           { role: 'user', content: userPrompt }
         ],
-        response_format: { type: 'json_object' },
-        temperature: 0.7
+        response_format: { type: 'json_object' }
       },
       {
         headers: {

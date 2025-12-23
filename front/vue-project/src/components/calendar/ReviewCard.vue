@@ -20,13 +20,19 @@
         </div>
 
         <div class="review-photo-container">
-          <textarea 
-            class="review-input" 
-            :value="modelValue"
-            @input="handleInput"
-            :disabled="!isReviewEditable"
-            :placeholder="savingMessage"
-          ></textarea>
+          <div class="input-wrapper">
+            <textarea 
+              class="review-input" 
+              :value="modelValue"
+              @input="handleInput"
+              :disabled="!isReviewEditable || isSaving"
+              :placeholder="savingMessage"
+            ></textarea>
+            <div :class="['save-status', { 'success': showSuccessMessage }]">
+              {{ savingMessage }}
+            </div>
+          </div>
+          
           
           <div class="photo-slider-area">
             <div class="slider-container">
@@ -81,7 +87,8 @@ const emit = defineEmits(['update:modelValue', 'close', 'save', 'image-upload', 
 const fileInput = ref(null);
 const newFiles = ref([]);
 const newPreviews = ref([]);
-const currentIndex = ref(0); // 🎯 현재 보고 있는 이미지 번호
+const currentIndex = ref(0); // 현재 보고 있는 이미지 번호
+const showSuccessMessage = ref(false);
 
 const allDisplayImages = computed(() => {
   const SERVER_URL = 'http://localhost:8080';
@@ -95,14 +102,10 @@ const allDisplayImages = computed(() => {
 });
 
 const savingMessage = computed(() => {
-  if (props.isSaving) return "저장 중...";
-
-  if(!props.isSaving && props.modelValue && !isReviewEditable.value) {
-    return '저장 완료!';
-  }
-
-  return isReviewEditable.value ? '리뷰를 남겨보세요' : '계획을 완료해야 리뷰 작성이 가능합니다.';
-})
+  if (props.isSaving) return "🔄 저장 중...";
+  if (showSuccessMessage.value) return "✅ 저장 완료!";
+  return ""; // 평소에는 아무것도 띄우지 않음
+});
 
 // 🎯 슬라이더 제어 로직
 const prevSlide = () => { if (currentIndex.value > 0) currentIndex.value--; };
@@ -123,6 +126,18 @@ watch(allDisplayImages, (newVal) => {
   }
 });
 
+// 리뷰가 변경되었을때
+watch(() => props.isSaving, (newVal, oldVal) => {
+  if (newVal === false && oldVal === true) {
+    showSuccessMessage.value = true;
+
+    // 2초 후에 "저장 완료!" 메시지를 숨기고 기본 문구로 복구
+    setTimeout(() => {
+      showSuccessMessage.value = false;
+    }, 2000);
+  }
+});
+
 const triggerFileInput = () => { if (isReviewEditable.value) fileInput.value.click(); };
 
 const onFileChange = (e) => {
@@ -132,6 +147,8 @@ const onFileChange = (e) => {
     newPreviews.value.push(URL.createObjectURL(file));
   });
   emit('image-upload', newFiles.value);
+  
+  debouncedSave(props.modelValue);
   // 새 이미지를 추가하면 마지막으로 이동
   currentIndex.value = allDisplayImages.value.length - 1;
 };
@@ -146,6 +163,8 @@ const removeImage = (index, isNew) => {
   } else {
     emit('delete-existing-img', props.initialImages[index].imgPk);
   }
+
+  debouncedSave(props.modelValue);
 };
 
 // --- 기존 로직 ---
@@ -175,10 +194,32 @@ const isReviewEditable = computed(() => props.plans && props.plans.some(plan => 
 
 .review-photo-container { display: flex; justify-content: space-between; gap: 15px; margin-top: 15px; }
 
+.input-wrapper {
+  width: 50%;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
 .review-input {
-  width: 50%; height: 350px; padding: 25px; background: #D9D9D9; 
+  width: 100%; /* 부모 wrapper에 맞춤 */
+  height: 330px; /* status 영역만큼 살짝 조절 */
+  width: 100%; height: 350px; padding: 25px; background: #D9D9D9; 
   border: none; border-radius: 40px; resize: none; font-size: 14px;  
   font-family: 'Noto Sans KR', sans-serif;
+}
+
+.save-status {
+  height: 20px;
+  font-size: 12px;
+  color: #888;
+  padding-left: 10px;
+  transition: all 0.3s ease;
+  font-weight: 500;
+}
+
+.save-status.success {
+  color: #4CAF50; /* 저장 완료 시 초록색으로 강조 */
 }
 
 /* 슬라이더 스타일 */
@@ -203,6 +244,7 @@ const isReviewEditable = computed(() => props.plans && props.plans.some(plan => 
   font-weight: bold; font-size: 18px; display: flex; align-items: center; justify-content: center;
   transition: background 0.2s; z-index: 10;
 }
+
 .nav-btn:hover { background: rgba(255, 255, 255, 0.9); }
 .prev { left: 10px; }
 .next { right: 10px; }
@@ -227,6 +269,12 @@ const isReviewEditable = computed(() => props.plans && props.plans.some(plan => 
   align-items: center; justify-content: center; cursor: pointer;
 }
 
+.plus-icon {
+  font-size: 18px;
+}
+.add-text {
+  font-size: 14px;
+}
 .remove-img-btn {
   position: absolute; top: 10px; right: 10px; background: rgba(0, 0, 0, 0.5);
   color: white; border: none; border-radius: 50%; width: 25px; height: 25px; cursor: pointer;
@@ -234,11 +282,11 @@ const isReviewEditable = computed(() => props.plans && props.plans.some(plan => 
 
 /* 헤더/리스트 스타일은 이전과 동일 */
 .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
-.card-header h3 { font-family: 'Noto Sans KR', sans-serif; font-weight: 700; font-size: 16px; color: #000000; margin: 0; }
-.close-btn { background: none; border: none; font-size: 13px; cursor: pointer; color: #000000; }
+.card-header h3 { font-family: 'Noto Sans KR', sans-serif; font-weight: 700; font-size: 18px; color: #000000; margin: 0; }
+.close-btn { background: none; border: none; font-size: 16px; cursor: pointer; color: #000000; }
 .plan-list { margin-bottom: 20px; }
 .plan-item { display: flex; align-items: center; margin-bottom: 10px; }
 .plan-icon-placeholder { width: 22.19px; height: 20.09px; border-radius: 10px; margin-right: 8px; }
-.plan-detail-text { font-family: 'Noto Sans KR', sans-serif; font-size: 12px; color: #000000; }
+.plan-detail-text { font-family: 'Noto Sans KR', sans-serif; font-size: 14px; color: #000000; }
 .no-plan-text { color: #aaa; font-size: 12px; padding: 10px 0; }
 </style>

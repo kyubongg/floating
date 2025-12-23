@@ -23,12 +23,12 @@
 
         <div class="input-wrapper">
           <label class="input-label">비밀번호</label>
-          <input type="password" class="input-field" v-model="formData.password" required />
+          <input id="pw-input" type="password" class="input-field" v-model="formData.password" required />
         </div>
 
         <div class="input-wrapper">
           <label class="input-label">비밀번호 확인</label>
-          <input type="password" class="input-field" v-model="formData.passwordConfirm" required />
+          <input id="pw-confirm-input" type="password" class="input-field" v-model="formData.passwordConfirm" required />
         </div>
 
         <div class="input-wrapper">
@@ -120,10 +120,24 @@ const onSubmit = () => {
   // 1) 비밀번호 확인
   if (formData.value.password !== formData.value.passwordConfirm) {
     auth.error = "비밀번호가 일치하지 않습니다.";
+    
+    const target = document.querySelector('#pw-confirm-input');
+    if (target) target.focus();
     return;
   }
 
-  // 2) 회원가입 요청 (Pinia store → axios → backend)
+  // 2) 비밀번호 제한사항 검증 (숫자, 문자 포함 8~13자리)
+  // 문자와 숫자가 각각 최소 하나 이상 포함되어야 함
+  const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,13}$/;
+  if (!passwordRegex.test(formData.value.password)) {
+    auth.error = "비밀번호는 영문과 숫자를 포함하여 8~13자리여야 합니다.";
+
+    const target = document.querySelector('#pw-input');
+    if (target) target.focus();
+    return;
+  }
+
+  // 3) 회원가입 요청 (Pinia store → axios → backend)
   auth
     .signup({
       id: formData.value.id,
@@ -275,5 +289,11 @@ const onSubmit = () => {
 
 .signup-button:hover {
   background: #5A85E0;
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
 }
 </style>

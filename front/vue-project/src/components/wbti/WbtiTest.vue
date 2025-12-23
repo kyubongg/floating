@@ -18,7 +18,7 @@
           </label>
         </div>
         
-        <div v-else-if="currentQuestion.inputType === 'radio'" class="options-list">
+        <div v-else-if="currentQuestion.inputType === 'radio'" class="options-grid">
           <label v-for="opt in currentQuestion.options" :key="opt" class="option-item radio">
             <input type="radio" :value="opt" v-model="selectedConditionValue" />
             <span class="option-text">{{ opt }}</span>
@@ -75,7 +75,7 @@ const wbtiStore = useWbtiStore();
 const questions = [
   { id: 'Q0', text: '과거 운동 경험을 선택해주세요 (복수 가능)', isCondition: true, inputType: 'checkbox', key: 'experiences', options: ['헬스/웨이트', '요가/필라테스', '러닝/걷기', '수영', '팀 스포츠', '크로스핏', '경험 없음'] },
   { id: 'Q0-1', text: '그만둔 주된 이유는 무엇인가요?', isCondition: true, inputType: 'radio', key: 'quitReason', options: ['시간 부족', '지루함', '체력 한계', '부상/통증', '비용 부담', '혼자 하기 힘듦', '해당 없음'] },
-  { id: 'Q0-2', text: '현재 몸 상태를 알려주세요 (복수 가능)', isCondition: true, inputType: 'checkbox', key: 'bodyConditions', options: ['불편함 없음', '무릎 통증', '허리 통증', '목/어깨 통증', '손목/발목 약함', '관절 질환'] },
+  { id: 'Q0-2', text: '현재 몸 상태를 알려주세요 (복수 가능)', isCondition: true, inputType: 'checkbox', key: 'bodyConditions', options: ['무릎 통증', '허리 통증', '목/어깨 통증', '손목/발목 약함', '관절 질환', '불편함 없음'] },
   { id: 'Q0-3', text: '하루 중 운동 가능한 시간은?', isCondition: true, inputType: 'radio', key: 'availableTime', options: ['15분 이하', '20-30분', '40분-1시간', '1시간 이상', '상관없음'] },
   { id: 'Q-ECONOMY', text: '현재 운동을 위한 경제적 여유는 어떠신가요? (주관식)', isCondition: true, inputType: 'text', key: 'economy' },
   ...WBTI_QUESTIONS 
@@ -88,7 +88,27 @@ const currentQuestion = computed(() => questions[currentIndex.value]);
 // --- 2. 답변 데이터 바인딩 ---
 const selectedConditionValue = computed({
   get: () => wbtiStore.userCondition[currentQuestion.value.key],
-  set: (val) => { wbtiStore.userCondition[currentQuestion.value.key] = val; }
+  set: (val) => { 
+    // 답변을 여러개 선택할 수 있는 체크박스의 경우
+    // options의 마지막 값(~~ 없음)을 선택했을 때 기존의 선택한 값들을 체크 해제한다.
+    if (currentQuestion.value.inputType === 'checkbox' && Array.isArray(val)) {
+      const options = currentQuestion.value.options;
+      const lastOption = options[options.length - 1];
+
+      const lastVal = val[val.length - 1];
+
+      if (lastVal === lastOption) {
+        wbtiStore.userCondition[currentQuestion.value.key] = [lastOption];
+        return;
+      }
+
+      if (val.includes(lastOption) && val.length > 1) {
+        wbtiStore.userCondition[currentQuestion.value.key] = val.filter(item => item !== lastOption);
+        return;
+      }
+    }
+
+    wbtiStore.userCondition[currentQuestion.value.key] = val; }
 });
 
 const wbtiAnswers = ref(Array(totalQuestions).fill(null));
@@ -132,17 +152,75 @@ const calculateFinalScores = () => {
 
 <style scoped>
 /* 제공해주신 스타일 그대로 적용 */
-.test-wrapper { width: 100%; display: flex; flex-direction: column; align-items: center; }
-.test-container { width: 100%; max-width: 600px; text-align: center; }
-.text-area { font-family: 'Noto Sans KR', sans-serif; font-weight: 700; font-size: 24px; color: #FFFFFF; margin-bottom: 80px; }
-.choice-area { display: flex; align-items: center; justify-content: center; width: 100%; max-width: 900px; margin: 0 auto; }
-.choice-area__label { font-family: 'Noto Sans KR', sans-serif; font-weight: 400; font-size: 16px; color: #FFFFFF; white-space: nowrap; width: 80px; text-align: center; }
-.circles-container { display: flex; flex: 1; justify-content: space-around; align-items: center; margin: 0 20px; }
+.test-wrapper { 
+  width: 100%; 
+  display: flex; 
+  flex-direction: column; 
+  align-items: center; 
+}
+
+.test-container { 
+  width: 100%; 
+  text-align: center; 
+}
+
+.text-area { 
+  font-family: 'Noto Sans KR', sans-serif; 
+  font-weight: 700; 
+  font-size: 24px; 
+  color: #000; 
+  margin-bottom: 60px; 
+  height: 105px;
+}
+
+.condition-area { 
+  display: flex; 
+  align-items: center; 
+  justify-content: center; 
+  width: 100%; 
+  margin: 0 auto; 
+  max-width: 800px;
+}
+
+.text-input-wrapper { 
+  display: flex; 
+  align-items: center; 
+  justify-content: center; 
+  width: 100%; 
+  margin: 0 auto; 
+  max-width: 800px;
+}
+
+.choice-area { display: flex; 
+  align-items: center; 
+  justify-content: center; 
+  width: 100%; 
+  margin: 0 auto; 
+  max-width: 800px;
+}
+.choice-area__label { 
+  font-family: 'Noto Sans KR', sans-serif; 
+  font-weight: 400; 
+  font-size: 16px; 
+  color: #000; 
+  white-space: nowrap; 
+  width: 80px; 
+  text-align: center; 
+}
+
+.circles-container { 
+  display: flex; 
+  flex: 1; 
+  justify-content: space-around; 
+  align-items: center; 
+  margin: 0 20px; 
+}
+
 .circle-button { border-radius: 50%; cursor: pointer; background-color: #FFFFFF; flex-shrink: 0; border: 2px solid transparent; transition: all 0.2s; padding: 0; }
-.circle-button.size-1, .circle-button.size-7 { width: 60px; height: 60px; }
-.circle-button.size-2, .circle-button.size-6 { width: 45px; height: 45px; }
-.circle-button.size-3, .circle-button.size-5 { width: 35px; height: 35px; }
-.circle-button.size-4 { width: 25px; height: 25px; }
+.circle-button.size-1, .circle-button.size-7 { width: 70px; height: 70px; }
+.circle-button.size-2, .circle-button.size-6 { width: 55px; height: 55px; }
+.circle-button.size-3, .circle-button.size-5 { width: 45px; height: 45px; }
+.circle-button.size-4 { width: 35px; height: 35px; }
 .circle-button.is-blue-style { border-color: #769BEF; }
 .circle-button.is-red-style { border-color: #FF6B6B; }
 .circle-button.is-gray-style { border-color: #999999; }
@@ -156,7 +234,7 @@ const calculateFinalScores = () => {
 .nav-button:disabled { opacity: 0.5; cursor: not-allowed; }
 .question-number { display: block; font-size: 18px; color: #769BEF; margin-bottom: 10px; }
 .condition-area { margin-top: 40px; }
-.options-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+.options-grid { display: grid; width: 100%; grid-template-columns: 1fr 1fr; gap: 15px; }
 .option-item { background: #f1f1f1; padding: 15px; border-radius: 12px; cursor: pointer; transition: 0.3s; display: flex; align-items: center; gap: 10px; color: #333; }
 .option-item:has(input:checked) { background: #769BEF; color: white; }
 .text-input-wrapper textarea { width: 100%; height: 150px; border-radius: 15px; padding: 20px; border: none; font-size: 16px; resize: none; }
