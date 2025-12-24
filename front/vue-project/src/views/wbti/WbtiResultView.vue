@@ -87,7 +87,7 @@
 
   const personaName = computed(() => {
     if (!aiData.value.persona_name) return '진단 중...';
-    return `${aiData.value.persona_name}`;
+    return `${aiData.value.persona_name.replace(/\s*\(.*\)/, '')}`;
   });
 
   const personaCode = computed(() => {
