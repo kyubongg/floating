@@ -36,7 +36,7 @@
                 <p v-if="day.postponed > 0" class="postponed-text">➜ {{ day.postponed }}번 미룸!</p>
 
                 <!-- 오늘 계획 변경하기 버튼 -->
-                <button v-if="day.isToday && hasTodayPlan && !day.completed" class="change-button"
+                <button v-if="day.isToday && planStore.hasTodayPlan && !day.completed" class="change-button"
                   @click="showChangeModal = true">
                   오늘 계획<br />변경하기
                 </button>
@@ -58,14 +58,14 @@
       secondaryText="AI 기반 
       새로운 계획 
       추천받기" 
-      :single-button="changeWeeklyModalTitle" @close="showCreateModal = false"
+      :single-button="!planStore.hasWeeklyPlan" @close="showCreateModal = false"
       @primary-click="handlePostponePreviousWeek" @secondary-click="handleAIRecommendation" />
 
     <!-- 오늘 계획 변경 모달 -->
     <PlanModal :isOpen="showChangeModal" :isAiLoading="isAiLoading" :title="changeTodayModalTitle" primaryText="다음 날로 
       미루기" secondaryText="AI기반 
       대체 운동 
-      추천받기" :single-button="changeTodayModalTitle" @close="showChangeModal = false" @primary-click="handlePostponeToday"
+      추천받기" :single-button="planStore.hasTomorrowPlan" @close="showChangeModal = false" @primary-click="handlePostponeToday"
       @secondary-click="handleAIAlternative" />
   </div>
 </template>
@@ -143,6 +143,7 @@ const handlePostponeToday = async () => {
 const handleAIAlternative = async () => {
   try {
     isAiLoading.value = true; // 로딩 시작
+    console.log(isAiLoading.value);
     await planStore.updateTodayPlan('alternative'); // AI 대체 운동 호출
     showChangeModal.value = false;
   } catch (error) {

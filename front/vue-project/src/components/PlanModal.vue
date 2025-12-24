@@ -205,11 +205,11 @@ const handleSecondaryClick = () => {
 .spinner {
   width: 2rem;
   height: 2rem;
-  border: 4px solid rgba(118, 155, 239, 0.3);
+  border: 4px solid rgba(255, 255, 255, 0.3);
   border-top: 4px solid #769BEF;
   border-radius: 50%;
   animation: spin 1s linear infinite;
-  margin-bottom: 1rem;
+  margin-right: 1rem;
 }
 
 @keyframes spin {
