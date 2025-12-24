@@ -3,6 +3,7 @@ import { defineStore } from "pinia";
 import { ref, computed } from "vue";
 import api from "../api/axios";
 import { useWbtiStore } from "./wbti";
+import { usePlanStore } from "./plan";
 
 /**
  * useAuthStore
@@ -19,6 +20,7 @@ export const useAuthStore = defineStore("auth", () => {
   const error = ref(null);         // 마지막 에러 메시지
 
   const wbtiStore = useWbtiStore();
+  const planStore = usePlanStore();
 
   // ---------- getters ----------
   const isAuthenticated = computed(() => !!user.value);
@@ -127,6 +129,7 @@ export const useAuthStore = defineStore("auth", () => {
     try {
       localStorage.removeItem("accessToken");
       user.value = null;
+      
       wbtiStore.userCondition = {
         experiences: [],
         quitReason: '',
@@ -141,6 +144,8 @@ export const useAuthStore = defineStore("auth", () => {
         executionType: 0,
         activityType: 0,
       };
+
+      planStore.plans = [];
       
       error.value = null;
     }

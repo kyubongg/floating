@@ -2,7 +2,7 @@
   <div class="calendar-header-wrapper">
     <header class="header">
       <div class="month-display">
-        <h2 class="current-month">{{ currentDate.format('YYYY년 M월') }}</h2>
+        <h2 class="current-month" @click="$emit('resetDate')">{{ currentDate.format('YYYY년 M월') }}</h2>
       </div>
       
       <div class="header-button">
@@ -14,13 +14,14 @@
 </template>
 
 <script setup>
-  defineProps({
+
+  const props = defineProps({
     currentDate: {
       type: Object,
       required: true
     }
   });
-  defineEmits(['changeMonth']);
+  const emit = defineEmits(['changeMonth', 'resetDate']);
 </script>
 
 <style scoped>
@@ -48,6 +49,7 @@
   font-weight: 700;
   margin: 0;
   color: #333;
+  cursor: pointer;
 }
 
 /* 오른쪽 화살표 버튼 영역 */

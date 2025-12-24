@@ -2,7 +2,9 @@
   <div class="loading-container">
     <div class="loader-visual">
       <div class="spinner"></div>
-      <div class="character-mini">🦦</div>
+      <div class="character-mini">
+        <img src="../../assets/imgs/haedal-main.png" alt="해달 메인 이미지">
+      </div>
     </div>
     
     <div class="loading-text">
@@ -32,6 +34,7 @@ onMounted(() => {
   setInterval(() => {
     i = (i + 1) % messages.length;
     currentMessage.value = messages[i];
+    console.log(i, currentMessage.value);
   }, 1500);
 });
 </script>
@@ -55,7 +58,7 @@ onMounted(() => {
 .spinner {
   width: 80px;
   height: 80px;
-  border: 5px solid rgba(255, 255, 255, 0.1);
+  border: 5px solid rgba(255, 255, 255, 0.9);
   border-top-color: #769BEF;
   border-radius: 50%;
   animation: spin 1s linear infinite;
@@ -69,13 +72,17 @@ onMounted(() => {
   font-size: 30px;
 }
 
+.loading-text {
+  color: #000;
+}
+
 .loading-text h2 { font-size: 24px; margin-bottom: 10px; }
 .loading-text p { font-size: 16px; opacity: 0.8; height: 24px; }
 
 .loading-bar-wrapper {
   width: 250px;
   height: 6px;
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.7);
   border-radius: 10px;
   margin-top: 40px;
   overflow: hidden;
@@ -87,6 +94,24 @@ onMounted(() => {
   background: #769BEF;
   animation: loadingProgress 4s ease-in-out forwards;
 }
+
+.character-mini {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: flex; /* 내부 이미지 중앙 정렬 */
+  justify-content: center;
+  align-items: center;
+}
+
+.character-mini img {
+  width: 45px;     /* 스피너(80px)보다 작은 적절한 크기 설정 */
+  height: auto;    /* 비율에 맞춰 높이 자동 조절 */
+  object-fit: contain;
+  display: block;  /* 하단 공백 제거 */
+}
+
 
 @keyframes spin { to { transform: rotate(360deg); } }
 @keyframes loadingProgress { from { width: 0; } to { width: 100%; } }

@@ -45,17 +45,19 @@ const currentPetSrc = computed(() => {
 })
 
 const feedbackMessage = computed(() => {
-    if (localStorage.getItem('cheerUpQuotes').length > 0) {
-        const storedQuotes = JSON.parse(localStorage.getItem('cheerUpQuotes'));
+    const quotes = authStore.user.cheerUpQuotes;
 
-        const randomIdx = Math.floor(Math.random() * storedQuotes.length);
-        return storedQuotes[randomIdx]
+    if (!quotes || quotes.length === 0) {
+        return "오늘도 힘차게 움직여봐요!"; 
     }
-    return null;
+
+    const randomIndex = Math.floor(Math.random() * quotes.length);
+
+    return quotes[randomIndex];
 }); 
 
 onMounted(async () => {
-    // AI로 메세지 가져오기
+    authStore.fetchMe();
 });
 </script>
 

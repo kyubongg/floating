@@ -1,5 +1,7 @@
 package com.floating.mvc.service;
 
+import java.util.List;
+
 import org.springframework.http.ResponseEntity;
 
 import com.floating.mvc.dto.request.user.DeleteUserRequestDto;
@@ -23,6 +25,8 @@ public interface UserService {
 	ResponseEntity<? super GetUserDetailResponseDto> getUserDetail (String userId);
 	// 회원 정보 수정
 	ResponseEntity<ResponseDto> updateUser(PutUserRequestDto dto, String userId);
+	// 회원 응원 문구 수정
+	ResponseEntity<ResponseDto> updateUserQuotes(List<String> quotes, String userId);
 	// 회원 Mbti 수정
 	ResponseEntity<ResponseDto> updateUserMbti(PutUserMbtiRequestDto dto, String userId);
 	// 회원탈퇴
