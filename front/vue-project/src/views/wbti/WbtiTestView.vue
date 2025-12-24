@@ -4,9 +4,7 @@
 
     <WbtiTest v-else-if="currentStep === 'TEST'" @complete="handleTestComplete" />
 
-    <div v-else-if="currentStep === 'LOADING'" class="loading-view">
-       <p>AI가 분석 중입니다...</p>
-    </div>
+    <WbtiLoading v-else-if="currentStep === 'LOADING'" />
   </div>
 </template>
 
@@ -18,6 +16,7 @@ import WbtiIntro from '@/components/wbti/WbtiIntro.vue';
 import WbtiTest from '@/components/wbti/WbtiTest.vue';
 import { useAuthStore } from '@/stores/auth';
 import { useAlert } from '@/composables/useAlert';
+import WbtiLoading from '@/components/wbti/WbtiLoading.vue';
 
 const router = useRouter();
 const authStore = useAuthStore();
