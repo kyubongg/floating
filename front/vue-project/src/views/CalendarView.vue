@@ -8,7 +8,11 @@
   -->
   <AppHeader/>
   <div class="calendar-container">
-    <CalendarHeader :currentDate="currentDate" @changeMonth="changeDate" />
+    <CalendarHeader 
+    :currentDate="currentDate" 
+    @changeMonth="changeDate" 
+    @resetDate="selectedDate=null"
+    />
 
     <div class="days-header">
       <div v-for="day in daysOfWeek" :key="day" class="day-name">{{ day }}</div>
