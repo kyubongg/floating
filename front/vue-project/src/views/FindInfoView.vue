@@ -42,10 +42,12 @@ import { ref, onMounted, computed } from "vue";
 import { useAuthStore } from "../stores/auth";
 import { useRouter, useRoute } from "vue-router";
 import InputConfirmModal from "@/components/InputConfirmModal.vue";
+import { useAlert } from '@/composables/useAlert';
 
 const auth = useAuthStore();
 const router = useRouter();
 const route = useRoute();
+const alert = useAlert();
 
 const name = ref("");
 const email = ref("");
@@ -66,7 +68,7 @@ onMounted(() => {
 const onSubmit = async () => {
   try {
     await auth.sendVerificationCode(name.value, email.value, route.query.mode);
-    alert("인증번호가 발송되었습니다.");
+    alert.show("인증번호가 발송되었습니다.", 'success');
     ShowEmailModal.value = true;
   } catch (e) {
     // alert(auth.error || "사용자 정보를 확인해주세요.");
@@ -80,16 +82,16 @@ const handleVerifyConfirm = async (inputCode) => {
     console.log(res);
     console.log(res.data);
     if (route.query.mode === 'id') {
-      alert(`찾으시는 아이디는 [ ${res.data.data} ] 입니다.`);
+      alert.show('찾으시는 아이디는 [ ${res.data.data} ] 입니다.', 'success');
       router.push('/login');
     } else {
-      alert("인증 성공! 비밀번호 재설정 페이지로 이동합니다.");
+      alert.show("인증 성공! 비밀번호 재설정 페이지로 이동합니다.", 'success');
       router.push('/resetPassword');
     }
 
     ShowEmailModal.value = false;
   } catch (e) {
-    alert(auth.error || "인증번호가 틀렸습니다.");
+    alert.show(auth.error || "인증번호가 틀렸습니다.", 'error');
   }
 };
 

@@ -17,11 +17,13 @@ import { useWbtiStore } from '@/stores/wbti';
 import WbtiIntro from '@/components/wbti/WbtiIntro.vue';
 import WbtiTest from '@/components/wbti/WbtiTest.vue';
 import { useAuthStore } from '@/stores/auth';
+import { useAlert } from '@/composables/useAlert';
 
 const router = useRouter();
 const authStore = useAuthStore();
 const wbtiStore = useWbtiStore();
 const currentStep = ref('INTRO');
+const alert = useAlert();
 
 const handleTestComplete = async () => {
   currentStep.value = 'LOADING';
@@ -29,7 +31,7 @@ const handleTestComplete = async () => {
     await wbtiStore.submitResults(); // AI 호출 및 DB 저장
     router.replace({ name: 'wbtiResult' });
   } catch (error) {
-    alert('오류가 발생했습니다.');
+    alert.show('오류가 발생했습니다.', 'warning');
     currentStep.value = 'TEST';
   }
 };

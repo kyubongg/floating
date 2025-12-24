@@ -83,9 +83,11 @@ import { useRouter } from 'vue-router';
 import { useAuthStore } from '@/stores/auth';
 import AppHeader from '@/components/AppHeader.vue';
 import InputConfirmModal from '@/components/InputConfirmModal.vue';
+import { useAlert } from '@/composables/useAlert';
 
 const router = useRouter();
 const auth = useAuthStore();
+const alert = useAlert();
 
 const message = ref("");
 const showPasswordModal = ref(false);
@@ -112,11 +114,11 @@ const doLogout = async () => {
 const confirmWithdraw = async (password) => {
   try {
     await auth.withdraw(password);
-    alert('회원탈퇴 되었습니다!');
+    alert.show('회원탈퇴 되었습니다!', 'success');
 
     router.push('/home');
   } catch (e) {
-    alert(auth.error);
+    alert.show(auth.error, 'error');
   }
 };
 </script>

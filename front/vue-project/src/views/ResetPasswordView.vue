@@ -39,10 +39,12 @@
 import { ref, onMounted, computed } from "vue";
 import { useAuthStore } from "../stores/auth";
 import { useRouter, useRoute } from "vue-router";
+import { useAlert } from '@/composables/useAlert';
 
 const auth = useAuthStore();
 const router = useRouter();
 const route = useRoute();
+const alert = useAlert();
 
 const newPassword = ref("");
 const newPasswordConfirm = ref("");
@@ -62,11 +64,11 @@ const resetPassword = async () => {
 
   try {
     await auth.resetPassword(newPassword.value, auth.verifiedEmail);
-    alert('비밀번호가 수정되었습니다!');
+    alert.show('비밀번호가 수정되었습니다!', 'success');
 
     router.push('/login');
   } catch (e) {
-    alert(auth.error);
+    alert.show(auth.error, 'error');
   }
 }
 
