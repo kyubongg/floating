@@ -17,6 +17,7 @@ import org.springframework.transaction.interceptor.TransactionAspectSupport;
 
 import com.floating.mvc.dao.PetDao;
 import com.floating.mvc.dao.PlanDao;
+import com.floating.mvc.dao.UserDao;
 import com.floating.mvc.dto.request.plan.PlanRegistRequestDto;
 import com.floating.mvc.dto.request.plan.PlanRequestDto;
 import com.floating.mvc.dto.request.review.PutReviewRequestDto;
@@ -35,6 +36,7 @@ import lombok.RequiredArgsConstructor;
 public class PlanServiceImpl implements PlanService {
 	
 	private final PlanDao planDao;
+	private final UserDao userDao;
 	private final ApplicationEventPublisher eventPublisher;
 
 	@Override
@@ -53,6 +55,8 @@ public class PlanServiceImpl implements PlanService {
 			int result = planDao.insertPlanBatch(planList);
 			
 			if(result == 0) return ResponseDto.databaseError();
+			
+			int userResult = userDao.updateUserQuotes(dto.getQuotes(), userId);
 		}
 		catch (Exception e) {
 			e.printStackTrace();
@@ -201,8 +205,10 @@ public class PlanServiceImpl implements PlanService {
 				plan.setUserId(userId);
 			
 			int result = planDao.insertPlanBatch(planList);
-			
 			if(result == 0) return ResponseDto.databaseError();
+			
+			int userResult = userDao.updateUserQuotes(dto.getQuotes(), userId);
+			if(userResult == 0) return ResponseDto.databaseError();
 		}
 		catch (Exception e) {
 			e.printStackTrace();
@@ -244,8 +250,10 @@ public class PlanServiceImpl implements PlanService {
 			dto.setPlanPk(plan.getPlanPk());
 			
 			int result = planDao.updateTodayPlan(dto);
-			
 			if(result == 0) return ResponseDto.databaseError();
+			
+			int userResult = userDao.updateUserQuotes(dto.getQuotes(), userId);
+			if(userResult == 0) return ResponseDto.databaseError();
 			
 		}catch(Exception e) {
 			e.printStackTrace();
