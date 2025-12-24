@@ -190,7 +190,7 @@ const handleAIAlternative = async () => {
 .plan-title {
   font-family: 'Noto Sans KR', sans-serif;
   font-weight: 700;
-  font-size: 1rem;
+  font-size: 1.1rem;
   /* 16px */
   line-height: 1.1875rem;
   /* 19px */
@@ -226,7 +226,7 @@ const handleAIAlternative = async () => {
   /* 30px */
   font-family: 'Noto Sans KR', sans-serif;
   font-weight: 700;
-  font-size: 0.75rem;
+  font-size: 0.8rem;
   /* 12px */
   line-height: 0.875rem;
   /* 14px */

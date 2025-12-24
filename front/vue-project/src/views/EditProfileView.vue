@@ -145,7 +145,7 @@ const saveChanges = async (password) => {
 .edit-title {
   font-family: 'Noto Sans KR', sans-serif;
   font-weight: 700;
-  font-size: 1rem;
+  font-size: 1.2rem;
   /* 16px */
   line-height: 1.1875rem;
   /* 19px */

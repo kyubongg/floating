@@ -194,7 +194,7 @@ const onSubmit = () => {
 .signup-title {
   font-family: 'Noto Sans KR', sans-serif;
   font-weight: 700;
-  font-size: 1rem;
+  font-size: 1.2rem;
   line-height: 1.1875rem;
   color: #000000;
   margin: 0 0 2rem 0;
@@ -238,7 +238,7 @@ const onSubmit = () => {
 .input-label {
   font-family: 'Noto Sans KR', sans-serif;
   font-weight: 400;
-  font-size: 0.9375rem;
+  font-size: 1rem;
   color: #000000;
   min-width: 6.5rem;  /* 70px → 104px (라벨 폭 증가로 정렬) */
   flex-shrink: 0;
@@ -246,13 +246,14 @@ const onSubmit = () => {
 
 .input-field {
   flex: 1;
+  width: 100%;
   height: 1.4775rem;
   background: #D9D9D9;
   border: none;
   border-radius: 0.5rem;
-  padding: 0 0.5rem;
+  padding: 1rem;
   font-family: 'Noto Sans KR', sans-serif;
-  font-size: 0.625rem;
+  font-size: 0.72rem;
   box-sizing: border-box;
 }
 
@@ -283,14 +284,14 @@ const onSubmit = () => {
 }
 
 .signup-button {
-  width: 3rem;
-  height: 2.0625rem;
+  width: 100%;
+  height: 2.8rem;
   background: #769BEF;
   border: none;
   border-radius: 0.625rem;
   font-family: 'Noto Sans KR', sans-serif;
   font-weight: 700;
-  font-size: 0.8125rem;
+  font-size: 1rem;
   color: #FFFFFF;
   cursor: pointer;
   margin: 0 auto;

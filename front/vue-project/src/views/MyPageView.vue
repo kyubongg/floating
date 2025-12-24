@@ -147,7 +147,7 @@ const confirmWithdraw = async (password) => {
 .mypage-title {
   font-family: 'Noto Sans KR', sans-serif;
   font-weight: 700;
-  font-size: 1rem;  /* 16px */
+  font-size: 1.2rem;  /* 16px */
   line-height: 1.1875rem;  /* 19px */
   color: #000000;
   margin: 0 0 3rem 0;  /* 48px */
