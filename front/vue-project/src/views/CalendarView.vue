@@ -35,6 +35,7 @@
           @close="closeReview"
           @save="saveReview" 
           @image-upload="handleImageUpload"
+          @delete-existing-img="deleteExistingImg"
         />
       </template>
     </CalendarBody>
@@ -241,7 +242,9 @@ const handleImageUpload = (file) => {
   console.log("선택된 파일: ", file);
 }
 
-
+const deleteExistingImg = (imgPk) => {
+  initialImages.value = initialImages.value.filter(img => img.imgPk !== imgPk);
+}
 
 onMounted(() => {
   planStore.fetchPlan();

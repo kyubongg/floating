@@ -109,7 +109,6 @@ const handleVerifyConfirm = async (inputCode) => {
   position: relative;
   width: 25rem;
   /* 321px */
-  height: 18rem;
   background: #FFFFFF;
   border: 1px solid #ECECEC;
   box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
@@ -123,7 +122,7 @@ const handleVerifyConfirm = async (inputCode) => {
 .find-title {
   font-family: 'Noto Sans KR', sans-serif;
   font-weight: 700;
-  font-size: 1rem;
+  font-size: 1.2rem;
   /* 16px */
   line-height: 1.1875rem;
   /* 19px */
@@ -179,10 +178,15 @@ const handleVerifyConfirm = async (inputCode) => {
   background: #CACACA;
 }
 
+form {
+  display: flex;
+  flex-direction: column;
+}
+
 .find-button {
-  width: 3rem;
+  width: 4rem;
   /* 48px */
-  height: 1.8675rem;
+  height: 2.8em;
   /* 29.88px */
   background: #769BEF;
   border: none;
@@ -194,8 +198,8 @@ const handleVerifyConfirm = async (inputCode) => {
   /* 13px */
   color: #FFFFFF;
   cursor: pointer;
-  margin: 0 auto;
-  display: block;
+  
+  align-self: flex-end;
 }
 
 .find-button:hover {

@@ -13,7 +13,13 @@
               <div class="plan-icon-wrapper">
                 <div class="plan-icon-placeholder" :style="{ backgroundColor: getCategoryColor(plan.completeDate) }"></div>
               </div>
-              <p><span class="plan-detail-text">{{ plan.category || '일정' }} | {{ plan.detail }} | {{ plan.time }}분</span></p>
+              <div class="plan-detail-wrapper">
+                <p><span class="plan-detail-text">{{ plan.category || '일정' }} | {{ plan.detail }} | {{ plan.time }}분</span></p>
+                <div :class="['save-status', { 'success': showSuccessMessage }]">
+                  {{ savingMessage }}
+                </div>
+              </div>
+              
             </div>
           </template>
           <p v-else class="no-plan-text">이 날짜에 등록된 계획이 없습니다.</p>
@@ -26,11 +32,7 @@
               :value="modelValue"
               @input="handleInput"
               :disabled="!isReviewEditable || isSaving"
-              :placeholder="savingMessage"
             ></textarea>
-            <div :class="['save-status', { 'success': showSuccessMessage }]">
-              {{ savingMessage }}
-            </div>
           </div>
           
           
@@ -103,7 +105,7 @@ const allDisplayImages = computed(() => {
 
 const savingMessage = computed(() => {
   if (props.isSaving) return "🔄 저장 중...";
-  if (showSuccessMessage.value) return "✅ 저장 완료!";
+  if (showSuccessMessage.value) return "✔ 저장 완료!";
   return ""; // 평소에는 아무것도 띄우지 않음
 });
 
@@ -134,7 +136,7 @@ watch(() => props.isSaving, (newVal, oldVal) => {
     // 2초 후에 "저장 완료!" 메시지를 숨기고 기본 문구로 복구
     setTimeout(() => {
       showSuccessMessage.value = false;
-    }, 2000);
+    }, 3500);
   }
 });
 
@@ -154,6 +156,7 @@ const onFileChange = (e) => {
 };
 
 const removeImage = (index, isNew) => {
+  console.log(isNew);
   if (isNew) {
     const existingCount = props.initialImages?.length || 0;
     const newIdx = index - existingCount;
@@ -211,7 +214,7 @@ const isReviewEditable = computed(() => props.plans && props.plans.some(plan => 
 
 .save-status {
   height: 20px;
-  font-size: 12px;
+  font-size: 14px;
   color: #888;
   padding-left: 10px;
   transition: all 0.3s ease;
@@ -219,7 +222,7 @@ const isReviewEditable = computed(() => props.plans && props.plans.some(plan => 
 }
 
 .save-status.success {
-  color: #4CAF50; /* 저장 완료 시 초록색으로 강조 */
+  color: #769BEF; /* 저장 완료 시 초록색으로 강조 */
 }
 
 /* 슬라이더 스타일 */
@@ -287,6 +290,7 @@ const isReviewEditable = computed(() => props.plans && props.plans.some(plan => 
 .plan-list { margin-bottom: 20px; }
 .plan-item { display: flex; align-items: center; margin-bottom: 10px; }
 .plan-icon-placeholder { width: 22.19px; height: 20.09px; border-radius: 10px; margin-right: 8px; }
+.plan-detail-wrapper { font-family: 'Noto Sans KR', sans-serif; font-size: 14px; color: #000000; display: flex; justify-content: space-between; width: 100%; align-items: center;}
 .plan-detail-text { font-family: 'Noto Sans KR', sans-serif; font-size: 14px; color: #000000; }
 .no-plan-text { color: #aaa; font-size: 12px; padding: 10px 0; }
 </style>
