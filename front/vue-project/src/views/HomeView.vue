@@ -30,6 +30,8 @@ import { useWbtiStore } from '@/stores/wbti';
 const planStore = usePlanStore();
 const wbtiStore = useWbtiStore();
 
+console.log(planStore.plans);
+
 onMounted(() => {
   planStore.fetchPlan();
   wbtiStore.getUserWbti();
