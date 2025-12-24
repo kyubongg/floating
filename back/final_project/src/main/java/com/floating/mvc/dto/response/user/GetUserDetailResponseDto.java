@@ -1,6 +1,7 @@
 package com.floating.mvc.dto.response.user;
 
 import java.util.Date;
+import java.util.Map;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,6 +25,7 @@ public class GetUserDetailResponseDto extends ResponseDto {
     private int weight;
     private String wbtiCode;
     private int petScore;
+    private Map<String, Object> cheerUpQuotes;
     
     private GetUserDetailResponseDto(UserRequestDto dto) {
     	this.id = dto.getId();
@@ -35,6 +37,7 @@ public class GetUserDetailResponseDto extends ResponseDto {
     	this.weight = dto.getWeight();
     	this.wbtiCode = dto.getWbtiCode();
     	this.petScore = dto.getPetScore();
+    	this.cheerUpQuotes = dto.getCheerUpQuotes();
     }
     
 	public static ResponseEntity<GetUserDetailResponseDto> success(UserRequestDto dto){
