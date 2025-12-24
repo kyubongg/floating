@@ -1,19 +1,19 @@
 <template>
     <div class="status-card">
-        <h2 class="user-info">{{ authStore.userName }}님 | {{ authStore.user.wbtiCode }} 운동러</h2>
+        <h2 class="user-info">{{ auth.userName }}님 | {{ auth.user.wbtiCode }} 운동러</h2>
 
         <!-- 레벨 & 경험치 바 -->
         <div class="level-exp-container">
             <div class="level-badge">
                 <img src="../assets/imgs/trophy-icon.png" alt="trophy" class="trophy-icon" />
-                <span class="level-text">Lv.{{ userLevel }}</span>
+                <span class="level-text">Lv.{{ auth.level }}</span>
             </div>
 
             <div class="exp-bar-wrapper">
                 <div class="exp-bar">
-                    <div class="exp-filled" :style="{ width:scorePercentage + '%' }"></div>
+                    <div class="exp-filled" :style="{ width: auth.scorePercentage + '%' }"></div>
                 </div>
-                <span class="exp-text">{{ scorePercentage }}/100</span>
+                <span class="exp-text">{{ auth.scorePercentage }}/100</span>
             </div>
         </div>
 
@@ -41,13 +41,9 @@
 <script setup>
 import { useAuthStore } from '@/stores/auth';
 import { usePlanStore } from '@/stores/plan';
-import { computed } from 'vue';
 
-const authStore = useAuthStore();
+const auth = useAuthStore();
 const planStore = usePlanStore();
-
-const userLevel = computed(() => authStore.level);
-const scorePercentage = computed(() => authStore.scorePercentage);
 
 </script>
 
@@ -61,14 +57,14 @@ const scorePercentage = computed(() => authStore.scorePercentage);
   border: 1px solid #FFFFFF;
   border-radius: 3.4375rem;
   /* 55px */
-  padding: 1.5rem;
+  padding: 1.8rem;
   box-sizing: border-box;
 }
 
 .user-info {
   font-family: 'Noto Sans KR', sans-serif;
   font-weight: 700;
-  font-size: 1rem;
+  font-size: 1.2rem;
   /* 16px */
   line-height: 1.1875rem;
   /* 19px */
@@ -172,7 +168,7 @@ const scorePercentage = computed(() => authStore.scorePercentage);
 
 .character-label {
   font-family: 'Noto Sans KR', sans-serif;
-  font-size: 0.75rem;
+  font-size: 0.9rem;
   /* 12px */
   line-height: 0.875rem;
   /* 14px */
