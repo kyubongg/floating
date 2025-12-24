@@ -110,7 +110,7 @@ export const useAuthStore = defineStore("auth", () => {
 
       return res;
     } catch (e) {
-      error.value = e?.response?.data.message || "로그인 실패";
+      error.value = "아이디 또는 비밀번호가 잘못되었습니다.";
       throw e;
     } finally {
       loading.value = false;
