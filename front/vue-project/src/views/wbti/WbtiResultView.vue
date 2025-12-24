@@ -190,7 +190,8 @@
   width: 19.1875rem;  /* 307px */
   height: 20.75rem;  /* 332px */
   object-fit: contain;
-  border-radius: 1rem;
+  border: none;
+  border-radius: 40%;
 }
 
 /* 정보 섹션 */

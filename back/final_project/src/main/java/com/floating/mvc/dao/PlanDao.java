@@ -32,14 +32,10 @@ public interface PlanDao {
 	// 이번주 계획 생성 (지난주 계획 복사)
 	int postponeWeeklyPlan(
 			@Param("userId") String userId);
-	// 내일 계획 생성 (오늘 계획 복사)
-	int insertTomorrowPlan(
-			@Param("userId") String userId);
-	// 오늘 계획 삭제
-	int deleteTodayPlan(
-			@Param("userId") String userId);
+	// 오늘 계획 미루기
+	int shiftTodayPlanToTomorrow(String userId);
 	// 오늘 계획 수정
-	int updateTodayPlan(PlanRequestDto dto);
+	int updateTodayPlan(PlanRequestDto dto);	
 	
 	
 }
