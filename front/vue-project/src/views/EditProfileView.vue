@@ -42,12 +42,12 @@
         </div>
 
         <div class="input-row">
-          <label class="input-label">키</label>
+          <label class="input-label">키 (cm)</label>
           <input type="text" class="input-value" v-model="formData.height" required />
         </div>
 
         <div class="input-row">
-          <label class="input-label">몸무게</label>
+          <label class="input-label">몸무게 (kg)</label>
           <input type="text" class="input-value" v-model="formData.weight" required />
         </div>
       </div>
@@ -145,7 +145,7 @@ const saveChanges = async (password) => {
 .edit-title {
   font-family: 'Noto Sans KR', sans-serif;
   font-weight: 700;
-  font-size: 1rem;
+  font-size: 1.2rem;
   /* 16px */
   line-height: 1.1875rem;
   /* 19px */

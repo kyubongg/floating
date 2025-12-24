@@ -77,7 +77,7 @@ export const useAuthStore = defineStore("auth", () => {
       })
       .catch((e) => {
         // 서버에서 온 메시지가 있으면 사용, 없으면 기본 메시지
-        error.value = e?.response?.data || "회원가입 실패";
+        error.value = e?.response?.data.message || "회원가입 실패";
         throw e; // 호출한 쪽(LoginView 등)에서 then/catch로 후속 처리할 수 있게 다시 던짐
       })
       .finally(() => {
@@ -112,7 +112,7 @@ export const useAuthStore = defineStore("auth", () => {
 
       return res;
     } catch (e) {
-      error.value = e?.response?.data.message || "로그인 실패";
+      error.value = "아이디 또는 비밀번호가 잘못되었습니다.";
       throw e;
     } finally {
       loading.value = false;

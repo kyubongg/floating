@@ -4,7 +4,7 @@
       <h2 class="plan-title">이번주 계획</h2>
       <div v-if="planStore.loading">로딩 중...</div>
     </div>
-    
+
     <div class="plan-content">
       <!-- 계획 없을 때 -->
       <div v-if="!planStore.hasWeeklyPlan" class="no-plan-container">
@@ -36,11 +36,12 @@
                 <p v-if="day.postponed > 0" class="postponed-text">➜ {{ day.postponed }}번 미룸!</p>
 
                 <!-- 오늘 계획 변경하기 버튼 -->
-                <button v-if="day.isToday && hasTodayPlan && !day.completed" class="change-button" @click="showChangeModal = true">
-                  오늘 계획<br/>변경하기
+                <button v-if="day.isToday && hasTodayPlan && !day.completed" class="change-button"
+                  @click="showChangeModal = true">
+                  오늘 계획<br />변경하기
                 </button>
               </div>
-              <div v-else></div>          
+              <div v-else></div>
             </div>
 
             <!-- 구분선 (마지막 제외) -->
@@ -51,31 +52,20 @@
     </div>
 
     <!-- 주간 계획 생성 모달 -->
-    <PlanModal :isOpen="showCreateModal" 
-      :isAiLoading="isAiLoading"
-      title="어떤 방식으로 이번주 운동 계획을 작성할까요?" 
-      primaryText="지난 주 계획 
+    <PlanModal :isOpen="showCreateModal" :isAiLoading="isAiLoading" :title="changeWeeklyModalTitle" primaryText="지난 주 계획 
       다시 
-      사용하기"
+      사용하기" 
       secondaryText="AI 기반 
       새로운 계획 
       추천받기" 
-      @close="showCreateModal = false" 
-      @primary-click="handlePostponePreviousWeek"
-      @secondary-click="handleAIRecommendation" />
+      :single-button="changeWeeklyModalTitle" @close="showCreateModal = false"
+      @primary-click="handlePostponePreviousWeek" @secondary-click="handleAIRecommendation" />
 
     <!-- 오늘 계획 변경 모달 -->
-    <PlanModal :isOpen="showChangeModal" 
-      :isAiLoading="isAiLoading"
-      :title="changeModalTitle" 
-      primaryText="다음 날로 
-      미루기"
-      secondaryText="AI기반 
+    <PlanModal :isOpen="showChangeModal" :isAiLoading="isAiLoading" :title="changeTodayModalTitle" primaryText="다음 날로 
+      미루기" secondaryText="AI기반 
       대체 운동 
-      추천받기"  
-      :single-button="hasTomorrowPlan"
-      @close="showChangeModal = false" 
-      @primary-click="handlePostponeToday"
+      추천받기" :single-button="changeTodayModalTitle" @close="showChangeModal = false" @primary-click="handlePostponeToday"
       @secondary-click="handleAIAlternative" />
   </div>
 </template>
@@ -96,13 +86,9 @@ const planStore = usePlanStore();
 
 const showCreateModal = ref(false);
 const showChangeModal = ref(false);
-const isAiLoading = ref(false); 
+const isAiLoading = ref(false);
 
 dayjs.extend(isToday);
-
-const hasTodayPlan = computed(() => {
-  return planStore.todayPlans && planStore.todayPlans.length > 0;
-});
 
 // 날짜 인디케이터 클릭 (완료 토글)
 const handleDayClick = async (day) => {
@@ -118,14 +104,16 @@ const handleDayClick = async (day) => {
   }
 };
 
-// 내일 계획 유무 확인
-const hasTomorrowPlan = computed(() => {
-  return planStore.tomorrowPlans && planStore.tomorrowPlans.length > 0;
+// 지난주 계획 유무에 따른 모달 설정
+const changeWeeklyModalTitle = computed(() => {
+  return planStore.hasLastWeeklyPlan.value
+    ? "어떤 방식으로\n이번주 운동 계획을 작성할까요?"
+    : "이번주 운동 계획을 수정할까요?";
 });
 
 // 내일 계획 유무에 따른 모달 설정
-const changeModalTitle = computed(() => {
-  return hasTomorrowPlan.value 
+const changeTodayModalTitle = computed(() => {
+  return planStore.hasTomorrowPlan.value
     ? "오늘 운동 계획을 수정할까요?"
     : "어떤 방식으로\n오늘 운동 계획을 수정할까요?";
 });
@@ -167,7 +155,6 @@ const handleAIAlternative = async () => {
 
 
 <style scoped>
-
 .plan-card-header {
   display: flex;
   gap: 20px;
@@ -190,7 +177,7 @@ const handleAIAlternative = async () => {
 .plan-title {
   font-family: 'Noto Sans KR', sans-serif;
   font-weight: 700;
-  font-size: 1rem;
+  font-size: 1.1rem;
   /* 16px */
   line-height: 1.1875rem;
   /* 19px */
@@ -226,7 +213,7 @@ const handleAIAlternative = async () => {
   /* 30px */
   font-family: 'Noto Sans KR', sans-serif;
   font-weight: 700;
-  font-size: 0.75rem;
+  font-size: 0.8rem;
   /* 12px */
   line-height: 0.875rem;
   /* 14px */
@@ -387,14 +374,17 @@ const handleAIAlternative = async () => {
 .change-button:hover {
   background: #5D5D5D;
 }
+
 /* 운동 정보 컨테이너 */
 .exerciseText {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 4px; /* 글자 그룹 간의 간격 */
+  gap: 4px;
+  /* 글자 그룹 간의 간격 */
   width: 100%;
-  min-height: 5.5rem; /* 높이를 고정하여 요일간 수평 정렬 유지 */
+  min-height: 5.5rem;
+  /* 높이를 고정하여 요일간 수평 정렬 유지 */
   margin-top: 0.5rem;
 }
 
@@ -403,8 +393,10 @@ const handleAIAlternative = async () => {
   font-family: 'Noto Sans KR', sans-serif;
   font-weight: 700;
   font-size: 0.8rem;
-  letter-spacing: -0.02em; /* 자간을 좁혀 세련되게 */
-  color: #769BEF; /* 포인트 컬러로 시선 분산 방지 */
+  letter-spacing: -0.02em;
+  /* 자간을 좁혀 세련되게 */
+  color: #769BEF;
+  /* 포인트 컬러로 시선 분산 방지 */
   margin-bottom: 2px;
 }
 
@@ -413,10 +405,12 @@ const handleAIAlternative = async () => {
   font-family: 'Noto Sans KR', sans-serif;
   font-weight: 500;
   font-size: 0.75rem;
-  line-height: 1.4; /* 행간을 넓혀 가독성 확보 */
+  line-height: 1.4;
+  /* 행간을 넓혀 가독성 확보 */
   color: #333333;
   width: 100%;
-  word-break: keep-all; /* 한글이 단어 단위로 예쁘게 줄바꿈됨 */
+  word-break: keep-all;
+  /* 한글이 단어 단위로 예쁘게 줄바꿈됨 */
   text-align: center;
 }
 
@@ -425,17 +419,21 @@ const handleAIAlternative = async () => {
   font-family: 'Noto Sans KR', sans-serif;
   font-weight: 400;
   font-size: 0.7rem;
-  color: #999999; /* 부가 정보는 연하게 처리 */
-  margin-top: auto; /* 시간 정보를 항상 하단에 배치 */
+  color: #999999;
+  /* 부가 정보는 연하게 처리 */
+  margin-top: auto;
+  /* 시간 정보를 항상 하단에 배치 */
 }
 
 /* 구분선 (디자인에 맞춰 더 연하게 조정) */
 .divider {
   width: 1px;
   height: 8rem;
-  background: #dcdcdc; /* 선이 너무 진하면 글자가 묻히므로 연하게 변경 */
+  background: #dcdcdc;
+  /* 선이 너무 진하면 글자가 묻히므로 연하게 변경 */
   flex-shrink: 0;
 }
+
 /* 반응형 */
 @media (max-width: 768px) {
   .week-days {
