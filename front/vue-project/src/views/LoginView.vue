@@ -108,7 +108,7 @@ const onSubmit = () => {
   position: relative;
   width: 25rem;
   /* 321px */
-  height: 25rem;
+  height: 20rem;
   /* 306px */
   background: #FFFFFF;
   border: 1px solid #ECECEC;
@@ -126,7 +126,7 @@ const onSubmit = () => {
 .login-title {
   font-family: 'Noto Sans KR', sans-serif;
   font-weight: 700;
-  font-size: 1rem;
+  font-size: 1.2rem;
   /* 16px */
   line-height: 1.1875rem;
   /* 19px */
@@ -183,8 +183,8 @@ const onSubmit = () => {
 }
 
 .login-button {
-  width: 5rem;
-  height: 2rem;
+  width: 100%;
+  height: 2.8rem;
   
   background: #769BEF;
   border: none;
@@ -192,7 +192,7 @@ const onSubmit = () => {
   /* 10px */
   font-family: 'Noto Sans KR', sans-serif;
   font-weight: 700;
-  font-size: 0.8125rem;
+  font-size: 1rem;
   /* 13px */
   color: #FFFFFF;
   cursor: pointer;
@@ -207,7 +207,7 @@ const onSubmit = () => {
 .find-links {
   display: flex;
   justify-content: center;
-  gap: 0.5rem;
+  gap: 1rem;
   /* 8px */
   padding-top: 1.875rem;
   /* 30px */
