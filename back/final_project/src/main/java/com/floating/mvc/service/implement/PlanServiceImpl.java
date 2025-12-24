@@ -218,19 +218,12 @@ public class PlanServiceImpl implements PlanService {
 
 		try {
 			
-			int insertResult = planDao.insertTomorrowPlan(userId);
-			if (insertResult == 0) return ResponseDto.noExistPlan();
+			int result = planDao.shiftTodayPlanToTomorrow(userId);
 			
-			int deleteResult = planDao.deleteTodayPlan(userId);
-			if(deleteResult == 0) {
-	            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly(); // 롤백 마킹
-	            return ResponseDto.databaseError();
-	        }
-			
+			if(result == 0) return ResponseDto.databaseError();
 		}
 		catch (Exception e) {
 			e.printStackTrace();
-			TransactionAspectSupport.currentTransactionStatus().setRollbackOnly(); // 롤백 마킹
 	        return ResponseDto.databaseError();
 		}
 		

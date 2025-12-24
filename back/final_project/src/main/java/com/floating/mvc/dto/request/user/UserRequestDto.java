@@ -1,6 +1,7 @@
 package com.floating.mvc.dto.request.user;
 
 import java.sql.Date;
+import java.util.Map;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -21,5 +22,5 @@ public class UserRequestDto {
     private int weight;
     private String wbtiCode;
     private int petScore;
-	
+    private Map<String, Object> cheerUpQuotes;
 }
