@@ -39,13 +39,13 @@
         <div class="info-row">
           <span class="info-label">키</span>
           <span class="info-divider">|</span>
-          <span class="info-value">{{ auth.user?.height }}</span>
+          <span class="info-value">{{ auth.user?.height }}cm</span>
         </div>
         
         <div class="info-row">
           <span class="info-label">몸무게</span>
           <span class="info-divider">|</span>
-          <span class="info-value">{{ auth.user?.weight }}</span>
+          <span class="info-value">{{ auth.user?.weight }}kg</span>
         </div>
         
         <div class="info-row">
