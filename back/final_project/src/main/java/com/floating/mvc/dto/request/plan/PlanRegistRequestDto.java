@@ -14,5 +14,5 @@ import lombok.Setter;
 public class PlanRegistRequestDto {
 	
 	private List<PlanRequestDto> plans;
-	
+	private List<String> quotes;
 }

@@ -33,7 +33,23 @@
     </select>
     
     <!-- User 정보를 조회한다. -->
-	<select id="selectUser" parameterType="String" resultType="UserRequestDto">
+    <resultMap id="UserResultMap" type="com.floating.mvc.dto.request.user.UserRequestDto">
+	    <id property="id" column="id" />
+	    <result property="email" column="email" />
+	    <result property="name" column="name" />
+	    <result property="birth" column="birth" />
+	    <result property="gender" column="gender" />
+	    <result property="height" column="height" />
+	    <result property="weight" column="weight" />
+	    
+	    <result property="wbtiCode" column="wbtiCode" />
+	    <result property="petScore" column="petScore" />
+	    
+	    <result property="cheerUpQuotes" column="cheerUpQuotes" 
+	            typeHandler="com.floating.mvc.handler.JsonTypeHandler" />
+	</resultMap>
+
+	<select id="selectUser" parameterType="String" resultMap="UserResultMap">
 	    SELECT 
 	        u.id,
 	        u.email,
@@ -42,6 +58,7 @@
 	        u.gender,
 	        u.height,
 	        u.weight,
+	        u.cheer_up_quotes AS cheerUpQuotes,
 	        w.wbti_code AS wbtiCode,
 	        p.score AS petScore
 	    FROM user u
@@ -100,5 +117,11 @@
 		UPDATE user SET pw = #{newPw} 
         WHERE email = #{email}
 	</update>
-
+	
+	<update id="updateUserQuotes">
+	  UPDATE user 
+	  SET 
+	    cheer_up_quotes = #{quotes, typeHandler=com.floating.mvc.handler.JsonTypeHandler}
+	  WHERE id = #{userId}
+	</update>
 </mapper>

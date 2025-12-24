@@ -1,5 +1,7 @@
 package com.floating.mvc.dao;
 
+import java.util.List;
+
 import com.floating.mvc.dto.request.user.FindInfoRequestDto;
 import com.floating.mvc.dto.request.user.PutUserMbtiRequestDto;
 import com.floating.mvc.dto.request.user.PutUserRequestDto;
@@ -38,4 +40,7 @@ public interface UserDao {
     
     //비밀번호 재설정
     int updatePassword(FindInfoRequestDto dto);
+    
+    // 회원 응원 문구 수정
+    int updateUserQuotes(List<String> quotes, String userId);
 }

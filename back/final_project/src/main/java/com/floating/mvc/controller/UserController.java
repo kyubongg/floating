@@ -48,7 +48,6 @@ public class UserController {
 		return response;
 	}
 	
-	
 	@GetMapping("/detail")
 	public ResponseEntity<? super GetUserDetailResponseDto> getUser(
 			@AuthenticationPrincipal String userId){

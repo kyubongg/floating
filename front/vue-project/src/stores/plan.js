@@ -224,6 +224,7 @@ export const usePlanStore = defineStore('plan', () => {
 
         const payload = {
           plans: aiContent.plans,
+          quotes,
         }
 
         await api.post('/plan/weekly', payload);
@@ -287,6 +288,7 @@ export const usePlanStore = defineStore('plan', () => {
           category: aiContent.category,
           detail: aiContent.detail,
           time: aiContent.time,
+          quotes
         }
 
         await api.put('/plan/today', payload);

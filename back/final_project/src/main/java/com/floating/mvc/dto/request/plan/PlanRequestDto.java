@@ -1,6 +1,7 @@
 package com.floating.mvc.dto.request.plan;
 
 import java.sql.Date;
+import java.util.List;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -19,4 +20,5 @@ public class PlanRequestDto {
 	private String userId;
 	private Date completeDate;
 	private int shifted = 0;
+	private List<String> quotes;
 }

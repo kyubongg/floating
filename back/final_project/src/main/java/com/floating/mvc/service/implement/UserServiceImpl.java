@@ -1,5 +1,6 @@
 package com.floating.mvc.service.implement;
 
+import java.util.List;
 import java.util.Random;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -111,9 +112,8 @@ public class UserServiceImpl implements UserService {
 		
 		try {
 			
-			System.out.println(userId);
-			
 			dto = userDao.selectUser(userId);
+			System.out.println(dto.getCheerUpQuotes());
 			if(dto == null) 
 				return ResponseDto.noExistUser();
 			
@@ -260,6 +260,24 @@ public class UserServiceImpl implements UserService {
 	            return ResponseDto.databaseError();
 	        }
 
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	        return ResponseDto.databaseError();
+	    }
+
+	    return ResponseDto.success(HttpStatus.OK);
+	}
+
+	@Override
+	public ResponseEntity<ResponseDto> updateUserQuotes(List<String> quotes, String userId) {
+		
+		try {
+	        
+			int result = userDao.updateUserQuotes(quotes, userId);
+			if (result == 0) {
+	            return ResponseDto.databaseError();
+	        }
+			
 	    } catch (Exception e) {
 	        e.printStackTrace();
 	        return ResponseDto.databaseError();
