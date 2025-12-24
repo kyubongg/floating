@@ -24,8 +24,11 @@ export const usePlanStore = defineStore('plan', () => {
 
   const today = dayjs().startOf('day');
   const startOfWeek = dayjs().startOf('isoWeek'); // 월요일 기준, 일요일은 week
+  const endOfWeek = dayjs().endOf('isoWeek');
+  const startOfLastWeek = dayjs().subtract(1, 'week').startOf('isoWeek');
+  const endOfLastWeek = dayjs().subtract(1, 'week').endOf('isoWeek');
 
-  const wbtiStore = useWbtiStore(); 
+  const wbtiStore = useWbtiStore();
   const authStore = useAuthStore();
 
   /**
@@ -80,7 +83,6 @@ export const usePlanStore = defineStore('plan', () => {
 
   // 이번주 계획 유무
   const hasWeeklyPlan = computed(() => {
-    const endOfWeek = dayjs().endOf('isoWeek');
     return plans.value.some(p => {
       return dayjs(p.date).isBetween(startOfWeek, endOfWeek, 'day', '[]');
     });
@@ -154,13 +156,35 @@ export const usePlanStore = defineStore('plan', () => {
     });
   });
 
+  // 오늘 계획 유무 
+  const hasTodayPlan = computed(() => {
+    return todayPlans.value && todayPlans.value.length > 0;
+  });
+
   // 내일 계획
   const tomorrowPlans = computed(() => {
     const tomorrow = dayjs().add(1, 'day').startOf('day');
     return plans.value.filter(p => {
       return dayjs(p.date).isSame(tomorrow, 'day');
     });
-  })
+  });
+
+  // 내일 계획 유무 확인
+  const hasTomorrowPlan = computed(() => {
+    return tomorrowPlans.value && tomorrowPlans.value.length > 0;
+  });
+
+  // 지난주 계획
+  const lastWeeklyPlan = computed(() => {
+    return plans.value.some(p => {
+      return dayjs(p.date).isBetween(startOfLastWeek, endOfLastWeek, 'day', '[]');
+    });
+  });
+
+  // 지난주 계획 유무 확인
+  const hasLastWeeklyPlan = computed(() => {
+    return lastWeeklyPlan.value && lastWeeklyPlan.value.length > 0;
+  });
 
   /**
    * actions: 상태 변경 로직
@@ -191,7 +215,7 @@ export const usePlanStore = defineStore('plan', () => {
     // type: 'postpone' (지난주 미루기) or 'ai' (AI 추천)
     loading.value = true;
     error.value = null;
-      
+
     try {
 
       if (!wbtiStore.aiResponse || Object.keys(wbtiStore.aiResponse).length === 0) {
@@ -213,7 +237,7 @@ export const usePlanStore = defineStore('plan', () => {
         // AI에게 일주일 계획 요청
         // AI 기반 새로운 계획 추천받기의 경우 uncompletedPlans는 빈 배열임
         const aiContent = await fetchAiWeeklyPlan(wbtiStore.aiResponse, wbtiStore.userCondition, uncompletedPlans);
-        
+
         const quotes = Array.isArray(aiContent.cheer_up_quote)
           ? aiContent.cheer_up_quote
           : [aiContent.cheer_up_quote];
@@ -228,7 +252,7 @@ export const usePlanStore = defineStore('plan', () => {
 
         await api.post('/plan/weekly', payload);
       }
-        
+
       await fetchPlan(true);
 
     } catch (error) {
@@ -254,7 +278,7 @@ export const usePlanStore = defineStore('plan', () => {
 
         const targetPlan = todayPlans.value[0];
 
-        
+
         if (!targetPlan) {
           throw new Error("오늘 수정할 계획이 없습니다!");
         }
@@ -263,8 +287,8 @@ export const usePlanStore = defineStore('plan', () => {
         console.log(wbtiStore.userCondition);
 
         const aiContent = await fetchAiRevisePlan(
-          wbtiStore.aiResponse, 
-          wbtiStore.userCondition, 
+          wbtiStore.aiResponse,
+          wbtiStore.userCondition,
           {
             category: targetPlan.category,
             detail: targetPlan.detail,
@@ -316,17 +340,17 @@ export const usePlanStore = defineStore('plan', () => {
       });
 
       if (dayPlans.length === 0) return;
-      
+
       // 이미 완료된 경우 -> 완료 취소
       const isCompleted = dayPlans.some(p => p.completeDate !== null);
 
       if (isCompleted) {
         // 완료 취소 API
-        await api.post(`/plan/uncomplete/${ dayPlans[0].planPk }`);
+        await api.post(`/plan/uncomplete/${dayPlans[0].planPk}`);
         console.log("계획 취소")
       } else {
         // 완료 처리 API
-        await api.post(`/plan/complete/${ dayPlans[0].planPk }`);
+        await api.post(`/plan/complete/${dayPlans[0].planPk}`);
       }
 
       await authStore.fetchMe();
@@ -350,11 +374,17 @@ export const usePlanStore = defineStore('plan', () => {
     today: today.format('YYYY-MM-DD'),
     totalCompletedCount,
     startOfWeek: startOfWeek.format('YYYY-MM-DD'),
+    startOfLastWeek,
+    endOfLastWeek,
     weeklyWorkouts,
     hasWeeklyPlan,
     weekDaysWithPlans,
     todayPlans,
     tomorrowPlans,
+    hasTodayPlan,
+    hasTomorrowPlan,
+    lastWeeklyPlan,
+    hasLastWeeklyPlan,
     fetchPlan,
     createWeeklyPlan,
     updateTodayPlan,
