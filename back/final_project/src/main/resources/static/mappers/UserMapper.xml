@@ -3,5 +3,125 @@
 	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.floating.mvc.dao.UserDao">
 
-	<!-- User 정보를 조회한다. -->
+	<!-- User 등록 (회원가입)을 진행한다. -->
+	<insert id="insertUser">
+		INSERT INTO user(id, email, pw, name, birth, gender, height, weight)
+		VALUES (
+			#{id},
+			#{email},
+			#{pw},
+			#{name},
+			#{birth},
+			#{gender},
+			#{height},
+			#{weight}
+		)
+	</insert>
+	
+	<!-- 아이디 중복 체크를 진행한다. -->
+    <select id="existById" parameterType="string" resultType="boolean">
+        SELECT COUNT(*) > 0
+        FROM user
+        WHERE id = #{id}
+    </select>
+
+    <!-- 이메일 중복 체크를 진행한다. -->
+    <select id="existByEmail" parameterType="string" resultType="boolean">
+        SELECT COUNT(*) > 0
+        FROM user
+        WHERE email = #{email}
+    </select>
+    
+    <!-- User 정보를 조회한다. -->
+    <resultMap id="UserResultMap" type="com.floating.mvc.dto.request.user.UserRequestDto">
+	    <id property="id" column="id" />
+	    <result property="email" column="email" />
+	    <result property="name" column="name" />
+	    <result property="birth" column="birth" />
+	    <result property="gender" column="gender" />
+	    <result property="height" column="height" />
+	    <result property="weight" column="weight" />
+	    
+	    <result property="wbtiCode" column="wbtiCode" />
+	    <result property="petScore" column="petScore" />
+	    
+	    <result property="cheerUpQuotes" column="cheerUpQuotes" 
+	            typeHandler="com.floating.mvc.handler.JsonTypeHandler" />
+	</resultMap>
+
+	<select id="selectUser" parameterType="String" resultMap="UserResultMap">
+	    SELECT 
+	        u.id,
+	        u.email,
+	        u.name,
+	        u.birth,
+	        u.gender,
+	        u.height,
+	        u.weight,
+	        u.cheer_up_quotes AS cheerUpQuotes,
+	        w.wbti_code AS wbtiCode,
+	        p.score AS petScore
+	    FROM user u
+	    LEFT JOIN wbti w ON u.id = w.user_id
+	    LEFT JOIN pet p ON u.id = p.user_id
+	    WHERE u.id = #{userId}
+	</select>
+	
+	<!-- User 정보를 수정한다. -->
+	<update id="updateUser">
+		UPDATE user
+		SET
+			email = #{dto.email},
+			name = #{dto.name},
+			birth = #{dto.birth},
+			gender = #{dto.gender},
+			height = #{dto.height},
+			weight = #{dto.weight}
+		WHERE id = #{userId}
+	</update>
+	
+	<!-- User Mbti 정보를 수정한다. -->
+	<update id="updateUserMbti">
+		UPDATE user
+		SET
+			mbti_pk = #{mbtiPk}
+		WHERE id = #{userId}
+	</update>
+	
+	<!-- User 삭제 (회원탈퇴)를 진행한다. -->
+	<delete id="deleteUser">
+		DELETE FROM user
+		WHERE id = #{userId}
+	</delete>
+	
+	<!-- 비밀번호를 확인한다. -->
+	<select id="selectPasswordById" parameterType="String" resultType="String">
+		SELECT pw
+	    FROM user 
+	    WHERE id = #{userId}
+	</select>
+	
+	<!-- 입력한 name, email 정보에 맞는 User 존재 유무를 파악한다. -->
+	<select id="existUser">
+		SELECT COUNT(*) FROM user
+		WHERE name = #{name} AND email = #{email}
+	</select>
+	
+	<!-- 이메일로 Id를 조회한다. -->
+	<select id="selectIdByEmail">
+		SELECT id FROM user WHERE email = #{email}
+	</select>
+	
+	<!-- 비밀번호를 수정한다. -->
+	<update id="updatePassword">
+		UPDATE user SET pw = #{newPw} 
+        WHERE email = #{email}
+	</update>
+	
+	<update id="updateUserQuotes">
+	  UPDATE user 
+	  SET 
+	    cheer_up_quotes = #{quotes, typeHandler=com.floating.mvc.handler.JsonTypeHandler}
+	  WHERE id = #{userId}
+	</update>
 </mapper>

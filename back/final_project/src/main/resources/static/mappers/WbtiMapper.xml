@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.floating.mvc.dao.WbtiDao">
+
+	<!-- Plan을 추가한다. -->
+	<insert id="insertWbti" parameterType="PostWbtiRequestDto">
+	    INSERT INTO wbti (
+	        user_id, wbti_code, social_score, motivation_score, 
+	        execution_score, activity_score, ai_result, user_conditions
+	    ) VALUES (
+	        #{userId}, #{wbtiCode}, #{socialScore}, #{motivationScore},
+	        #{executionScore}, #{activityScore}, 
+	        #{aiResult, typeHandler=com.floating.mvc.handler.JsonTypeHandler}, 
+	        #{userConditions, typeHandler=com.floating.mvc.handler.JsonTypeHandler}
+	    )
+	</insert>
+
+	
+	<resultMap id="WbtiResultMap" type="com.floating.mvc.dto.request.wbti.WbtiRequestDto">
+	    <result property="aiResult" column="ai_result" typeHandler="com.floating.mvc.handler.JsonTypeHandler"/>
+	    <result property="userConditions" column="user_conditions" typeHandler="com.floating.mvc.handler.JsonTypeHandler"/>
+	</resultMap>
+	
+	<select id="getWbtiResult" resultMap="WbtiResultMap">
+	    SELECT * FROM wbti WHERE user_id = #{userId} ORDER BY created_at DESC LIMIT 1
+	</select>
+	
+	<update id="updateByUserId">
+		UPDATE wbti
+		SET
+			social_type = #{socialType}, 
+			motivation_type = #{motivationType}, 
+			execution_type = #{executionType}, 
+			activity_type = #{activityType}
+		WHERE user_id = #{userId}
+		
+	</update>
+
+</mapper>

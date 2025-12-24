@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.floating.mvc.dao.ReviewDao">
+	
+	<!-- 리뷰 생성 -->
+	<insert id="insertReview" parameterType="int">
+	    INSERT INTO review (plan_pk)
+	    SELECT #{planPk}
+	    FROM DUAL
+	    WHERE NOT EXISTS (
+	        SELECT 1 
+	        FROM review 
+	        WHERE plan_pk = #{planPk}
+	    )
+	</insert>
+	
+	<!-- 리뷰 조회 -->
+	<resultMap id="UserReviewResultMap" type="com.floating.mvc.dto.request.review.ReviewRequestDto">
+	    <id property="reviewPk" column="review_pk"/>    
+	    <result property="content" column="content"/>
+	    <result property="completeDate" column="complete_date"/>
+	    
+	    <collection property="imageUrls" resultMap="ImageInfoResultMap"/>
+	</resultMap>
+	
+	<resultMap id="ImageInfoResultMap" type="com.floating.mvc.dto.response.review.ImageInfoDto">
+	    <id property="imgPk" column="img_pk"/>
+	    <result property="imgPath" column="img_path"/>
+	</resultMap>
+	
+	<select id="getReviews" resultMap="UserReviewResultMap">
+		SELECT 
+			r.review_pk,
+			r.content,
+			p.complete_date,
+			i.img_pk,
+			i.img_path 
+		FROM review r
+		INNER JOIN plan p
+		ON r.plan_pk = p.plan_pk 
+		LEFT JOIN img i
+		ON r.review_pk = i.review_pk
+		WHERE p.user_id = #{userId}
+		ORDER BY p.complete_date DESC
+	</select>
+	
+	<!-- 리뷰 수정 -->
+	<update id="updateReview">
+		UPDATE review
+		SET
+			content = #{content}
+		WHERE review_pk = #{reviewPk}
+	</update>
+	
+	<!-- review_pk에 해당하는 이미지 찾기 -->
+	<select id="selectImgPksByReviewPk">
+		SELECT img_pk FROM img
+		WHERE review_pk = #{reviewPk}
+	</select>
+	
+	<!-- review_pk에 해당하는 이미지 중에 수정 요청 dto에 없는 이미지 삭제 -->
+	<delete id="deleteImgsByPks" parameterType="java.util.List">
+		DELETE FROM img
+		WHERE img_pk IN
+		<foreach collection="list" item="imgPk" open="(" separator="," close=")">
+			#{imgPk}
+		</foreach>
+	</delete>
+	
+	<!-- 수정한 리뷰 dto에 있는 이미지들 생성 -->
+	<insert id="insertNewImages">
+		INSERT INTO img(img_path, review_pk)
+		VALUES 
+		<foreach collection="newImgs" item="path" separator=",">
+			(#{path}, #{reviewPk})
+		</foreach>
+	</insert>
+	
+	
+	
+	
+	
+	
+	
+</mapper>

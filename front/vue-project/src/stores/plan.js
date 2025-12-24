@@ -1,0 +1,396 @@
+import { defineStore } from "pinia";
+import { ref, computed } from "vue";
+import dayjs from 'dayjs';
+import isBetween from 'dayjs/plugin/isBetween';
+import isoWeek from 'dayjs/plugin/isoWeek';
+dayjs.extend(isBetween);
+dayjs.extend(isoWeek);
+import api from "../api/axios";
+import { fetchAiRevisePlan, fetchAiWeeklyPlan } from "@/api/ai";
+import { useWbtiStore } from "./wbti";
+import { useAuthStore } from "./auth";
+
+export const usePlanStore = defineStore('plan', () => {
+
+  /**
+   * state: 상태 정의
+   * 스토어의 핵심 데이터
+   */
+  const plans = ref([]);
+  const weeklyPlans = ref([]);
+  const cheerUpQuote = ref([]);
+  const error = ref(null);
+  const loading = ref(false);
+
+  const today = dayjs().startOf('day');
+  const startOfWeek = dayjs().startOf('isoWeek'); // 월요일 기준, 일요일은 week
+  const endOfWeek = dayjs().endOf('isoWeek');
+  const startOfLastWeek = dayjs().subtract(1, 'week').startOf('isoWeek');
+  const endOfLastWeek = dayjs().subtract(1, 'week').endOf('isoWeek');
+
+  const wbtiStore = useWbtiStore();
+  const authStore = useAuthStore();
+
+  /**
+   * getters: 계산된 상태
+   * state를 기반으로 파생된 데이터를 계산
+   * 컴포넌트의 computed()와 유사
+   * 중요: 상태를 변경하지 않고 읽기 전용으로 사용함
+   */
+
+  // 연속 운동 횟수
+  const streakCount = computed(() => {
+    const completedDates = [...new Set(
+      plans.value
+        .filter(p => p.completeDate !== null)
+        .map(p => p.completeDate)
+    )].sort((a, b) => dayjs(b).diff(dayjs(a)));
+
+    if (completedDates.length === 0) return 0;
+
+    let count = 0;
+    let checkDate = dayjs(completedDates[0]);
+    const diffToday = today.diff(checkDate, 'day');
+
+    if (diffToday <= 1) {
+      count = 1;
+      for (let i = 1; i < completedDates.length; i++) {
+        const prevDate = dayjs(completedDates[i]);
+        if (checkDate.diff(prevDate, 'day') === 1) {
+          count++;
+          checkDate = prevDate;
+        } else {
+          break;
+        }
+      }
+    }
+    return count;
+  });
+
+  // 총 운동 완료 횟수
+  const totalCompletedCount = computed(() => {
+    return plans.value.filter((p) => p.completeDate !== null).length;
+  });
+
+  // 이번 주 운동 횟수
+  const weeklyWorkouts = computed(() => {
+    return plans.value.filter(p => {
+      if (p.completeDate === null) return false;
+      const completeDay = dayjs(p.completeDate).startOf('day');
+      return completeDay.isBetween(startOfWeek, today, 'day', '[]');
+    }).length;
+  });
+
+  // 이번주 계획 유무
+  const hasWeeklyPlan = computed(() => {
+    return plans.value.some(p => {
+      return dayjs(p.date).isBetween(startOfWeek, endOfWeek, 'day', '[]');
+    });
+  });
+
+  // 이번주 계획
+  const weekDaysWithPlans = computed(() => {
+    const dayNames = ['일', '월', '화', '수', '목', '금', '토'];
+    const result = [];
+
+    for (let i = 0; i < 7; i++) {
+      const currentDay = startOfWeek.add(i, 'day');
+      const dayName = dayNames[currentDay.day()];
+      const isToday = currentDay.isSame(today, 'day');
+
+      // 해당 날짜의 계획들 찾기
+      const dayPlans = plans.value.filter(p => {
+        return dayjs(p.date).isSame(currentDay, 'day');
+      });
+
+      // 완료 여부 확인
+      const completed = dayPlans.some(p => p.completeDate !== null);
+
+      // 운동 정보 (detail + time)
+      const exerciseText = dayPlans.length > 0
+        ? dayPlans.map(p => `${p.detail}\n${p.time}분`).join('\n\n')
+        : null;
+
+      // 운동 detail 정보
+      const exerciseCategory = dayPlans.length > 0
+        ? dayPlans.map(p => `${p.category}`).join('\n\n')
+        : null;
+
+      // 운동 detail 정보
+      const exerciseDetail = dayPlans.length > 0
+        ? dayPlans.map(p => `${p.detail}`).join('\n\n')
+        : null;
+
+      // 운동 time 정보
+      const exerciseTime = dayPlans.length > 0
+        ? dayPlans.map(p => `${p.time}분`).join('\n\n')
+        : null;
+
+      // 미룬 횟수
+      const postponed = dayPlans.length > 0
+        ? Math.max(...dayPlans.map(p => p.shifted))
+        : 0;
+
+      result.push({
+        name: dayName,
+        date: currentDay.format('YYYY-MM-DD'),
+        exercise: exerciseText,
+        exerciseCategory,
+        exerciseDetail,
+        exerciseTime,
+        completed,
+        hasExercise: dayPlans.length > 0,
+        isToday,
+        postponed,
+        plans: dayPlans // 원본 데이터도 저장
+      });
+    }
+
+    return result;
+  });
+
+  // 오늘 계획
+  const todayPlans = computed(() => {
+    return plans.value.filter(p => {
+      return dayjs(p.date).isSame(today, 'day');
+    });
+  });
+
+  // 오늘 계획 유무 
+  const hasTodayPlan = computed(() => {
+    return todayPlans.value && todayPlans.value.length > 0;
+  });
+
+  // 내일 계획
+  const tomorrowPlans = computed(() => {
+    const tomorrow = dayjs().add(1, 'day').startOf('day');
+    return plans.value.filter(p => {
+      return dayjs(p.date).isSame(tomorrow, 'day');
+    });
+  });
+
+  // 내일 계획 유무 확인
+  const hasTomorrowPlan = computed(() => {
+    return tomorrowPlans.value && tomorrowPlans.value.length > 0;
+  });
+
+  // 지난주 계획
+  const lastWeeklyPlan = computed(() => {
+    return plans.value.some(p => {
+      return dayjs(p.date).isBetween(startOfLastWeek, endOfLastWeek, 'day', '[]');
+    });
+  });
+
+  // 지난주 계획 유무 확인
+  const hasLastWeeklyPlan = computed(() => {
+    return lastWeeklyPlan.value && lastWeeklyPlan.value.length > 0;
+  });
+
+  /**
+   * actions: 상태 변경 로직
+   * 상태를 변경하거나 외부 API 호출 등 비즈니스 로직을 처리함
+   */
+
+  const fetchPlan = async (force = false) => {
+    // 이 함수를 강제하지 않거나, 이미 데이터가 있으면 API 호출 생략
+    if (!force && plans.value && plans.value.length > 0) return;
+
+    loading.value = true;
+    error.value = null;
+
+    try {
+      const res = await api.get('/plan/');
+
+      plans.value = res.data.planList;
+    } catch (error) {
+      console.error('계획 로드 실패:', error);
+    } finally {
+      loading.value = false;
+
+    }
+  };
+
+  // 주간 계획 생성
+  const createWeeklyPlan = async (type) => {
+    // type: 'postpone' (지난주 미루기) or 'ai' (AI 추천)
+    loading.value = true;
+    error.value = null;
+
+    try {
+
+      if (!wbtiStore.aiResponse || Object.keys(wbtiStore.aiResponse).length === 0) {
+        console.log("WBTI 데이터를 불러오는 중...");
+        await wbtiStore.getUserWbti(); // WBTI 스토어에 정의된 조회 함수 호출
+      }
+
+      // 데이터가 여전히 없다면(검사를 안 한 유저라면) 진행 불가 처리
+      if (!wbtiStore.aiResponse) {
+        throw new Error("WBTI 검사 결과가 없습니다. 먼저 테스트를 진행해주세요.");
+      }
+
+      let uncompletedPlans = [];
+
+      // 지난주 계획 다시 사용하기의 경우 지난주 미완료 계획을 가져옴
+      if (type === 'postpone') {
+        await api.post('/plan/postpone')
+      } else {
+        // AI에게 일주일 계획 요청
+        // AI 기반 새로운 계획 추천받기의 경우 uncompletedPlans는 빈 배열임
+        const aiContent = await fetchAiWeeklyPlan(wbtiStore.aiResponse, wbtiStore.userCondition, uncompletedPlans);
+
+        const quotes = Array.isArray(aiContent.cheer_up_quote)
+          ? aiContent.cheer_up_quote
+          : [aiContent.cheer_up_quote];
+
+        cheerUpQuote.value = quotes;
+
+        localStorage.setItem('cheerUpQuotes', JSON.stringify(quotes));
+
+        const payload = {
+          plans: aiContent.plans,
+          quotes,
+        }
+
+        await api.post('/plan/weekly', payload);
+      }
+
+      await fetchPlan(true);
+
+    } catch (error) {
+      console.error('주간 계획 생성 실패:', error);
+      error.value = error.message;
+      plans.value = [];
+    } finally {
+      loading.value = false;
+    }
+  };
+
+  // 오늘 계획 변경
+  const updateTodayPlan = async (type) => {
+    // action: 'postpone' (다음날로 미루기) or 'alternative' (AI 대체 운동)
+    loading.value = true;
+    error.value = null;
+    let res = null;
+
+    try {
+      if (type === 'postpone') {
+        res = await api.post('/plan/today');
+      } else {
+
+        const targetPlan = todayPlans.value[0];
+
+
+        if (!targetPlan) {
+          throw new Error("오늘 수정할 계획이 없습니다!");
+        }
+
+        console.log(targetPlan);
+        console.log(wbtiStore.userCondition);
+
+        const aiContent = await fetchAiRevisePlan(
+          wbtiStore.aiResponse,
+          wbtiStore.userCondition,
+          {
+            category: targetPlan.category,
+            detail: targetPlan.detail,
+            time: targetPlan.time,
+          }
+        );
+
+        console.log(aiContent.cheer_up_quote);
+        const quotes = Array.isArray(aiContent.cheer_up_quote)
+          ? aiContent.cheer_up_quote
+          : [aiContent.cheer_up_quote];
+
+        cheerUpQuote.value = quotes;
+
+        localStorage.setItem('cheerUpQuotes', JSON.stringify(quotes));
+
+        const payload = {
+          planPk: targetPlan.planPk,
+          date: targetPlan.date,
+          category: aiContent.category,
+          detail: aiContent.detail,
+          time: aiContent.time,
+          quotes
+        }
+
+        await api.put('/plan/today', payload);
+
+        console.log("계획 변경 끝!")
+      }
+
+      await fetchPlan(true);
+
+    } catch (error) {
+      console.error('오늘 계획 수정 실패:', error);
+      error.value = error.message;
+    } finally {
+      loading.value = false;
+    }
+  };
+
+  // 계획 완료 토글
+  const togglePlanComplete = async (date) => {
+    loading.value = true;
+    error.value = null;
+
+    try {
+      // 해당 날짜의 계획들 찾기
+      const dayPlans = plans.value.filter(p => {
+        return dayjs(p.date).isSame(dayjs(date), 'day');
+      });
+
+      if (dayPlans.length === 0) return;
+
+      // 이미 완료된 경우 -> 완료 취소
+      const isCompleted = dayPlans.some(p => p.completeDate !== null);
+
+      if (isCompleted) {
+        // 완료 취소 API
+        await api.post(`/plan/uncomplete/${dayPlans[0].planPk}`);
+        console.log("계획 취소")
+      } else {
+        // 완료 처리 API
+        await api.post(`/plan/complete/${dayPlans[0].planPk}`);
+      }
+
+      await authStore.fetchMe();
+      // 데이터 새로고침
+      await fetchPlan(true);
+    } catch (error) {
+      console.error('계획 완료 토글 실패:', error);
+      error.value = error.message;
+    } finally {
+      loading.value = false;
+    }
+  };
+
+  return {
+    plans,
+    weeklyPlans,
+    cheerUpQuote,
+    error,
+    loading,
+    streakCount,
+    today: today.format('YYYY-MM-DD'),
+    totalCompletedCount,
+    startOfWeek: startOfWeek.format('YYYY-MM-DD'),
+    startOfLastWeek,
+    endOfLastWeek,
+    weeklyWorkouts,
+    hasWeeklyPlan,
+    weekDaysWithPlans,
+    todayPlans,
+    tomorrowPlans,
+    hasTodayPlan,
+    hasTomorrowPlan,
+    lastWeeklyPlan,
+    hasLastWeeklyPlan,
+    fetchPlan,
+    createWeeklyPlan,
+    updateTodayPlan,
+    togglePlanComplete,
+  }
+
+})

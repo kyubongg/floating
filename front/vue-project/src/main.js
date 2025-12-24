@@ -1,4 +1,20 @@
-import { createApp } from 'vue'
-import App from './App.vue'
+import './assets/main.css'
 
-createApp(App).mount('#app')
+import { createApp } from 'vue'
+import { createPinia } from 'pinia'
+import axios from 'axios'
+
+import App from './App.vue'
+import router from './router'
+
+axios.defaults.withCredentials = true;
+
+const app = createApp(App)
+const pinia = createPinia()
+
+app.use(pinia)
+app.use(router)
+
+app.mount('#app')
+
+

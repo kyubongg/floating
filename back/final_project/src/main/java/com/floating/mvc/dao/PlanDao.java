@@ -4,21 +4,38 @@ import java.util.List;
 
 import org.apache.ibatis.annotations.Param;
 
+import com.floating.mvc.dto.request.plan.PlanRegistRequestDto;
 import com.floating.mvc.dto.request.plan.PlanRequestDto;
 
 public interface PlanDao {
 	// 계획 작성
-	int insertPlan(PlanRequestDto plan);
+	int insertPlan(
+			@Param("plan") PlanRegistRequestDto dto,  
+	        @Param("userId") String userId);
+	int insertPlanBatch(
+			@Param("plans") List<PlanRequestDto> plans);
 	// 계획 수정
-	int updatePlan(
-	        @Param("plan") PlanRequestDto plan,   // DTO를 'plan'이라는 이름으로 바인딩
-	        @Param("userId") String userId);      // userId를 'userId'라는 이름으로 바인딩
+	int updatePlan(PlanRequestDto dto);      
 	// 계획 전체 조회
-	List<PlanRequestDto> selectAll();
+	List<PlanRequestDto> selectAll(String userId);
 	// 계획 상세 조회
 	PlanRequestDto selectPlan(
-			@Param("userId")String userId, 
-			@Param("planDate") Date date);
+			@Param("planPk") int planPk,
+			@Param("userId") String userId);
+	// 계획 완료
+	int postPlanCompl(
+			@Param("planPk") int planPk, 
+			@Param("completeDate") String formattedDate);
+	// 계획 완료 취소
+	int postPlanUncompl(
+			@Param("planPk") int planPk);
+	// 이번주 계획 생성 (지난주 계획 복사)
+	int postponeWeeklyPlan(
+			@Param("userId") String userId);
+	// 오늘 계획 미루기
+	int shiftTodayPlanToTomorrow(String userId);
+	// 오늘 계획 수정
+	int updateTodayPlan(PlanRequestDto dto);	
 	
-
+	
 }

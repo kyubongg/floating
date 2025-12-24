@@ -99,6 +99,23 @@
 	        <version>1.18.30</version>
 	        <scope>provided</scope>
 	    </dependency>
+	    <dependency>
+		    <groupId>io.jsonwebtoken</groupId>
+		    <artifactId>jjwt-api</artifactId>
+		    <version>0.12.6</version>
+		</dependency>
+		<dependency>
+		    <groupId>io.jsonwebtoken</groupId>
+		    <artifactId>jjwt-impl</artifactId>
+		    <version>0.12.6</version>
+		    <scope>runtime</scope>
+		</dependency>
+		<dependency>
+		    <groupId>io.jsonwebtoken</groupId>
+		    <artifactId>jjwt-jackson</artifactId>
+		    <version>0.12.6</version>
+		    <scope>runtime</scope>
+		</dependency>
 	    <!-- https://mvnrepository.com/artifact/org.springframework.ai/spring-ai-vertex-ai-gemini -->
 		<dependency>
 		    <groupId>org.springframework.ai</groupId>
@@ -112,7 +129,25 @@
 		    <version>1.1.0</version>
 		</dependency>
 		
-		</dependencies>
+		<!-- security -->
+        <dependency>
+		    <groupId>org.springframework.boot</groupId>
+		    <artifactId>spring-boot-starter-security</artifactId>
+		</dependency>   
+		
+		<dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-test</artifactId>
+			<scope>test</scope>
+		</dependency>
+		
+		<!-- mail -->
+		<dependency>
+		    <groupId>org.springframework.boot</groupId>
+		    <artifactId>spring-boot-starter-mail</artifactId>
+		</dependency>
+		
+	</dependencies>
 
 	<build>
 		<plugins>
